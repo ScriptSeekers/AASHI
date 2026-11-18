@@ -1,0 +1,176 @@
+================================================================================
+                           DUVORA: LOVE HARD. PLAY HARDER.
+                       Complete Multiplayer Gaming Platform
+================================================================================
+
+DUVORA is organized into two clean, standalone directories:
+  1. `backend/`  - Express.js, SQLite (Prisma), Socket.IO, 26 Multiplayer Game Engines
+  2. `frontend/` - React 18, Vite, Tailwind CSS, Framer Motion, Lucide Icons
+
+Both folders are completely standalone and can be executed independently.
+
+================================================================================
+1. EXCLUSIVE AUTHORIZED ACCOUNTS (NO SIGNUP ALLOWED)
+================================================================================
+Per security requirements, public registration is completely disabled.
+Only two private accounts exist in the pre-seeded SQLite database:
+
+--------------------------------------------------------------------------------
+ACCOUNT 1:
+  Email:    Arpit@duvora.com
+  Password: Love2927
+
+ACCOUNT 2:
+  Email:    Shree@duvora.com
+  Password: Love2927
+--------------------------------------------------------------------------------
+
+================================================================================
+2. HOW TO RUN THE BACKEND SERVER
+================================================================================
+Requirements: Node.js 18+ (Node 20+ recommended)
+
+Step 1: Open a terminal and navigate to the backend folder:
+   cd backend
+
+Step 2: Install dependencies (if not already installed):
+   npm install
+
+Step 3: Generate the Prisma client:
+   npx prisma generate
+
+Step 4: Start the backend in development mode:
+   npm run dev
+
+   Backend will be running at:
+   - REST API:   http://localhost:3001/api
+   - Socket.IO:  ws://localhost:3001
+   - Database:   backend/prisma/dev.db (SQLite)
+
+Additional Backend Commands:
+   - Run Vitest Test Suite (20 tests):   npm test
+   - Inspect Database with GUI Studio:   npm run db:studio
+   - Re-seed Accounts (Arpit & Shree):   npm run db:seed
+   - Compile Production TypeScript:      npm run build
+   - Run Production Server:              npm start
+
+================================================================================
+3. HOW TO RUN THE FRONTEND CLIENT
+================================================================================
+Step 1: Open a second terminal window and navigate to the frontend folder:
+   cd frontend
+
+Step 2: Install dependencies (if not already installed):
+   npm install
+
+Step 3: Start the Vite development server:
+   npm run dev
+
+   Frontend will be running at:
+   - Web App URL: http://localhost:5173
+
+   (Vite automatically proxies /api and /socket.io requests to port 3001)
+
+Additional Frontend Commands:
+   - Type-check & Production Build:      npm run build
+   - Preview Production Build:           npm run preview
+
+================================================================================
+4. HOW TO TEST REAL-TIME MULTIPLAYER & INVITATIONS
+================================================================================
+1. Open Browser Window 1 (e.g. Chrome normal window):
+   - Navigate to: http://localhost:5173/login
+   - Login with: Arpit@duvora.com / Love2927
+
+2. Open Browser Window 2 (e.g. Chrome Incognito or Firefox / Edge):
+   - Navigate to: http://localhost:5173/login
+   - Login with: Shree@duvora.com / Love2927
+
+3. Create a Room & Send Real-Time Invitation:
+   - In Arpit's browser, go to "Couple Zone" or "Games", select a game (e.g., UNO,
+     Ludo, Chess, Tic-Tac-Toe, or Never Have I Ever) and click "Create Room" / "Invite Partner".
+   - Select Shree and send invitation.
+
+4. Real-Time Invitation Popup:
+   - Shree's browser will IMMEDIATELY display the real-time popup modal:
+     "💗 You've got a game invitation!"
+     "Arpit invited you to play [Game Name] on DUVORA."
+   - Click "ACCEPT INVITATION".
+   - Arpit receives an instant confirmation chime: "Shree accepted your invitation!".
+   - Both players are automatically synchronized into the active multiplayer game room!
+
+================================================================================
+5. INCLUDED MULTIPLAYER GAMES (26 TOTAL)
+================================================================================
+1. Couple Games:
+   - Never Have I Ever (Funny, Romantic, Spicy & Custom)
+   - Truth or Dare (Custom dares, cute & spicy categories)
+   - Would You Rather (Real-time simultaneous reveal)
+   - Who Knows Who Better? (Compatibility scoring)
+   - Dare Roulette (Animated spinning wheel)
+   - Love Quiz (Relationship preferences & match score)
+
+2. Classic Board Games:
+   - UNO (Complete 108 cards, Draw 2/4, Skips, Wild, Color Picker, Uno Shout)
+   - Chess (Server-authoritative engine with chess.js, checkmate, castling, en passant)
+   - Ludo (2 to 4 player support, server dice rolls, tokens, safe zones, captures)
+   - Tic-Tac-Toe (Multiplayer 3x3 turn validation)
+   - Connect Four (7x6 board with four-in-a-row detection)
+   - Checkers (Diagonal moves, multi-jumps, king promotion)
+
+3. Quick & Battle Games:
+   - Rock Paper Scissors
+   - Love Reaction Speed Test
+   - Memory Match (Couples edition)
+   - Emoji Guessing
+   - Word Scramble
+   - Trivia Clash
+   - Drawing Guesser (Multiplayer canvas)
+   - Dots & Boxes
+   - Battleship (Couple naval battle)
+   - Air Hockey (Fast reflexes)
+   - Finger Tug-of-War (Tap race)
+   - Connect the Hearts
+   - Love Pong
+   - Romantic Word Search
+
+================================================================================
+6. ARCHITECTURE & FOLDER STRUCTURE
+================================================================================
+DUVORA/
+├── backend/
+│   ├── prisma/
+│   │   ├── schema.prisma       (Prisma SQLite schema with foreign keys)
+│   │   └── dev.db              (Pre-seeded SQLite database)
+│   ├── src/
+│   │   ├── controllers/        (Auth, Room, Game, Invitation, Profile)
+│   │   ├── database/           (Prisma client, initial seed script)
+│   │   ├── games/              (Engines for UNO, Chess, Ludo, Board, Quick, Couple)
+│   │   ├── middleware/         (JWT auth, rate limiting, Zod validation)
+│   │   ├── routes/             (REST API endpoints)
+│   │   ├── shared/             (Shared types, constants, schemas)
+│   │   ├── sockets/            (Real-time Socket.IO room & invitation manager)
+│   │   └── index.ts            (Express server entrypoint)
+│   ├── tests/
+│   │   └── api.test.ts         (Comprehensive Vitest suite - 20 tests)
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── .env
+│
+├── frontend/
+│   ├── public/                 (Audio assets, favicon, brand graphics)
+│   ├── src/
+│   │   ├── api/                (API client & typed endpoints)
+│   │   ├── components/         (Navbar, BottomNav, Modals, InvitationPopup)
+│   │   ├── context/            (AuthContext, SocketContext)
+│   │   ├── games/              (UI components for 26 multiplayer games)
+│   │   ├── pages/              (14 full pages: Landing, Login, Dashboard, Rooms, etc.)
+│   │   ├── shared/             (Shared types & schemas)
+│   │   └── App.tsx             (Router & protected route layout)
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── vite.config.ts          (Vite bundler with /api & /socket.io proxy)
+│   └── tailwind.config.js      (Official DUVORA color palette & design tokens)
+│
+└── run.txt                     (This guide)
+================================================================================

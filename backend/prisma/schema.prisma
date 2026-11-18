@@ -1,0 +1,236 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String           @id @default(uuid())
+  email           String           @unique
+  passwordHash    String
+  name            String
+  username        String           @unique
+  avatar          String?
+  bio             String?
+  soundEnabled    Boolean          @default(true)
+  themePreference String           @default("romantic")
+  partnerId       String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  sessions            Session[]
+  roomMemberships     RoomMember[]
+  sentInvitations     RoomInvitation[]  @relation("SentInvitations")
+  receivedInvitations RoomInvitation[]  @relation("ReceivedInvitations")
+  gameParticipants    GameParticipant[]
+  gameHistory         GameHistory[]     @relation("UserGameHistory")
+  opponentGameHistory GameHistory[]     @relation("OpponentGameHistory")
+  statistics          UserStatistics?
+  achievements        UserAchievement[]
+  notifications       Notification[]
+  customQuestions     CustomQuestion[]
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  userAgent String?
+  ipAddress String?
+
+  @@index([userId])
+  @@index([token])
+}
+
+model CoupleRoom {
+  id              String           @id @default(uuid())
+  code            String           @unique
+  name            String           @default("Our Love Nest")
+  isPrivate       Boolean          @default(true)
+  maxPlayers      Int              @default(2)
+  hostId          String
+  activeGameType  String?
+  activeSessionId String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  members     RoomMember[]
+  invitations RoomInvitation[]
+  sessions    GameSession[]
+
+  @@index([code])
+}
+
+model RoomMember {
+  id       String     @id @default(uuid())
+  roomId   String
+  room     CoupleRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role     String     @default("member") // host, member
+  joinedAt DateTime   @default(now())
+
+  @@unique([roomId, userId])
+  @@index([userId])
+  @@index([roomId])
+}
+
+model RoomInvitation {
+  id          String     @id @default(uuid())
+  roomId      String
+  room        CoupleRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  senderId    String
+  sender      User       @relation("SentInvitations", fields: [senderId], references: [id], onDelete: Cascade)
+  recipientId String
+  recipient   User       @relation("ReceivedInvitations", fields: [recipientId], references: [id], onDelete: Cascade)
+  status      String     @default("pending") // pending, accepted, declined, expired
+  createdAt   DateTime   @default(now())
+  expiresAt   DateTime
+
+  @@index([recipientId, status])
+  @@index([roomId])
+}
+
+model Game {
+  id          String @id @default(uuid())
+  key         String @unique
+  title       String
+  description String
+  category    String // couple, board, card, quick
+  minPlayers  Int    @default(2)
+  maxPlayers  Int    @default(2)
+}
+
+model GameSession {
+  id           String            @id @default(uuid())
+  roomId       String
+  room         CoupleRoom        @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  gameType     String
+  status       String            @default("waiting") // waiting, playing, completed, abandoned
+  turnUserId   String?
+  winnerUserId String?
+  stateJson    String            @default("{}")
+  startedAt    DateTime          @default(now())
+  endedAt      DateTime?
+
+  participants GameParticipant[]
+  moves        GameMove[]
+
+  @@index([roomId])
+  @@index([status])
+}
+
+model GameParticipant {
+  id        String      @id @default(uuid())
+  sessionId String
+  session   GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      String      @default("player") // player, spectator
+  score     Int         @default(0)
+  result    String?     // won, lost, draw
+
+  @@unique([sessionId, userId])
+  @@index([userId])
+}
+
+model GameMove {
+  id          String      @id @default(uuid())
+  sessionId   String
+  session     GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId      String
+  moveNumber  Int
+  actionType  String
+  payloadJson String      @default("{}")
+  createdAt   DateTime    @default(now())
+
+  @@index([sessionId, moveNumber])
+}
+
+model Question {
+  id          String  @id @default(uuid())
+  category    String  // couple, trivia, quiz, would_you_rather, never_have_i_ever, truth_or_dare
+  subcategory String? // romantic, spicy, funny, cute
+  text        String
+  optionA     String?
+  optionB     String?
+  type        String  @default("text") // text, binary, choices
+}
+
+model CustomQuestion {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roomId    String?
+  category  String
+  text      String
+  optionA   String?
+  optionB   String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model GameHistory {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation("UserGameHistory", fields: [userId], references: [id], onDelete: Cascade)
+  opponentId      String?
+  opponent        User?    @relation("OpponentGameHistory", fields: [opponentId], references: [id], onDelete: SetNull)
+  gameType        String
+  result          String   // won, lost, draw
+  score           String?
+  durationSeconds Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model UserStatistics {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gamesPlayed   Int      @default(0)
+  gamesWon      Int      @default(0)
+  gamesLost     Int      @default(0)
+  gamesDrawn    Int      @default(0)
+  currentStreak Int      @default(0)
+  bestStreak    Int      @default(0)
+  winRate       Float    @default(0.0)
+  favoriteGame  String?
+  updatedAt     DateTime @updatedAt
+}
+
+model UserAchievement {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  key        String
+  title      String
+  icon       String
+  unlockedAt DateTime @default(now())
+
+  @@unique([userId, key])
+  @@index([userId])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("system") // invitation, game, system, achievement
+  dataJson  String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, read])
+}
