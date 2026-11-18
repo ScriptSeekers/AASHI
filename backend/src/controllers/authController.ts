@@ -75,10 +75,11 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
       partnerName = partner?.name || null;
     }
 
+    const isProd = process.env.NODE_ENV === 'production';
     res.cookie(SESSION_COOKIE_NAME, token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
       expires: expiresAt
     });
 
@@ -101,7 +102,12 @@ export async function logout(req: Request, res: Response, next: NextFunction): P
       }).catch(() => {});
     }
 
-    res.clearCookie(SESSION_COOKIE_NAME);
+    const isProd = process.env.NODE_ENV === 'production';
+    res.clearCookie(SESSION_COOKIE_NAME, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax'
+    });
     res.status(200).json({ message: 'Logged out successfully.' });
   } catch (err) {
     next(err);
