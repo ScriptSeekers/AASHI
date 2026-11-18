@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginSchema, LoginInput } from '@duvora/shared';
 import { useAuth } from '../context/AuthContext.js';
-import { Heart, Lock, Mail, AlertCircle, ArrowRight, Loader2, Sparkles, UserCheck } from 'lucide-react';
+import { Heart, Lock, Mail, AlertCircle, ArrowRight, Loader2, Sparkles } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
   const { login } = useAuth();
@@ -15,7 +15,6 @@ export const LoginPage: React.FC = () => {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors }
   } = useForm<LoginInput>({
     resolver: zodResolver(LoginSchema),
@@ -40,12 +39,6 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleQuickFill = (email: string) => {
-    setValue('email', email);
-    setValue('password', 'Love2927');
-    setErrorMessage(null);
-  };
-
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4">
       <div className="w-full max-w-md p-8 rounded-3xl bg-duvora-cloud/90 backdrop-blur-md border border-duvora-pink shadow-glass">
@@ -68,31 +61,6 @@ export const LoginPage: React.FC = () => {
             <span>{errorMessage}</span>
           </div>
         )}
-
-        {/* Quick 1-Click Select Profile */}
-        <div className="mb-6 p-3 rounded-2xl bg-white/70 border border-duvora-pink/50 shadow-sm">
-          <span className="block text-[11px] font-bold text-duvora-plum/60 uppercase tracking-wider mb-2 text-center">
-            Choose Your Profile
-          </span>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => handleQuickFill('Arpit@duvora.com')}
-              className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-duvora-lilac/40 hover:bg-duvora-pink border border-duvora-pink/60 text-xs font-bold text-duvora-plum transition-all hover:scale-[1.02]"
-            >
-              <UserCheck className="w-3.5 h-3.5 text-duvora-berry" />
-              <span>Arpit</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickFill('Shree@duvora.com')}
-              className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-duvora-lilac/40 hover:bg-duvora-pink border border-duvora-pink/60 text-xs font-bold text-duvora-plum transition-all hover:scale-[1.02]"
-            >
-              <UserCheck className="w-3.5 h-3.5 text-duvora-berry" />
-              <span>Shree</span>
-            </button>
-          </div>
-        </div>
 
         {/* Login Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

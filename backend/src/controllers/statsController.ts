@@ -135,3 +135,87 @@ export async function getRoomStatistics(req: Request, res: Response, next: NextF
     next(err);
   }
 }
+
+export function isUserArpit(user: { email: string; username?: string | null }): boolean {
+  return (
+    user.email.toLowerCase() === 'arpit@duvora.com' ||
+    user.username?.toLowerCase() === 'arpit'
+  );
+}
+
+export async function clearAllGameHistory(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const authReq = req as AuthenticatedRequest;
+    if (!isUserArpit(authReq.user)) {
+      res.status(403).json({ error: 'Permission denied. Only Arpit has the authority to delete game history.' });
+      return;
+    }
+
+    // Delete all GameHistory records
+    await prisma.gameHistory.deleteMany({});
+
+    // Reset user statistics for both players
+    await prisma.userStatistics.updateMany({
+      data: {
+        gamesPlayed: 0,
+        gamesWon: 0,
+        gamesLost: 0,
+        gamesDrawn: 0,
+        currentStreak: 0,
+        bestStreak: 0,
+        winRate: 0.0,
+        favoriteGame: null
+      }
+    });
+
+    res.json({ message: 'All game history and statistics have been successfully cleared by Arpit.' });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteGameHistoryItem(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const authReq = req as AuthenticatedRequest;
+    if (!isUserArpit(authReq.user)) {
+      res.status(403).json({ error: 'Permission denied. Only Arpit has the authority to delete game history.' });
+      return;
+    }
+
+    const historyId = String(req.params.id);
+    const existing = await prisma.gameHistory.findUnique({
+      where: { id: historyId }
+    });
+
+    if (!existing) {
+      res.status(404).json({ error: 'Match history record not found.' });
+      return;
+    }
+
+    await prisma.gameHistory.delete({
+      where: { id: historyId }
+    });
+
+    // Recalculate statistics for user
+    const remainingCount = await prisma.gameHistory.count({ where: { userId: existing.userId } });
+    const remainingWins = await prisma.gameHistory.count({ where: { userId: existing.userId, result: 'won' } });
+    const remainingLosses = await prisma.gameHistory.count({ where: { userId: existing.userId, result: 'lost' } });
+    const remainingDraws = await prisma.gameHistory.count({ where: { userId: existing.userId, result: 'draw' } });
+    const winRate = remainingCount > 0 ? Number(((remainingWins / remainingCount) * 100).toFixed(1)) : 0;
+
+    await prisma.userStatistics.update({
+      where: { userId: existing.userId },
+      data: {
+        gamesPlayed: remainingCount,
+        gamesWon: remainingWins,
+        gamesLost: remainingLosses,
+        gamesDrawn: remainingDraws,
+        winRate
+      }
+    }).catch(() => {});
+
+    res.json({ message: 'Match history item deleted successfully.' });
+  } catch (err) {
+    next(err);
+  }
+}

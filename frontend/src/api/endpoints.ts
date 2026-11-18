@@ -115,7 +115,11 @@ export const statsApi = {
   getMyStats: () =>
     apiRequest<{ statistics: UserStatsDTO }>('/statistics/me'),
   getRoomStats: (roomId: string) =>
-    apiRequest<{ roomId: string; members: any[]; headToHead: any }>(`/statistics/room/${roomId}`)
+    apiRequest<{ roomId: string; members: any[]; headToHead: any }>(`/statistics/room/${roomId}`),
+  clearAllHistory: () =>
+    apiRequest<{ message: string }>('/statistics/history', { method: 'DELETE' }),
+  deleteHistoryItem: (id: string) =>
+    apiRequest<{ message: string }>(`/statistics/history/${id}`, { method: 'DELETE' })
 };
 
 // Notifications

@@ -447,4 +447,67 @@ describe('DUVORA Full-Stack Test Suite (Exclusive Arpit & Shree Realm)', () => {
       expect(hm.data.guessedLetters).toContain(letter.toUpperCase());
     });
   });
+
+  describe('10. Game History Deletion Authority (Arpit Exclusive)', () => {
+    let testHistoryId: string;
+
+    it('should seed a test game history item', async () => {
+      const historyItem = await (await import('../src/database/db.js')).prisma.gameHistory.create({
+        data: {
+          userId: user1Id,
+          opponentId: user2Id,
+          gameType: 'tic_tac_toe',
+          result: 'won',
+          durationSeconds: 45
+        }
+      });
+      testHistoryId = historyItem.id;
+      expect(testHistoryId).toBeDefined();
+    });
+
+    it('should reject Shree when attempting to delete history item (403 Forbidden)', async () => {
+      const res = await request(app)
+        .delete(`/api/statistics/history/${testHistoryId}`)
+        .set('Authorization', `Bearer ${user2Token}`)
+        .expect(403);
+
+      expect(res.body.error).toContain('Only Arpit has the authority to delete game history');
+    });
+
+    it('should reject Shree when attempting to clear all history (403 Forbidden)', async () => {
+      const res = await request(app)
+        .delete('/api/statistics/history')
+        .set('Authorization', `Bearer ${user2Token}`)
+        .expect(403);
+
+      expect(res.body.error).toContain('Only Arpit has the authority to delete game history');
+    });
+
+    it('should allow Arpit to delete a specific history item (200 OK)', async () => {
+      const res = await request(app)
+        .delete(`/api/statistics/history/${testHistoryId}`)
+        .set('Authorization', `Bearer ${user1Token}`)
+        .expect(200);
+
+      expect(res.body.message).toContain('deleted successfully');
+    });
+
+    it('should allow Arpit to clear all game history and reset statistics (200 OK)', async () => {
+      const res = await request(app)
+        .delete('/api/statistics/history')
+        .set('Authorization', `Bearer ${user1Token}`)
+        .expect(200);
+
+      expect(res.body.message).toContain('successfully cleared by Arpit');
+
+      // Verify statistics are 0
+      const statsRes = await request(app)
+        .get('/api/statistics/me')
+        .set('Authorization', `Bearer ${user1Token}`)
+        .expect(200);
+
+      expect(statsRes.body.statistics.gamesPlayed).toBe(0);
+      expect(statsRes.body.statistics.recentGames.length).toBe(0);
+    });
+  });
 });
