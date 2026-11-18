@@ -42,7 +42,6 @@ export type InvitationStatus = 'pending' | 'accepted' | 'declined' | 'expired' |
 export interface RoomInvitationDTO {
   id: string;
   roomId: string;
-  roomCode?: string;
   roomName: string;
   senderId: string;
   senderName: string;

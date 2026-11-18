@@ -304,7 +304,7 @@ export class SocketManager {
     this.io.to(`user:${invitation.recipientId}`).emit(SOCKET_EVENTS.PARTNER_INVITATION_RECEIVED, invitation);
   }
 
-  public notifyInvitationAccepted(senderId: string, data: { invitationId: string; recipientId: string; recipientName: string; roomId: string; roomCode?: string; gameType?: string | null; sessionId?: string | null }): void {
+  public notifyInvitationAccepted(senderId: string, data: { invitationId: string; recipientId: string; recipientName: string; roomId: string; gameType?: string | null; sessionId?: string | null }): void {
     this.io.to(`user:${senderId}`).emit(SOCKET_EVENTS.PARTNER_ACCEPTED, data);
   }
 

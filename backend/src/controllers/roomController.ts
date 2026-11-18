@@ -324,7 +324,6 @@ export async function invitePartner(req: Request, res: Response, next: NextFunct
         dataJson: JSON.stringify({
           invitationId: invitation.id,
           roomId: room.id,
-          roomCode: room.code,
           roomName: room.name,
           senderName: authReq.user.name
         })
@@ -335,7 +334,6 @@ export async function invitePartner(req: Request, res: Response, next: NextFunct
       socketManager.sendPartnerInvitation({
         id: invitation.id,
         roomId: room.id,
-        roomCode: room.code,
         roomName: room.name,
         senderId: authReq.user.id,
         senderName: authReq.user.name,

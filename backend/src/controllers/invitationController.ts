@@ -15,7 +15,6 @@ export function formatInvitationDTO(inv: any): RoomInvitationDTO {
   return {
     id: inv.id,
     roomId: inv.roomId,
-    roomCode: inv.room?.code || '',
     roomName: inv.room?.name || 'Couple Arena',
     senderId: inv.senderId,
     senderName: inv.sender?.name || 'Partner',
@@ -341,7 +340,6 @@ export async function acceptInvitation(req: Request, res: Response, next: NextFu
         recipientId: authReq.user.id,
         recipientName: authReq.user.name,
         roomId: room.id,
-        roomCode: room.code,
         gameType: gameTypeToStart,
         sessionId: gameSessionId
       });

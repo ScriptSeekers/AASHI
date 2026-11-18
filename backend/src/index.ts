@@ -85,7 +85,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use(errorHandler);
 
 // Serve Web Frontend in Production if built
-const webDistPath = path.resolve(__dirname, '../../web/dist');
+const webDistPath = path.resolve(__dirname, '../../frontend/dist');
 if (fs.existsSync(webDistPath)) {
   app.use(express.static(webDistPath));
   app.get('*', (req: Request, res: Response, next: NextFunction) => {
