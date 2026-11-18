@@ -34,16 +34,24 @@ export function formatUserDTO(user: any, partner?: { name?: string | null; avata
 export async function register(req: Request, res: Response, _next: NextFunction): Promise<void> {
   res.status(403).json({
     error: 'RegistrationClosed',
-    message: 'Registration is closed. DUVORA is an exclusive private universe for Arpit and Shree.'
+    message: 'Registration is closed. AASHI is an exclusive private universe for Arpit and Shree.'
   });
 }
 
 export async function login(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const input = LoginSchema.parse(req.body);
+    const normalizedInputEmail = input.email.toLowerCase().trim();
 
-    const user = await prisma.user.findUnique({
-      where: { email: input.email.toLowerCase() }
+    let user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: normalizedInputEmail },
+          { email: normalizedInputEmail.replace('@duvora.com', '@aashi.com') },
+          { email: normalizedInputEmail.replace('@aashi.com', '@duvora.com') },
+          { username: normalizedInputEmail.replace(/@.*$/, '') }
+        ]
+      }
     });
 
     if (!user) {
@@ -53,6 +61,15 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
     const isValidPassword = await comparePassword(input.password, user.passwordHash);
     if (!isValidPassword) {
       throw new UnauthorizedError('Invalid email or password.');
+    }
+
+    // Auto-migrate email to @aashi.com if previously stored as @duvora.com
+    if (user.email.endsWith('@duvora.com')) {
+      const updatedEmail = user.email.replace('@duvora.com', '@aashi.com');
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { email: updatedEmail }
+      });
     }
 
     // Create new session

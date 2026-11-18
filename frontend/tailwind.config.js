@@ -7,6 +7,18 @@ export default {
   theme: {
     extend: {
       colors: {
+        aashi: {
+          pink: '#F7C7DF',
+          lavender: '#CDBBFA',
+          berry: '#D979AE',
+          plum: '#34253F',
+          cloud: '#FFFAFD',
+          lilac: '#F1EBFC',
+          peach: '#FFDCCB',
+          dark: '#1e1627',
+          card: 'rgba(255, 250, 253, 0.85)',
+          'card-dark': 'rgba(52, 37, 63, 0.75)'
+        },
         duvora: {
           pink: '#F7C7DF',
           lavender: '#CDBBFA',

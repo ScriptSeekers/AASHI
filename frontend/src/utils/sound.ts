@@ -1,4 +1,4 @@
-// Web Audio Synthesizer for Duvora Sound Effects
+// Web Audio Synthesizer for Aashi Sound Effects
 class SoundManager {
   private ctx: AudioContext | null = null;
   private enabled = true;

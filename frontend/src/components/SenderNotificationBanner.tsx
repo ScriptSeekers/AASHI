@@ -15,17 +15,17 @@ export const SenderNotificationBanner: React.FC = () => {
           initial={{ opacity: 0, y: -20, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -20, scale: 0.9 }}
-          className="flex items-center justify-between p-4 rounded-2xl bg-duvora-cloud/95 backdrop-blur-md border border-duvora-pink shadow-glow text-duvora-plum"
+          className="flex items-center justify-between p-4 rounded-2xl bg-aashi-cloud/95 backdrop-blur-md border border-aashi-pink shadow-glow text-aashi-plum"
         >
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-duvora-pink/40 text-duvora-berry animate-bounce">
-              <Heart className="w-5 h-5 fill-duvora-berry" />
+            <div className="p-2 rounded-xl bg-aashi-pink/40 text-aashi-berry animate-bounce">
+              <Heart className="w-5 h-5 fill-aashi-berry" />
             </div>
-            <p className="font-medium text-sm text-duvora-plum">{senderNotification}</p>
+            <p className="font-medium text-sm text-aashi-plum">{senderNotification}</p>
           </div>
           <button
             onClick={clearSenderNotification}
-            className="p-1 rounded-lg text-duvora-plum/60 hover:text-duvora-plum hover:bg-duvora-lilac/50 transition-colors"
+            className="p-1 rounded-lg text-aashi-plum/60 hover:text-aashi-plum hover:bg-aashi-lilac/50 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>

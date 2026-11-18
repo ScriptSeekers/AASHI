@@ -19,7 +19,7 @@ export const FloatingHearts: React.FC = () => {
       {hearts.map((h) => (
         <span
           key={h.id}
-          className="absolute text-duvora-berry animate-float-slow select-none"
+          className="absolute text-aashi-berry animate-float-slow select-none"
           style={{
             left: h.left,
             top: h.top,

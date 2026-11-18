@@ -15,7 +15,7 @@ export async function authenticate(
   next: NextFunction
 ): Promise<void> {
   try {
-    let token = req.cookies?.[SESSION_COOKIE_NAME];
+    let token = req.cookies?.[SESSION_COOKIE_NAME] || req.cookies?.['duvora_session'];
     
     // Check Authorization header fallback
     const authHeader = req.headers.authorization;
@@ -54,7 +54,7 @@ export async function optionalAuth(
   next: NextFunction
 ): Promise<void> {
   try {
-    let token = req.cookies?.[SESSION_COOKIE_NAME];
+    let token = req.cookies?.[SESSION_COOKIE_NAME] || req.cookies?.['duvora_session'];
     const authHeader = req.headers.authorization;
     if (!token && authHeader && authHeader.startsWith('Bearer ')) {
       token = authHeader.substring(7);

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useAuth } from './AuthContext.js';
-import { RoomInvitationDTO, SOCKET_EVENTS, CoupleRoomDTO } from '@duvora/shared';
+import { RoomInvitationDTO, SOCKET_EVENTS, CoupleRoomDTO } from '@aashi/shared';
 import { invitationApi } from '../api/endpoints.js';
 import { soundManager } from '../utils/sound.js';
 import { useNavigate } from 'react-router-dom';
@@ -80,7 +80,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     fetchPartnerStatus();
 
-    const token = localStorage.getItem('duvora_token');
+    const token = localStorage.getItem('aashi_token') || localStorage.getItem('duvora_token');
     const backendOrigin = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
     const socketTarget = backendOrigin || '/';
 

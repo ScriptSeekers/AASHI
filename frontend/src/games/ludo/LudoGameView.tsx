@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LudoGameState, LudoColor } from '@duvora/shared';
+import { LudoGameState, LudoColor } from '@aashi/shared';
 import { soundManager } from '../../utils/sound.js';
 import { Dices, RefreshCw, Trophy, Star, ArrowRight, ShieldCheck } from 'lucide-react';
 
@@ -45,16 +45,16 @@ export const LudoGameView: React.FC<LudoGameViewProps> = ({ state, userId, onAct
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-5 p-4 sm:p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass">
+    <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-5 p-4 sm:p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass">
       {/* Header Turn Tracker */}
-      <div className="w-full flex items-center justify-between pb-3 border-b border-duvora-pink/40">
+      <div className="w-full flex items-center justify-between pb-3 border-b border-aashi-pink/40">
         <div className="flex items-center gap-2">
           <span
             className={`w-3.5 h-3.5 rounded-full shadow-sm animate-pulse ${
-              COLOR_CLASSES[state.currentTurnColor]?.bg || 'bg-duvora-berry'
+              COLOR_CLASSES[state.currentTurnColor]?.bg || 'bg-aashi-berry'
             }`}
           />
-          <span className="font-semibold text-sm text-duvora-plum">
+          <span className="font-semibold text-sm text-aashi-plum">
             {isGameOver
               ? amIWinner
                 ? '🏆 Victory! All your tokens are Home!'
@@ -73,8 +73,8 @@ export const LudoGameView: React.FC<LudoGameViewProps> = ({ state, userId, onAct
           {state.players.map(p => (
             <div key={p.userId} className="flex items-center gap-1.5 text-xs font-semibold">
               <span className={`w-3 h-3 rounded-full ${COLOR_CLASSES[p.color].bg} shadow-xs`} />
-              <span className="text-duvora-plum font-bold">{p.name.split(' ')[0]}</span>
-              <span className="text-[10px] text-duvora-plum/60">
+              <span className="text-aashi-plum font-bold">{p.name.split(' ')[0]}</span>
+              <span className="text-[10px] text-aashi-plum/60">
                 ({p.tokens.filter(t => t.isHome).length}/4 🏁)
               </span>
             </div>
@@ -93,14 +93,14 @@ export const LudoGameView: React.FC<LudoGameViewProps> = ({ state, userId, onAct
               key={p.userId}
               className={`p-3.5 rounded-2xl border-2 transition-all ${
                 isPlayerTurn
-                  ? 'border-duvora-berry bg-white shadow-neon'
-                  : 'border-duvora-pink/40 bg-white/70'
+                  ? 'border-aashi-berry bg-white shadow-neon'
+                  : 'border-aashi-pink/40 bg-white/70'
               }`}
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <span className={`w-3 h-3 rounded-full ${COLOR_CLASSES[p.color].bg}`} />
-                  <span className="font-heading font-bold text-xs text-duvora-plum">
+                  <span className="font-heading font-bold text-xs text-aashi-plum">
                     {p.name} {isMe ? '(You)' : ''}
                   </span>
                 </div>
@@ -127,10 +127,10 @@ export const LudoGameView: React.FC<LudoGameViewProps> = ({ state, userId, onAct
                       disabled={!isMovable}
                       className={`p-2 rounded-xl border flex flex-col items-center justify-center text-center transition-all ${
                         isMovable
-                          ? 'border-duvora-berry bg-duvora-pink/40 shadow-neon cursor-pointer ring-2 ring-duvora-berry animate-pulse'
+                          ? 'border-aashi-berry bg-aashi-pink/40 shadow-neon cursor-pointer ring-2 ring-aashi-berry animate-pulse'
                           : t.isHome
                           ? 'border-emerald-300 bg-emerald-50 text-emerald-800'
-                          : 'border-duvora-pink/30 bg-duvora-cloud/60 text-duvora-plum/80'
+                          : 'border-aashi-pink/30 bg-aashi-cloud/60 text-aashi-plum/80'
                       }`}
                     >
                       <div className="flex items-center gap-1">
@@ -140,7 +140,7 @@ export const LudoGameView: React.FC<LudoGameViewProps> = ({ state, userId, onAct
                         <span className="text-[10px] font-bold">{statusText}</span>
                       </div>
                       {isMovable && state.diceValue !== null && (
-                        <span className="text-[9px] font-black text-duvora-berry mt-0.5">
+                        <span className="text-[9px] font-black text-aashi-berry mt-0.5">
                           {t.isAtBase ? 'Deploy! (6)' : `Move +${state.diceValue}`}
                         </span>
                       )}
@@ -155,20 +155,20 @@ export const LudoGameView: React.FC<LudoGameViewProps> = ({ state, userId, onAct
 
       {/* Log ticker */}
       {state.lastLog && (
-        <div className="w-full text-center py-2 px-4 bg-duvora-lilac/40 rounded-xl text-xs font-semibold text-duvora-plum shadow-xs">
+        <div className="w-full text-center py-2 px-4 bg-aashi-lilac/40 rounded-xl text-xs font-semibold text-aashi-plum shadow-xs">
           {state.lastLog}
         </div>
       )}
 
       {/* Controls & Dice Roller */}
-      <div className="w-full flex items-center justify-between px-5 py-3 bg-white/80 rounded-2xl border border-duvora-pink/40 shadow-sm">
-        <div className="text-xs text-duvora-plum font-medium">
+      <div className="w-full flex items-center justify-between px-5 py-3 bg-white/80 rounded-2xl border border-aashi-pink/40 shadow-sm">
+        <div className="text-xs text-aashi-plum font-medium">
           <span className="font-bold">Turn: </span>
           <span className={`font-black uppercase ${COLOR_CLASSES[state.currentTurnColor]?.text}`}>
             {state.currentTurnColor}
           </span>
           {isMyTurn && (
-            <span className="ml-2 font-bold text-duvora-berry">
+            <span className="ml-2 font-bold text-aashi-berry">
               {state.hasRolled ? '👉 Select token above' : '🎲 Tap dice to roll'}
             </span>
           )}
@@ -180,11 +180,11 @@ export const LudoGameView: React.FC<LudoGameViewProps> = ({ state, userId, onAct
           whileTap={isMyTurn && !state.hasRolled ? { scale: 0.95 } : {}}
           onClick={handleRollDice}
           disabled={!isMyTurn || state.hasRolled || isGameOver}
-          className={`w-14 h-14 rounded-2xl bg-duvora-plum border-2 border-white shadow-neon flex items-center justify-center text-white text-2xl font-black transition-all ${
+          className={`w-14 h-14 rounded-2xl bg-aashi-plum border-2 border-white shadow-neon flex items-center justify-center text-white text-2xl font-black transition-all ${
             isRollingAnimation ? 'animate-spin' : ''
           } ${
             isMyTurn && !state.hasRolled
-              ? 'cursor-pointer hover:border-duvora-pink ring-4 ring-duvora-berry/40'
+              ? 'cursor-pointer hover:border-aashi-pink ring-4 ring-aashi-berry/40'
               : 'opacity-70 cursor-not-allowed'
           }`}
         >
@@ -196,7 +196,7 @@ export const LudoGameView: React.FC<LudoGameViewProps> = ({ state, userId, onAct
       {isGameOver && onRematch && (
         <button
           onClick={onRematch}
-          className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-bold text-sm shadow-neon hover:scale-105 active:scale-95 transition-all mt-2"
+          className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-bold text-sm shadow-neon hover:scale-105 active:scale-95 transition-all mt-2"
         >
           <RefreshCw className="w-4 h-4" />
           <span>PLAY REMATCH</span>

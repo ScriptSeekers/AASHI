@@ -1,9 +1,9 @@
 ================================================================================
-                           DUVORA: LOVE HARD. PLAY HARDER.
+                           AASHI: LOVE HARD. PLAY HARDER.
                        Complete Multiplayer Gaming Platform
 ================================================================================
 
-DUVORA is organized into two clean, standalone directories:
+AASHI is organized into two clean, standalone directories:
   1. `backend/`  - Express.js, SQLite (Prisma), Socket.IO, 26 Multiplayer Game Engines
   2. `frontend/` - React 18, Vite, Tailwind CSS, Framer Motion, Lucide Icons
 
@@ -17,11 +17,11 @@ Only two private accounts exist in the database:
 
 --------------------------------------------------------------------------------
 ACCOUNT 1:
-  Email:    Arpit@duvora.com
+  Email:    Arpit@aashi.com
   Password: Love2927
 
 ACCOUNT 2:
-  Email:    Shree@duvora.com
+  Email:    Shree@aashi.com
   Password: Love2927
 --------------------------------------------------------------------------------
 
@@ -53,7 +53,7 @@ STEP A: PUSH PROJECT TO GITHUB
 --------------------------------------------------------------------------------
 If not already pushed, initialize a git repo and push to GitHub:
    git add .
-   git commit -m "Deploy DUVORA to Render and Vercel"
+   git commit -m "Deploy AASHI to Render and Vercel"
    git push origin main
 
 --------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ STEP B: DEPLOY BACKEND ON RENDER (https://render.com)
 2. Click "New +" -> Select "Web Service".
 3. Connect your GitHub repository.
 4. Fill in these exact settings:
-   - Name:             duvora-backend
+   - Name:             aashi-backend
    - Region:           Singapore, Oregon, or Frankfurt (choose nearest)
    - Branch:           main
    - Root Directory:   backend   <--- (IMPORTANT: set to 'backend')
@@ -74,10 +74,10 @@ STEP B: DEPLOY BACKEND ON RENDER (https://render.com)
 5. Add Environment Variables (under "Environment Variables" section):
    - NODE_ENV:         production
    - DATABASE_URL:     file:./dev.db
-   - SESSION_SECRET:   duvora-super-secret-key-change-in-production-min-32-chars-long
+   - SESSION_SECRET:   aashi-super-secret-key-change-in-production-min-32-chars-long
 6. Click "Deploy Web Service".
    Wait 2-3 minutes. When deployment finishes, copy your Render URL:
-   e.g. https://duvora-backend.onrender.com
+   e.g. https://aashi-backend.onrender.com
 
    *NOTE*: The backend is pre-configured with automatic SQLite database push
    and auto-seeding on boot. If the database is empty, Arpit & Shree accounts
@@ -96,24 +96,24 @@ STEP C: DEPLOY FRONTEND ON VERCEL (https://vercel.com)
    - Output Directory: dist (default)
 5. Add Environment Variable:
    - Key:   VITE_API_URL
-   - Value: https://duvora-backend.onrender.com (paste your Render backend URL from Step B)
+   - Value: https://aashi-backend.onrender.com (paste your Render backend URL from Step B)
 6. Click "Deploy".
    Wait ~1 minute. Your frontend will be live at:
-   e.g. https://duvora-frontend.vercel.app
+   e.g. https://aashi-frontend.vercel.app
 
 --------------------------------------------------------------------------------
 STEP D: LINK VERCEL URL TO RENDER (OPTIONAL FOR STRICT CORS)
 --------------------------------------------------------------------------------
-1. Go back to Render -> `duvora-backend` -> "Environment".
+1. Go back to Render -> `aashi-backend` -> "Environment".
 2. Add or update:
-   - FRONTEND_URL: https://duvora-frontend.vercel.app
+   - FRONTEND_URL: https://aashi-frontend.vercel.app
 3. Click "Save Changes" (Render will automatically re-deploy).
 
 *NOTE*: CORS is already configured to automatically accept all `*.vercel.app`
 domains and WebSocket transports out of the box!
 
 ================================================================================
-4. COMMON DEPLOYMENT PROBLEMS & HOW DUVORA SOLVES THEM
+4. COMMON DEPLOYMENT PROBLEMS & HOW AASHI SOLVES THEM
 ================================================================================
 1. PROBLEM: Page Refresh 404 on Vercel
    CAUSE: Vite Single Page Apps (SPA) don't have static HTML for sub-routes.
@@ -141,12 +141,12 @@ domains and WebSocket transports out of the box!
 5. HOW TO TEST REAL-TIME MULTIPLAYER & INVITATIONS
 ================================================================================
 1. Open Browser Window 1:
-   - Navigate to: https://duvora-frontend.vercel.app (or http://localhost:5173)
-   - Login: Arpit@duvora.com / Love2927
+   - Navigate to: https://aashi-frontend.vercel.app (or http://localhost:5173)
+   - Login: Arpit@aashi.com / Love2927
 
 2. Open Browser Window 2 (Incognito):
    - Navigate to the same URL
-   - Login: Shree@duvora.com / Love2927
+   - Login: Shree@aashi.com / Love2927
 
 3. Arpit creates a room (e.g. UNO, Chess, Ludo, or Never Have I Ever) and invites Shree.
 4. Shree IMMEDIATELY receives the real-time popup invitation modal.

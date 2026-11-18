@@ -29,4 +29,4 @@ export function getSessionExpiration(days = 30): Date {
   return now;
 }
 
-export const SESSION_COOKIE_NAME = 'duvora_session';
+export const SESSION_COOKIE_NAME = 'aashi_session';

@@ -18,7 +18,7 @@ export const BottomNav: React.FC = () => {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-duvora-cloud/95 backdrop-blur-lg border-t border-duvora-pink/40 px-2 py-2 shadow-lg">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-aashi-cloud/95 backdrop-blur-lg border-t border-aashi-pink/40 px-2 py-2 shadow-lg">
       <div className="flex items-center justify-around">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -29,11 +29,11 @@ export const BottomNav: React.FC = () => {
               to={tab.path}
               className={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all ${
                 isActive
-                  ? 'text-duvora-berry font-bold scale-105'
-                  : 'text-duvora-plum/60 hover:text-duvora-plum'
+                  ? 'text-aashi-berry font-bold scale-105'
+                  : 'text-aashi-plum/60 hover:text-aashi-plum'
               }`}
             >
-              <div className={`p-1.5 rounded-xl ${isActive ? 'bg-duvora-pink/40' : ''}`}>
+              <div className={`p-1.5 rounded-xl ${isActive ? 'bg-aashi-pink/40' : ''}`}>
                 <Icon className="w-5 h-5" />
               </div>
               <span className="text-[10px] mt-0.5 tracking-tight font-medium">{tab.name}</span>

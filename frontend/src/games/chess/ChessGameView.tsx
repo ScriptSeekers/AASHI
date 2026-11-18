@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChessGameState } from '@duvora/shared';
+import { ChessGameState } from '@aashi/shared';
 import { Chess, Square } from 'chess.js';
 import { soundManager } from '../../utils/sound.js';
 import { Flag, Handshake, RefreshCw, Trophy } from 'lucide-react';
@@ -96,12 +96,12 @@ export const ChessGameView: React.FC<ChessGameViewProps> = ({ state, userId, onA
   const ranks = isBlack ? [1, 2, 3, 4, 5, 6, 7, 8] : [8, 7, 6, 5, 4, 3, 2, 1];
 
   return (
-    <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-4 p-4 bg-duvora-cloud/85 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass">
+    <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-4 p-4 bg-aashi-cloud/85 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass">
       {/* Match Header */}
-      <div className="w-full flex items-center justify-between pb-3 border-b border-duvora-pink/40">
+      <div className="w-full flex items-center justify-between pb-3 border-b border-aashi-pink/40">
         <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-duvora-berry animate-pulse" />
-          <span className="font-semibold text-sm text-duvora-plum">
+          <span className="w-3 h-3 rounded-full bg-aashi-berry animate-pulse" />
+          <span className="font-semibold text-sm text-aashi-plum">
             {isGameOver
               ? state.statusReason || 'Game Over'
               : isMyTurn
@@ -118,7 +118,7 @@ export const ChessGameView: React.FC<ChessGameViewProps> = ({ state, userId, onA
       </div>
 
       {/* Opponent Info & Captured Pieces */}
-      <div className="w-full flex items-center justify-between px-2 text-xs text-duvora-plum/80 font-medium">
+      <div className="w-full flex items-center justify-between px-2 text-xs text-aashi-plum/80 font-medium">
         <span>Opponent ({isWhite ? 'Black' : 'White'})</span>
         <div className="flex items-center gap-1 text-base">
           {(isWhite ? state.capturedPieces?.w : state.capturedPieces?.b)?.map((p, i) => (
@@ -128,7 +128,7 @@ export const ChessGameView: React.FC<ChessGameViewProps> = ({ state, userId, onA
       </div>
 
       {/* Chessboard Grid */}
-      <div className="relative p-2 rounded-2xl bg-duvora-plum shadow-glow border-4 border-white/80">
+      <div className="relative p-2 rounded-2xl bg-aashi-plum shadow-glow border-4 border-white/80">
         <div className="grid grid-cols-8 grid-rows-8 w-[320px] h-[320px] sm:w-[440px] sm:h-[440px] md:w-[480px] md:h-[480px]">
           {ranks.map(rank =>
             files.map(file => {
@@ -147,16 +147,16 @@ export const ChessGameView: React.FC<ChessGameViewProps> = ({ state, userId, onA
                   onClick={() => handleSquareClick(square)}
                   disabled={!isMyTurn || isGameOver}
                   className={`relative flex items-center justify-center text-3xl sm:text-4xl transition-colors ${
-                    isDark ? 'bg-duvora-plum/70' : 'bg-duvora-lilac/70'
-                  } ${isSelected ? 'ring-4 ring-duvora-berry inset-0 z-10' : ''} ${
-                    isLastMove ? 'bg-duvora-pink/50' : ''
+                    isDark ? 'bg-aashi-plum/70' : 'bg-aashi-lilac/70'
+                  } ${isSelected ? 'ring-4 ring-aashi-berry inset-0 z-10' : ''} ${
+                    isLastMove ? 'bg-aashi-pink/50' : ''
                   }`}
                 >
                   {/* Piece Symbol */}
                   {piece && (
                     <span
                       className={`select-none transition-transform hover:scale-110 drop-shadow ${
-                        piece.color === 'w' ? 'text-white' : 'text-duvora-dark'
+                        piece.color === 'w' ? 'text-white' : 'text-aashi-dark'
                       }`}
                     >
                       {PIECE_SYMBOLS[piece.color === 'w' ? piece.type.toUpperCase() : piece.type]}
@@ -167,7 +167,7 @@ export const ChessGameView: React.FC<ChessGameViewProps> = ({ state, userId, onA
                   {isLegal && (
                     <div
                       className={`absolute w-3.5 h-3.5 rounded-full ${
-                        piece ? 'ring-4 ring-rose-400 bg-transparent' : 'bg-duvora-berry/70'
+                        piece ? 'ring-4 ring-rose-400 bg-transparent' : 'bg-aashi-berry/70'
                       }`}
                     />
                   )}
@@ -179,7 +179,7 @@ export const ChessGameView: React.FC<ChessGameViewProps> = ({ state, userId, onA
       </div>
 
       {/* Player Info & Captured Pieces */}
-      <div className="w-full flex items-center justify-between px-2 text-xs text-duvora-plum/80 font-medium">
+      <div className="w-full flex items-center justify-between px-2 text-xs text-aashi-plum/80 font-medium">
         <span>You ({isWhite ? 'White' : 'Black'})</span>
         <div className="flex items-center gap-1 text-base">
           {(isWhite ? state.capturedPieces?.b : state.capturedPieces?.w)?.map((p, i) => (
@@ -193,7 +193,7 @@ export const ChessGameView: React.FC<ChessGameViewProps> = ({ state, userId, onA
         <div className="w-full flex items-center justify-center gap-3 pt-2">
           <button
             onClick={() => onAction('offer_draw')}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-duvora-pink bg-white/70 hover:bg-white text-xs font-semibold text-duvora-plum transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-aashi-pink bg-white/70 hover:bg-white text-xs font-semibold text-aashi-plum transition-all"
           >
             <Handshake className="w-3.5 h-3.5" />
             <span>Offer Draw</span>
@@ -210,7 +210,7 @@ export const ChessGameView: React.FC<ChessGameViewProps> = ({ state, userId, onA
         onRematch && (
           <button
             onClick={onRematch}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all mt-2"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all mt-2"
           >
             <RefreshCw className="w-4 h-4" />
             <span>PLAY REMATCH</span>
@@ -221,13 +221,13 @@ export const ChessGameView: React.FC<ChessGameViewProps> = ({ state, userId, onA
       {/* Pawn Promotion Modal */}
       <AnimatePresence>
         {pendingPromotionMove && (
-          <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-duvora-plum/60 backdrop-blur-sm">
+          <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-aashi-plum/60 backdrop-blur-sm">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="p-6 rounded-3xl bg-white border border-duvora-pink shadow-glow text-center max-w-xs w-full"
+              className="p-6 rounded-3xl bg-white border border-aashi-pink shadow-glow text-center max-w-xs w-full"
             >
-              <h3 className="font-heading font-bold text-lg text-duvora-plum mb-4">Promote Pawn</h3>
+              <h3 className="font-heading font-bold text-lg text-aashi-plum mb-4">Promote Pawn</h3>
               <div className="grid grid-cols-4 gap-2">
                 {[
                   { type: 'q', label: 'Queen', sym: '♛' },
@@ -238,7 +238,7 @@ export const ChessGameView: React.FC<ChessGameViewProps> = ({ state, userId, onA
                   <button
                     key={p.type}
                     onClick={() => handlePromotionSelection(p.type as any)}
-                    className="p-3 rounded-2xl bg-duvora-lilac/50 hover:bg-duvora-pink text-2xl font-bold flex flex-col items-center justify-center shadow-sm transition-all"
+                    className="p-3 rounded-2xl bg-aashi-lilac/50 hover:bg-aashi-pink text-2xl font-bold flex flex-col items-center justify-center shadow-sm transition-all"
                   >
                     <span>{p.sym}</span>
                     <span className="text-[10px] mt-1 font-semibold">{p.label}</span>

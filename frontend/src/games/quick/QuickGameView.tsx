@@ -42,19 +42,19 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
     const myChoice = state.data?.choices?.[userId];
 
     return (
-      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass">
-        <div className="w-full flex items-center justify-between pb-3 border-b border-duvora-pink/40">
-          <span className="font-semibold text-sm text-duvora-plum">
+      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass">
+        <div className="w-full flex items-center justify-between pb-3 border-b border-aashi-pink/40">
+          <span className="font-semibold text-sm text-aashi-plum">
             {isGameOver ? 'Match Finished!' : `Round ${state.round} / ${state.maxRounds}`}
           </span>
-          <div className="flex gap-4 text-xs font-bold text-duvora-berry">
+          <div className="flex gap-4 text-xs font-bold text-aashi-berry">
             <span>{state.players[0].name}: {state.scores[state.players[0].userId]}</span>
             <span>{state.players[1].name}: {state.scores[state.players[1].userId]}</span>
           </div>
         </div>
 
         {state.lastMessage && (
-          <div className="w-full text-center py-2 px-3 bg-duvora-lilac/40 rounded-xl text-xs font-semibold text-duvora-plum">
+          <div className="w-full text-center py-2 px-3 bg-aashi-lilac/40 rounded-xl text-xs font-semibold text-aashi-plum">
             {state.lastMessage}
           </div>
         )}
@@ -78,8 +78,8 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
               disabled={Boolean(myChoice) || isGameOver}
               className={`p-5 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 shadow-sm transition-all ${
                 myChoice === opt.id
-                  ? 'border-duvora-berry bg-duvora-pink/50 text-duvora-plum scale-105 shadow-neon'
-                  : 'border-duvora-pink/40 bg-white hover:bg-duvora-lilac/30 text-duvora-plum'
+                  ? 'border-aashi-berry bg-aashi-pink/50 text-aashi-plum scale-105 shadow-neon'
+                  : 'border-aashi-pink/40 bg-white hover:bg-aashi-lilac/30 text-aashi-plum'
               } ${myChoice && myChoice !== opt.id ? 'opacity-40' : ''}`}
             >
               <span className="text-4xl">{opt.icon}</span>
@@ -89,7 +89,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
         </div>
 
         {myChoice && !isGameOver && (
-          <span className="text-xs font-semibold text-duvora-berry animate-pulse">
+          <span className="text-xs font-semibold text-aashi-berry animate-pulse">
             Choice locked in! Waiting for partner to reveal...
           </span>
         )}
@@ -97,7 +97,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
         {isGameOver && onRematch && (
           <button
             onClick={onRematch}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all"
           >
             <RefreshCw className="w-4 h-4" />
             <span>PLAY REMATCH</span>
@@ -112,10 +112,10 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
     const myChoice = state.data?.choices?.[userId];
 
     return (
-      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass text-center">
-        <h3 className="font-heading font-extrabold text-2xl text-duvora-plum">Coin Flip Showdown</h3>
+      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass text-center">
+        <h3 className="font-heading font-extrabold text-2xl text-aashi-plum">Coin Flip Showdown</h3>
         {state.lastMessage && (
-          <p className="text-xs font-bold text-duvora-berry bg-duvora-lilac/40 px-3 py-1.5 rounded-xl">
+          <p className="text-xs font-bold text-aashi-berry bg-aashi-lilac/40 px-3 py-1.5 rounded-xl">
             {state.lastMessage}
           </p>
         )}
@@ -135,8 +135,8 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
               disabled={Boolean(myChoice) || isGameOver}
               className={`py-3.5 rounded-2xl font-heading font-bold text-sm uppercase transition-all ${
                 myChoice === side
-                  ? 'bg-duvora-berry text-white shadow-neon'
-                  : 'bg-white border border-duvora-pink text-duvora-plum hover:bg-duvora-lilac/40'
+                  ? 'bg-aashi-berry text-white shadow-neon'
+                  : 'bg-white border border-aashi-pink text-aashi-plum hover:bg-aashi-lilac/40'
               }`}
             >
               {side}
@@ -147,7 +147,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
         {isGameOver && onRematch && (
           <button
             onClick={onRematch}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-duvora-plum text-white font-bold text-xs"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-aashi-plum text-white font-bold text-xs"
           >
             <RefreshCw className="w-4 h-4" />
             <span>PLAY REMATCH</span>
@@ -164,29 +164,29 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
     const oppRoll = opponent ? state.data?.rolls?.[opponent.userId] : null;
 
     return (
-      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass text-center">
-        <h3 className="font-heading font-extrabold text-2xl text-duvora-plum">Dice Duel</h3>
-        <div className="flex gap-4 text-xs font-bold text-duvora-berry">
+      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass text-center">
+        <h3 className="font-heading font-extrabold text-2xl text-aashi-plum">Dice Duel</h3>
+        <div className="flex gap-4 text-xs font-bold text-aashi-berry">
           <span>{state.players[0].name}: {state.scores[state.players[0].userId]}</span>
           <span>{state.players[1].name}: {state.scores[state.players[1].userId]}</span>
         </div>
 
         {state.lastMessage && (
-          <p className="text-xs font-bold text-duvora-berry bg-duvora-lilac/40 px-3 py-1.5 rounded-xl">
+          <p className="text-xs font-bold text-aashi-berry bg-aashi-lilac/40 px-3 py-1.5 rounded-xl">
             {state.lastMessage}
           </p>
         )}
 
         <div className="grid grid-cols-2 gap-6 w-full">
-          <div className="p-4 rounded-2xl bg-white border border-duvora-pink/60 shadow-sm flex flex-col items-center">
-            <span className="text-xs font-bold text-duvora-plum/70 mb-2">You</span>
-            <div className="w-20 h-20 rounded-2xl bg-duvora-berry text-white flex items-center justify-center font-heading font-black text-4xl shadow-neon">
+          <div className="p-4 rounded-2xl bg-white border border-aashi-pink/60 shadow-sm flex flex-col items-center">
+            <span className="text-xs font-bold text-aashi-plum/70 mb-2">You</span>
+            <div className="w-20 h-20 rounded-2xl bg-aashi-berry text-white flex items-center justify-center font-heading font-black text-4xl shadow-neon">
               {myRoll !== undefined ? myRoll : '?'}
             </div>
           </div>
-          <div className="p-4 rounded-2xl bg-white border border-duvora-pink/60 shadow-sm flex flex-col items-center">
-            <span className="text-xs font-bold text-duvora-plum/70 mb-2">{opponent?.name || 'Partner'}</span>
-            <div className="w-20 h-20 rounded-2xl bg-duvora-lavender text-duvora-plum flex items-center justify-center font-heading font-black text-4xl shadow-glow">
+          <div className="p-4 rounded-2xl bg-white border border-aashi-pink/60 shadow-sm flex flex-col items-center">
+            <span className="text-xs font-bold text-aashi-plum/70 mb-2">{opponent?.name || 'Partner'}</span>
+            <div className="w-20 h-20 rounded-2xl bg-aashi-lavender text-aashi-plum flex items-center justify-center font-heading font-black text-4xl shadow-glow">
               {oppRoll !== undefined && myRoll !== undefined ? oppRoll : '?'}
             </div>
           </div>
@@ -201,8 +201,8 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
             disabled={myRoll !== undefined}
             className={`w-full py-4 rounded-2xl font-heading font-bold text-sm shadow-neon transition-all ${
               myRoll !== undefined
-                ? 'bg-duvora-plum/40 text-white cursor-not-allowed'
-                : 'bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white hover:scale-105 active:scale-95'
+                ? 'bg-aashi-plum/40 text-white cursor-not-allowed'
+                : 'bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white hover:scale-105 active:scale-95'
             }`}
           >
             {myRoll !== undefined ? '🎲 ROLLED! Waiting for partner...' : '🎲 ROLL HIGH-STAKES DICE'}
@@ -211,7 +211,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
           onRematch && (
             <button
               onClick={onRematch}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-duvora-plum text-white font-bold text-xs"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-aashi-plum text-white font-bold text-xs"
             >
               <RefreshCw className="w-4 h-4" />
               <span>PLAY REMATCH</span>
@@ -229,25 +229,25 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
     const flippedIds = state.data?.flippedIds || [];
 
     return (
-      <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-5 p-4 sm:p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass text-center">
-        <div className="w-full flex items-center justify-between pb-2 border-b border-duvora-pink/40">
-          <span className="font-semibold text-sm text-duvora-plum">
+      <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-5 p-4 sm:p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass text-center">
+        <div className="w-full flex items-center justify-between pb-2 border-b border-aashi-pink/40">
+          <span className="font-semibold text-sm text-aashi-plum">
             {isGameOver ? 'All Pairs Matched!' : isMyTurn ? '✨ Your Turn! Flip a card.' : 'Waiting for partner...'}
           </span>
-          <div className="flex gap-4 text-xs font-bold text-duvora-berry">
+          <div className="flex gap-4 text-xs font-bold text-aashi-berry">
             <span>{state.players[0].name}: {state.scores[state.players[0].userId]} pairs</span>
             <span>{state.players[1].name}: {state.scores[state.players[1].userId]} pairs</span>
           </div>
         </div>
 
         {state.lastMessage && (
-          <p className="text-xs font-bold text-duvora-berry bg-duvora-lilac/40 px-3 py-1.5 rounded-xl">
+          <p className="text-xs font-bold text-aashi-berry bg-aashi-lilac/40 px-3 py-1.5 rounded-xl">
             {state.lastMessage}
           </p>
         )}
 
         {/* 4x4 Grid of 16 Cards */}
-        <div className="grid grid-cols-4 gap-3 p-3 bg-duvora-plum rounded-3xl shadow-glow border-4 border-white select-none">
+        <div className="grid grid-cols-4 gap-3 p-3 bg-aashi-plum rounded-3xl shadow-glow border-4 border-white select-none">
           {cards.map((card: any) => {
             const isFlipped = card.isMatched || flippedIds.includes(card.id);
 
@@ -267,8 +267,8 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
                   isFlipped
                     ? card.isMatched
                       ? 'bg-emerald-100 border-2 border-emerald-400 text-emerald-800'
-                      : 'bg-white border-2 border-duvora-berry text-duvora-plum'
-                    : 'bg-gradient-to-tr from-duvora-berry to-duvora-lavender text-white hover:brightness-110'
+                      : 'bg-white border-2 border-aashi-berry text-aashi-plum'
+                    : 'bg-gradient-to-tr from-aashi-berry to-aashi-lavender text-white hover:brightness-110'
                 }`}
               >
                 {isFlipped ? card.sym : '💖'}
@@ -280,7 +280,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
         {flippedIds.length === 2 && (
           <button
             onClick={() => onAction('reset_flipped')}
-            className="px-4 py-1.5 rounded-xl bg-duvora-plum text-white text-xs font-bold shadow-sm"
+            className="px-4 py-1.5 rounded-xl bg-aashi-plum text-white text-xs font-bold shadow-sm"
           >
             Continue
           </button>
@@ -289,7 +289,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
         {isGameOver && onRematch && (
           <button
             onClick={onRematch}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-duvora-plum text-white font-bold text-xs"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-aashi-plum text-white font-bold text-xs"
           >
             <RefreshCw className="w-4 h-4" />
             <span>PLAY REMATCH</span>
@@ -304,14 +304,14 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
     const hasTapped = state.data?.taps?.[userId] !== undefined;
 
     return (
-      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass text-center">
-        <h3 className="font-heading font-extrabold text-2xl text-duvora-plum">Reaction Race</h3>
-        <p className="text-xs text-duvora-plum/80 font-medium">
+      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass text-center">
+        <h3 className="font-heading font-extrabold text-2xl text-aashi-plum">Reaction Race</h3>
+        <p className="text-xs text-aashi-plum/80 font-medium">
           Wait for the green signal, then tap! False starts get penalized!
         </p>
 
         {state.lastMessage && (
-          <p className="text-xs font-bold text-duvora-berry bg-duvora-lilac/40 px-3 py-1.5 rounded-xl">
+          <p className="text-xs font-bold text-aashi-berry bg-aashi-lilac/40 px-3 py-1.5 rounded-xl">
             {state.lastMessage}
           </p>
         )}
@@ -325,8 +325,8 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
           disabled={hasTapped || isGameOver}
           className={`w-44 h-44 rounded-full border-4 border-white shadow-neon flex flex-col items-center justify-center text-white font-heading font-black text-2xl transition-all ${
             hasTapped
-              ? 'bg-duvora-plum/60 opacity-60'
-              : 'bg-gradient-to-tr from-rose-500 to-duvora-berry hover:scale-105 active:scale-95'
+              ? 'bg-aashi-plum/60 opacity-60'
+              : 'bg-gradient-to-tr from-rose-500 to-aashi-berry hover:scale-105 active:scale-95'
           }`}
         >
           <Zap className="w-12 h-12 mb-1" />
@@ -336,7 +336,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
         {isGameOver && onRematch && (
           <button
             onClick={onRematch}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-duvora-plum text-white font-bold text-xs"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-aashi-plum text-white font-bold text-xs"
           >
             <RefreshCw className="w-4 h-4" />
             <span>PLAY REMATCH</span>
@@ -352,26 +352,26 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
     const guesses = state.data?.guesses || [];
 
     return (
-      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-5 p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass text-center">
-        <h3 className="font-heading font-extrabold text-2xl text-duvora-plum">Secret Number (1-100)</h3>
-        <p className="text-xs text-duvora-plum/70 font-medium">
+      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-5 p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass text-center">
+        <h3 className="font-heading font-extrabold text-2xl text-aashi-plum">Secret Number (1-100)</h3>
+        <p className="text-xs text-aashi-plum/70 font-medium">
           {isGameOver ? 'Match Finished!' : isMyTurn ? '✨ Your Turn! Enter a guess.' : 'Waiting for partner...'}
         </p>
 
         {state.lastMessage && (
-          <p className="text-xs font-bold text-duvora-berry bg-duvora-lilac/40 px-3 py-1.5 rounded-xl">
+          <p className="text-xs font-bold text-aashi-berry bg-aashi-lilac/40 px-3 py-1.5 rounded-xl">
             {state.lastMessage}
           </p>
         )}
 
-        <div className="w-full max-h-36 overflow-y-auto space-y-1.5 p-2 bg-white/70 rounded-2xl border border-duvora-pink/40 text-xs">
+        <div className="w-full max-h-36 overflow-y-auto space-y-1.5 p-2 bg-white/70 rounded-2xl border border-aashi-pink/40 text-xs">
           {guesses.length === 0 ? (
             <span className="text-gray-400">No guesses yet. Take a guess!</span>
           ) : (
             guesses.map((g: any, i: number) => (
               <div key={i} className="flex justify-between px-2 font-semibold">
                 <span>Guess: {g.guess}</span>
-                <span className={g.hint === 'CORRECT' ? 'text-emerald-600 font-bold' : 'text-duvora-berry'}>
+                <span className={g.hint === 'CORRECT' ? 'text-emerald-600 font-bold' : 'text-aashi-berry'}>
                   {g.hint}
                 </span>
               </div>
@@ -399,12 +399,12 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
               onChange={e => setInputVal(e.target.value)}
               disabled={!isMyTurn}
               placeholder="Enter 1 - 100..."
-              className="flex-1 px-4 py-2.5 rounded-2xl border border-duvora-pink bg-white text-sm outline-none focus:ring-2 focus:ring-duvora-berry"
+              className="flex-1 px-4 py-2.5 rounded-2xl border border-aashi-pink bg-white text-sm outline-none focus:ring-2 focus:ring-aashi-berry"
             />
             <button
               type="submit"
               disabled={!isMyTurn}
-              className="px-5 py-2.5 rounded-2xl bg-duvora-berry text-white font-bold text-sm shadow-sm hover:opacity-95 disabled:opacity-50"
+              className="px-5 py-2.5 rounded-2xl bg-aashi-berry text-white font-bold text-sm shadow-sm hover:opacity-95 disabled:opacity-50"
             >
               Guess
             </button>
@@ -413,7 +413,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
           onRematch && (
             <button
               onClick={onRematch}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-duvora-plum text-white font-bold text-xs"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-aashi-plum text-white font-bold text-xs"
             >
               <RefreshCw className="w-4 h-4" />
               <span>PLAY REMATCH</span>
@@ -429,12 +429,12 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
     const myTaps = state.data?.taps?.[userId] || 0;
 
     return (
-      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass text-center">
-        <h3 className="font-heading font-extrabold text-2xl text-duvora-plum">Fast Tap Mash Battle</h3>
-        <p className="text-xs text-duvora-plum/80 font-medium">Mash fast before the 10-second timer expires!</p>
+      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass text-center">
+        <h3 className="font-heading font-extrabold text-2xl text-aashi-plum">Fast Tap Mash Battle</h3>
+        <p className="text-xs text-aashi-plum/80 font-medium">Mash fast before the 10-second timer expires!</p>
 
-        <div className="w-32 h-32 rounded-3xl bg-duvora-plum text-white flex flex-col items-center justify-center border-4 border-white shadow-glow">
-          <span className="text-4xl font-black font-heading text-duvora-pink">{myTaps}</span>
+        <div className="w-32 h-32 rounded-3xl bg-aashi-plum text-white flex flex-col items-center justify-center border-4 border-white shadow-glow">
+          <span className="text-4xl font-black font-heading text-aashi-pink">{myTaps}</span>
           <span className="text-[10px] font-bold tracking-wider text-white/70">YOUR TAPS</span>
         </div>
 
@@ -445,7 +445,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
             onAction('tap');
           }}
           disabled={isGameOver}
-          className="w-full py-5 rounded-3xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-heading font-extrabold text-xl shadow-neon transition-transform"
+          className="w-full py-5 rounded-3xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-heading font-extrabold text-xl shadow-neon transition-transform"
         >
           MASH ME FAST! 💥
         </motion.button>
@@ -453,7 +453,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
         {isGameOver && onRematch && (
           <button
             onClick={onRematch}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-duvora-plum text-white font-bold text-xs"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-aashi-plum text-white font-bold text-xs"
           >
             <RefreshCw className="w-4 h-4" />
             <span>PLAY REMATCH</span>
@@ -473,8 +473,8 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
     return (
-      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-5 p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass text-center">
-        <h3 className="font-heading font-extrabold text-2xl text-duvora-plum">Hangman Romance</h3>
+      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-5 p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass text-center">
+        <h3 className="font-heading font-extrabold text-2xl text-aashi-plum">Hangman Romance</h3>
 
         {/* Hearts counter */}
         <div className="flex items-center gap-1.5">
@@ -495,7 +495,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
             return (
               <span
                 key={i}
-                className="w-8 h-10 border-b-4 border-duvora-plum flex items-center justify-center font-heading font-black text-2xl text-duvora-plum"
+                className="w-8 h-10 border-b-4 border-aashi-plum flex items-center justify-center font-heading font-black text-2xl text-aashi-plum"
               >
                 {revealed ? letter : ''}
               </span>
@@ -504,7 +504,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
         </div>
 
         {state.lastMessage && (
-          <p className="text-xs font-bold text-duvora-berry bg-duvora-lilac/40 px-3 py-1.5 rounded-xl">
+          <p className="text-xs font-bold text-aashi-berry bg-aashi-lilac/40 px-3 py-1.5 rounded-xl">
             {state.lastMessage}
           </p>
         )}
@@ -528,8 +528,8 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
                     used
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                       : isMyTurn
-                      ? 'bg-white hover:bg-duvora-pink/60 border border-duvora-pink text-duvora-plum shadow-xs'
-                      : 'bg-white/60 text-duvora-plum/40 cursor-not-allowed'
+                      ? 'bg-white hover:bg-aashi-pink/60 border border-aashi-pink text-aashi-plum shadow-xs'
+                      : 'bg-white/60 text-aashi-plum/40 cursor-not-allowed'
                   }`}
                 >
                   {letter}
@@ -541,7 +541,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
           onRematch && (
             <button
               onClick={onRematch}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-duvora-plum text-white font-bold text-xs"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-aashi-plum text-white font-bold text-xs"
             >
               <RefreshCw className="w-4 h-4" />
               <span>PLAY REMATCH</span>
@@ -559,22 +559,22 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
     const streak = state.data?.streak ?? 0;
 
     return (
-      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass text-center">
-        <h3 className="font-heading font-extrabold text-2xl text-duvora-plum">Higher or Lower</h3>
-        <div className="flex gap-4 text-xs font-bold text-duvora-berry">
+      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass text-center">
+        <h3 className="font-heading font-extrabold text-2xl text-aashi-plum">Higher or Lower</h3>
+        <div className="flex gap-4 text-xs font-bold text-aashi-berry">
           <span>{state.players[0].name}: {state.scores[state.players[0].userId]}</span>
           <span>{state.players[1].name}: {state.scores[state.players[1].userId]}</span>
           <span>Streak: {streak} 🔥</span>
         </div>
 
         {state.lastMessage && (
-          <p className="text-xs font-bold text-duvora-berry bg-duvora-lilac/40 px-3 py-1.5 rounded-xl">
+          <p className="text-xs font-bold text-aashi-berry bg-aashi-lilac/40 px-3 py-1.5 rounded-xl">
             {state.lastMessage}
           </p>
         )}
 
-        <div className="w-36 h-36 rounded-3xl bg-duvora-plum border-4 border-white shadow-neon flex flex-col items-center justify-center text-white">
-          <span className="text-5xl font-heading font-black text-duvora-pink">{currentNum}</span>
+        <div className="w-36 h-36 rounded-3xl bg-aashi-plum border-4 border-white shadow-neon flex flex-col items-center justify-center text-white">
+          <span className="text-5xl font-heading font-black text-aashi-pink">{currentNum}</span>
           <span className="text-[10px] font-bold tracking-wider text-white/70 mt-1">CURRENT NUMBER</span>
         </div>
 
@@ -609,7 +609,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
           onRematch && (
             <button
               onClick={onRematch}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-duvora-plum text-white font-bold text-xs"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-aashi-plum text-white font-bold text-xs"
             >
               <RefreshCw className="w-4 h-4" />
               <span>PLAY REMATCH</span>
@@ -628,23 +628,23 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
     const currentPuzzle = puzzles[pIdx];
 
     return (
-      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-5 p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass text-center">
-        <h3 className="font-heading font-extrabold text-2xl text-duvora-plum">Emoji Riddle Battle</h3>
-        <p className="text-xs text-duvora-plum/70 font-medium">
+      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-5 p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass text-center">
+        <h3 className="font-heading font-extrabold text-2xl text-aashi-plum">Emoji Riddle Battle</h3>
+        <p className="text-xs text-aashi-plum/70 font-medium">
           Puzzle {pIdx + 1} of {Math.min(5, puzzles.length)}
         </p>
 
         {currentPuzzle && (
-          <div className="w-full p-6 rounded-3xl bg-white border border-duvora-pink/60 shadow-sm flex flex-col items-center gap-2">
+          <div className="w-full p-6 rounded-3xl bg-white border border-aashi-pink/60 shadow-sm flex flex-col items-center gap-2">
             <span className="text-4xl">{currentPuzzle.emojis}</span>
-            <span className="text-xs font-semibold text-duvora-berry bg-duvora-lilac/40 px-3 py-1 rounded-full mt-2">
+            <span className="text-xs font-semibold text-aashi-berry bg-aashi-lilac/40 px-3 py-1 rounded-full mt-2">
               Clue: {currentPuzzle.clue}
             </span>
           </div>
         )}
 
         {state.lastMessage && (
-          <p className="text-xs font-bold text-duvora-berry bg-duvora-lilac/40 px-3 py-1.5 rounded-xl">
+          <p className="text-xs font-bold text-aashi-berry bg-aashi-lilac/40 px-3 py-1.5 rounded-xl">
             {state.lastMessage}
           </p>
         )}
@@ -667,12 +667,12 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
               onChange={e => setInputVal(e.target.value)}
               disabled={!isMyTurn}
               placeholder={isMyTurn ? 'Type your guess...' : 'Waiting for partner...'}
-              className="flex-1 px-4 py-2.5 rounded-2xl border border-duvora-pink bg-white text-sm outline-none focus:ring-2 focus:ring-duvora-berry"
+              className="flex-1 px-4 py-2.5 rounded-2xl border border-aashi-pink bg-white text-sm outline-none focus:ring-2 focus:ring-aashi-berry"
             />
             <button
               type="submit"
               disabled={!isMyTurn}
-              className="px-5 py-2.5 rounded-2xl bg-duvora-berry text-white font-bold text-sm shadow-sm hover:opacity-95 disabled:opacity-40"
+              className="px-5 py-2.5 rounded-2xl bg-aashi-berry text-white font-bold text-sm shadow-sm hover:opacity-95 disabled:opacity-40"
             >
               Submit
             </button>
@@ -681,7 +681,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
           onRematch && (
             <button
               onClick={onRematch}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-duvora-plum text-white font-bold text-xs"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-aashi-plum text-white font-bold text-xs"
             >
               <RefreshCw className="w-4 h-4" />
               <span>PLAY REMATCH</span>
@@ -700,20 +700,20 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
     const myAnswer = state.data?.answers?.[userId];
 
     return (
-      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-5 p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass text-center">
-        <h3 className="font-heading font-extrabold text-2xl text-duvora-plum">Quick Quiz Battle</h3>
-        <span className="text-xs font-bold text-duvora-berry bg-duvora-pink/40 px-3 py-1 rounded-full">
+      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-5 p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass text-center">
+        <h3 className="font-heading font-extrabold text-2xl text-aashi-plum">Quick Quiz Battle</h3>
+        <span className="text-xs font-bold text-aashi-berry bg-aashi-pink/40 px-3 py-1 rounded-full">
           Question {qIdx + 1} of {questions.length}
         </span>
 
         {currentQ && (
-          <div className="w-full p-5 rounded-2xl bg-white border border-duvora-pink/60 shadow-sm text-sm font-bold text-duvora-plum">
+          <div className="w-full p-5 rounded-2xl bg-white border border-aashi-pink/60 shadow-sm text-sm font-bold text-aashi-plum">
             {currentQ.question}
           </div>
         )}
 
         {state.lastMessage && (
-          <p className="text-xs font-bold text-duvora-berry bg-duvora-lilac/40 px-3 py-1.5 rounded-xl">
+          <p className="text-xs font-bold text-aashi-berry bg-aashi-lilac/40 px-3 py-1.5 rounded-xl">
             {state.lastMessage}
           </p>
         )}
@@ -732,8 +732,8 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
                 disabled={myAnswer !== undefined}
                 className={`p-3.5 rounded-2xl border text-sm font-semibold transition-all ${
                   myAnswer === idx
-                    ? 'border-duvora-berry bg-duvora-berry text-white shadow-neon'
-                    : 'border-duvora-pink/60 bg-white hover:bg-duvora-lilac/40 text-duvora-plum'
+                    ? 'border-aashi-berry bg-aashi-berry text-white shadow-neon'
+                    : 'border-aashi-pink/60 bg-white hover:bg-aashi-lilac/40 text-aashi-plum'
                 }`}
               >
                 {opt}
@@ -744,7 +744,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
           onRematch && (
             <button
               onClick={onRematch}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-duvora-plum text-white font-bold text-xs"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-aashi-plum text-white font-bold text-xs"
             >
               <RefreshCw className="w-4 h-4" />
               <span>PLAY REMATCH</span>
@@ -761,12 +761,12 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
     const selectedSector = state.data?.selectedSector;
 
     return (
-      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass text-center">
-        <h3 className="font-heading font-extrabold text-2xl text-duvora-plum">Spin The Wheel</h3>
-        <p className="text-xs text-duvora-plum/80 font-medium">Spin for playful romantic dares and rewards!</p>
+      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass text-center">
+        <h3 className="font-heading font-extrabold text-2xl text-aashi-plum">Spin The Wheel</h3>
+        <p className="text-xs text-aashi-plum/80 font-medium">Spin for playful romantic dares and rewards!</p>
 
         {selectedSector && (
-          <div className="w-full p-4 rounded-2xl bg-white border border-duvora-pink/60 shadow-sm text-sm font-bold text-duvora-berry animate-bounce">
+          <div className="w-full p-4 rounded-2xl bg-white border border-aashi-pink/60 shadow-sm text-sm font-bold text-aashi-berry animate-bounce">
             {selectedSector}
           </div>
         )}
@@ -774,10 +774,10 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
         <motion.div
           animate={{ rotate: wheelSpinning ? 1800 : 0 }}
           transition={{ duration: 1.5, ease: 'easeOut' }}
-          className="w-40 h-40 rounded-full bg-gradient-to-tr from-duvora-berry via-duvora-pink to-duvora-lavender p-1 shadow-glow flex items-center justify-center"
+          className="w-40 h-40 rounded-full bg-gradient-to-tr from-aashi-berry via-aashi-pink to-aashi-lavender p-1 shadow-glow flex items-center justify-center"
         >
-          <div className="w-full h-full bg-duvora-plum rounded-full flex items-center justify-center text-white">
-            <Compass className="w-16 h-16 text-duvora-pink animate-pulse" />
+          <div className="w-full h-full bg-aashi-plum rounded-full flex items-center justify-center text-white">
+            <Compass className="w-16 h-16 text-aashi-pink animate-pulse" />
           </div>
         </motion.div>
 
@@ -794,7 +794,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
               }
             }}
             disabled={!isMyTurn || wheelSpinning}
-            className="w-full py-4 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-heading font-bold text-sm shadow-neon hover:opacity-95 disabled:opacity-40"
+            className="w-full py-4 rounded-2xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-heading font-bold text-sm shadow-neon hover:opacity-95 disabled:opacity-40"
           >
             {wheelSpinning ? 'SPINNING...' : isMyTurn ? 'SPIN THE WHEEL 🎡' : 'Waiting for partner...'}
           </button>
@@ -802,7 +802,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
           onRematch && (
             <button
               onClick={onRematch}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-duvora-plum text-white font-bold text-xs"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-aashi-plum text-white font-bold text-xs"
             >
               <RefreshCw className="w-4 h-4" />
               <span>PLAY REMATCH</span>
@@ -824,14 +824,14 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
     const isRevealed = state.data?.isRevealed;
 
     return (
-      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-5 p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass text-center">
-        <h3 className="font-heading font-extrabold text-2xl text-duvora-plum">Guess My Answer</h3>
-        <div className="p-4 rounded-2xl bg-white border border-duvora-pink/60 shadow-sm text-sm font-bold text-duvora-plum">
+      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-5 p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass text-center">
+        <h3 className="font-heading font-extrabold text-2xl text-aashi-plum">Guess My Answer</h3>
+        <div className="p-4 rounded-2xl bg-white border border-aashi-pink/60 shadow-sm text-sm font-bold text-aashi-plum">
           "{prompt}"
         </div>
 
         {state.lastMessage && (
-          <p className="text-xs font-bold text-duvora-berry bg-duvora-lilac/40 px-3 py-1.5 rounded-xl">
+          <p className="text-xs font-bold text-aashi-berry bg-aashi-lilac/40 px-3 py-1.5 rounded-xl">
             {state.lastMessage}
           </p>
         )}
@@ -855,12 +855,12 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
                 onChange={e => setInputVal(e.target.value)}
                 disabled={hasSecret}
                 placeholder="Type your secret answer..."
-                className="w-full px-4 py-2.5 rounded-2xl border border-duvora-pink bg-white text-sm outline-none"
+                className="w-full px-4 py-2.5 rounded-2xl border border-aashi-pink bg-white text-sm outline-none"
               />
               <button
                 type="submit"
                 disabled={hasSecret}
-                className="w-full py-3 rounded-2xl bg-duvora-berry text-white font-bold text-sm shadow-neon disabled:opacity-50"
+                className="w-full py-3 rounded-2xl bg-aashi-berry text-white font-bold text-sm shadow-neon disabled:opacity-50"
               >
                 {hasSecret ? '🔒 Secret Answer Locked In!' : 'Lock in Secret Answer'}
               </button>
@@ -883,12 +883,12 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
                 onChange={e => setInputVal(e.target.value)}
                 disabled={!hasSecret}
                 placeholder={hasSecret ? "Guess what your partner typed..." : "Waiting for partner to set answer..."}
-                className="w-full px-4 py-2.5 rounded-2xl border border-duvora-pink bg-white text-sm outline-none"
+                className="w-full px-4 py-2.5 rounded-2xl border border-aashi-pink bg-white text-sm outline-none"
               />
               <button
                 type="submit"
                 disabled={!hasSecret}
-                className="w-full py-3 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-bold text-sm shadow-neon disabled:opacity-50"
+                className="w-full py-3 rounded-2xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-bold text-sm shadow-neon disabled:opacity-50"
               >
                 Submit Guess!
               </button>
@@ -897,7 +897,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
         ) : (
           <button
             onClick={() => onAction('next_prompt')}
-            className="w-full py-3 rounded-2xl bg-duvora-plum text-white font-bold text-sm shadow-sm"
+            className="w-full py-3 rounded-2xl bg-aashi-plum text-white font-bold text-sm shadow-sm"
           >
             Next Prompt →
           </button>
@@ -906,7 +906,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
         {isGameOver && onRematch && (
           <button
             onClick={onRematch}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-duvora-plum text-white font-bold text-xs"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-aashi-plum text-white font-bold text-xs"
           >
             <RefreshCw className="w-4 h-4" />
             <span>PLAY REMATCH</span>
@@ -923,12 +923,12 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
     const lastLetter = state.data?.lastLetter || 'e';
 
     return (
-      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-5 p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass text-center">
-        <h3 className="font-heading font-extrabold text-2xl text-duvora-plum">Word Chain (Shiritori)</h3>
+      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-5 p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass text-center">
+        <h3 className="font-heading font-extrabold text-2xl text-aashi-plum">Word Chain (Shiritori)</h3>
 
-        <div className="w-full p-4 rounded-2xl bg-white border border-duvora-pink/60 shadow-sm flex flex-col items-center">
-          <span className="text-xs text-duvora-plum/60 font-medium">Next word must begin with:</span>
-          <span className="text-4xl font-heading font-black text-duvora-berry uppercase mt-1">
+        <div className="w-full p-4 rounded-2xl bg-white border border-aashi-pink/60 shadow-sm flex flex-col items-center">
+          <span className="text-xs text-aashi-plum/60 font-medium">Next word must begin with:</span>
+          <span className="text-4xl font-heading font-black text-aashi-berry uppercase mt-1">
             "{lastLetter}"
           </span>
         </div>
@@ -936,14 +936,14 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
         {/* Word History Chips */}
         <div className="flex flex-wrap gap-1.5 justify-center max-h-24 overflow-y-auto">
           {words.map((w: string, i: number) => (
-            <span key={i} className="px-2.5 py-1 rounded-full bg-duvora-lilac/50 text-duvora-plum text-xs font-semibold">
+            <span key={i} className="px-2.5 py-1 rounded-full bg-aashi-lilac/50 text-aashi-plum text-xs font-semibold">
               {w}
             </span>
           ))}
         </div>
 
         {state.lastMessage && (
-          <p className="text-xs font-bold text-duvora-berry bg-duvora-lilac/40 px-3 py-1.5 rounded-xl">
+          <p className="text-xs font-bold text-aashi-berry bg-aashi-lilac/40 px-3 py-1.5 rounded-xl">
             {state.lastMessage}
           </p>
         )}
@@ -966,12 +966,12 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
               onChange={e => setInputVal(e.target.value)}
               disabled={!isMyTurn}
               placeholder={`Word starting with "${lastLetter.toUpperCase()}"...`}
-              className="flex-1 px-4 py-2.5 rounded-2xl border border-duvora-pink bg-white text-sm outline-none focus:ring-2 focus:ring-duvora-berry"
+              className="flex-1 px-4 py-2.5 rounded-2xl border border-aashi-pink bg-white text-sm outline-none focus:ring-2 focus:ring-aashi-berry"
             />
             <button
               type="submit"
               disabled={!isMyTurn}
-              className="px-5 py-2.5 rounded-2xl bg-duvora-berry text-white font-bold text-sm shadow-sm hover:opacity-95 disabled:opacity-40"
+              className="px-5 py-2.5 rounded-2xl bg-aashi-berry text-white font-bold text-sm shadow-sm hover:opacity-95 disabled:opacity-40"
             >
               Send
             </button>
@@ -980,7 +980,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
           onRematch && (
             <button
               onClick={onRematch}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-duvora-plum text-white font-bold text-xs"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-aashi-plum text-white font-bold text-xs"
             >
               <RefreshCw className="w-4 h-4" />
               <span>PLAY REMATCH</span>
@@ -993,7 +993,7 @@ export const QuickGameView: React.FC<QuickGameViewProps> = ({
 
   // Fallback
   return (
-    <div className="p-8 text-center text-duvora-plum">
+    <div className="p-8 text-center text-aashi-plum">
       <h3>Active Game: {gameType}</h3>
     </div>
   );

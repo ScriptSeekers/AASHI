@@ -4,7 +4,7 @@ import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
 import { useSocket } from '../context/SocketContext.js';
 import { roomApi } from '../api/endpoints.js';
-import { CoupleRoomDTO, SOCKET_EVENTS, GAME_CATALOG } from '@duvora/shared';
+import { CoupleRoomDTO, SOCKET_EVENTS, GAME_CATALOG } from '@aashi/shared';
 import { soundManager } from '../utils/sound.js';
 
 // Game Views
@@ -130,7 +130,7 @@ export const GameRoomPage: React.FC = () => {
     }
 
     if (!partnerOnline) {
-      setRoomNotice(`${partnerName} is currently offline. You can play together as soon as they log into DUVORA!`);
+      setRoomNotice(`${partnerName} is currently offline. You can play together as soon as they log into AASHI!`);
       return;
     }
 
@@ -194,7 +194,7 @@ export const GameRoomPage: React.FC = () => {
   if (!room) {
     return (
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
-        <span className="text-sm font-semibold text-duvora-plum animate-pulse">Loading Room...</span>
+        <span className="text-sm font-semibold text-aashi-plum animate-pulse">Loading Room...</span>
       </div>
     );
   }
@@ -204,23 +204,23 @@ export const GameRoomPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-24 md:pb-12">
       {/* Room Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-3xl bg-white/90 backdrop-blur-md border border-duvora-pink shadow-glass">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-3xl bg-white/90 backdrop-blur-md border border-aashi-pink shadow-glass">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-duvora-pink/50 text-duvora-berry flex items-center justify-center shadow-sm">
-            <Heart className="w-6 h-6 fill-duvora-berry animate-heartbeat" />
+          <div className="w-12 h-12 rounded-2xl bg-aashi-pink/50 text-aashi-berry flex items-center justify-center shadow-sm">
+            <Heart className="w-6 h-6 fill-aashi-berry animate-heartbeat" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-heading font-black text-xl sm:text-2xl text-duvora-plum">{room.name}</h1>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-duvora-lilac text-duvora-plum">
+              <h1 className="font-heading font-black text-xl sm:text-2xl text-aashi-plum">{room.name}</h1>
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-aashi-lilac text-aashi-plum">
                 {room.members.length} / {room.maxPlayers} CONNECTED
               </span>
             </div>
 
             {/* Partner Connection Status */}
             <div className="flex items-center gap-2 mt-1 text-xs">
-              <span className="font-semibold text-duvora-plum/60">Partner:</span>
-              <span className="font-bold text-duvora-plum flex items-center gap-1.5">
+              <span className="font-semibold text-aashi-plum/60">Partner:</span>
+              <span className="font-bold text-aashi-plum flex items-center gap-1.5">
                 {user?.partnerName || 'Shree'}
                 {otherMember ? (
                   <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.2 rounded-full">
@@ -248,9 +248,9 @@ export const GameRoomPage: React.FC = () => {
           {!otherMember && (
             <button
               onClick={handleInvitePartnerClick}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-duvora-pink/60 hover:bg-duvora-pink text-duvora-plum font-bold text-xs shadow-sm transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-aashi-pink/60 hover:bg-aashi-pink text-aashi-plum font-bold text-xs shadow-sm transition-all"
             >
-              <Send className="w-3.5 h-3.5 text-duvora-berry" />
+              <Send className="w-3.5 h-3.5 text-aashi-berry" />
               <span>Invite Partner</span>
             </button>
           )}
@@ -260,7 +260,7 @@ export const GameRoomPage: React.FC = () => {
               soundManager.playPop();
               setSelectGameModalOpen(true);
             }}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-bold text-xs shadow-neon hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-bold text-xs shadow-neon hover:scale-105 active:scale-95 transition-all"
           >
             <Gamepad2 className="w-3.5 h-3.5" />
             <span>Select Game</span>
@@ -268,7 +268,7 @@ export const GameRoomPage: React.FC = () => {
 
           <button
             onClick={() => setChatOpen(!chatOpen)}
-            className="p-2 rounded-xl border border-duvora-pink bg-white/80 text-duvora-plum hover:text-duvora-berry transition-all"
+            className="p-2 rounded-xl border border-aashi-pink bg-white/80 text-aashi-plum hover:text-aashi-berry transition-all"
             aria-label="Toggle Chat"
           >
             <MessageCircle className="w-4 h-4" />
@@ -286,17 +286,17 @@ export const GameRoomPage: React.FC = () => {
 
       {/* Room Notice Banner if present */}
       {roomNotice && (
-        <div className="p-3.5 px-4 rounded-2xl bg-duvora-lilac/50 border border-duvora-pink flex items-center justify-between text-xs font-semibold text-duvora-plum">
+        <div className="p-3.5 px-4 rounded-2xl bg-aashi-lilac/50 border border-aashi-pink flex items-center justify-between text-xs font-semibold text-aashi-plum">
           <span>{roomNotice}</span>
-          <button onClick={() => setRoomNotice(null)} className="p-1 text-duvora-plum/60 hover:text-duvora-plum">
+          <button onClick={() => setRoomNotice(null)} className="p-1 text-aashi-plum/60 hover:text-aashi-plum">
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
       )}
 
       {/* Floating Emoji Reactions Bar */}
-      <div className="flex items-center justify-between p-2.5 px-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-duvora-pink/40 shadow-xs">
-        <span className="text-xs font-bold text-duvora-plum/70">Send Reaction:</span>
+      <div className="flex items-center justify-between p-2.5 px-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-aashi-pink/40 shadow-xs">
+        <span className="text-xs font-bold text-aashi-plum/70">Send Reaction:</span>
         <div className="flex items-center gap-2">
           {['💗', '🔥', '👑', '✨', '🥺', '🎉', '🥂'].map(emoji => (
             <motion.button
@@ -395,14 +395,14 @@ export const GameRoomPage: React.FC = () => {
           </div>
         ) : (
           /* Empty Room Lobby State */
-          <div className="p-12 rounded-3xl bg-duvora-cloud/80 backdrop-blur-md border border-duvora-pink shadow-glass flex flex-col items-center justify-center text-center">
-            <div className="w-20 h-20 rounded-3xl bg-duvora-pink/40 text-duvora-berry flex items-center justify-center mb-4 shadow-neon animate-float-slow">
+          <div className="p-12 rounded-3xl bg-aashi-cloud/80 backdrop-blur-md border border-aashi-pink shadow-glass flex flex-col items-center justify-center text-center">
+            <div className="w-20 h-20 rounded-3xl bg-aashi-pink/40 text-aashi-berry flex items-center justify-center mb-4 shadow-neon animate-float-slow">
               <Gamepad2 className="w-10 h-10" />
             </div>
-            <h2 className="font-heading font-black text-2xl sm:text-3xl text-duvora-plum mb-2">
+            <h2 className="font-heading font-black text-2xl sm:text-3xl text-aashi-plum mb-2">
               The Arena is Waiting!
             </h2>
-            <p className="max-w-md text-sm text-duvora-plum/70 font-medium mb-6">
+            <p className="max-w-md text-sm text-aashi-plum/70 font-medium mb-6">
               Pick from our collection of 26 games below to start playing together.
             </p>
             <button
@@ -410,7 +410,7 @@ export const GameRoomPage: React.FC = () => {
                 soundManager.playPop();
                 setSelectGameModalOpen(true);
               }}
-              className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-heading font-bold text-sm shadow-neon hover:scale-105 active:scale-95 transition-all"
+              className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-heading font-bold text-sm shadow-neon hover:scale-105 active:scale-95 transition-all"
             >
               <Play className="w-4 h-4 fill-white" />
               <span>CHOOSE A GAME</span>
@@ -421,8 +421,8 @@ export const GameRoomPage: React.FC = () => {
 
       {/* Slide-out In-Room Chat Drawer */}
       {chatOpen && (
-        <div className="fixed bottom-20 right-4 z-50 w-80 max-w-[calc(100vw-2rem)] rounded-3xl bg-white border border-duvora-pink shadow-glow flex flex-col overflow-hidden">
-          <div className="p-3.5 bg-duvora-plum text-white flex items-center justify-between">
+        <div className="fixed bottom-20 right-4 z-50 w-80 max-w-[calc(100vw-2rem)] rounded-3xl bg-white border border-aashi-pink shadow-glow flex flex-col overflow-hidden">
+          <div className="p-3.5 bg-aashi-plum text-white flex items-center justify-between">
             <span className="font-heading font-bold text-xs">Room Chat</span>
             <button onClick={() => setChatOpen(false)}>
               <X className="w-4 h-4" />
@@ -434,21 +434,21 @@ export const GameRoomPage: React.FC = () => {
             ) : (
               chatMessages.map((msg, i) => (
                 <div key={i} className="flex flex-col">
-                  <span className="font-bold text-duvora-berry text-[10px]">{msg.userName}:</span>
-                  <span className="text-duvora-plum">{msg.message}</span>
+                  <span className="font-bold text-aashi-berry text-[10px]">{msg.userName}:</span>
+                  <span className="text-aashi-plum">{msg.message}</span>
                 </div>
               ))
             )}
           </div>
-          <form onSubmit={handleSendChat} className="p-2 border-t border-duvora-pink/40 flex gap-2">
+          <form onSubmit={handleSendChat} className="p-2 border-t border-aashi-pink/40 flex gap-2">
             <input
               type="text"
               value={chatInput}
               onChange={e => setChatInput(e.target.value)}
               placeholder="Send love note..."
-              className="flex-1 px-3 py-1.5 rounded-xl border border-duvora-pink text-xs outline-none focus:ring-1 focus:ring-duvora-berry"
+              className="flex-1 px-3 py-1.5 rounded-xl border border-aashi-pink text-xs outline-none focus:ring-1 focus:ring-aashi-berry"
             />
-            <button type="submit" className="p-1.5 rounded-xl bg-duvora-berry text-white">
+            <button type="submit" className="p-1.5 rounded-xl bg-aashi-berry text-white">
               <Send className="w-3.5 h-3.5" />
             </button>
           </form>
@@ -457,12 +457,12 @@ export const GameRoomPage: React.FC = () => {
 
       {/* SELECT GAME MODAL */}
       {selectGameModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-duvora-plum/60 backdrop-blur-sm">
-          <div className="w-full max-w-2xl max-h-[85vh] p-6 rounded-3xl bg-white border border-duvora-pink shadow-glow flex flex-col overflow-hidden">
-            <div className="flex items-center justify-between pb-3 border-b border-duvora-pink/40 mb-4">
-              <h3 className="font-heading font-bold text-xl text-duvora-plum">Select a Game to Launch</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-aashi-plum/60 backdrop-blur-sm">
+          <div className="w-full max-w-2xl max-h-[85vh] p-6 rounded-3xl bg-white border border-aashi-pink shadow-glow flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between pb-3 border-b border-aashi-pink/40 mb-4">
+              <h3 className="font-heading font-bold text-xl text-aashi-plum">Select a Game to Launch</h3>
               <button onClick={() => setSelectGameModalOpen(false)}>
-                <X className="w-5 h-5 text-duvora-plum/50" />
+                <X className="w-5 h-5 text-aashi-plum/50" />
               </button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto pr-1">
@@ -470,16 +470,16 @@ export const GameRoomPage: React.FC = () => {
                 <button
                   key={game.id}
                   onClick={() => handleStartGame(game.id)}
-                  className="p-3.5 rounded-2xl border border-duvora-pink/50 hover:border-duvora-berry bg-duvora-cloud/60 hover:bg-white text-left transition-all hover:scale-[1.01] flex flex-col justify-between"
+                  className="p-3.5 rounded-2xl border border-aashi-pink/50 hover:border-aashi-berry bg-aashi-cloud/60 hover:bg-white text-left transition-all hover:scale-[1.01] flex flex-col justify-between"
                 >
                   <div>
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-duvora-berry">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-aashi-berry">
                       {game.category}
                     </span>
-                    <h4 className="font-heading font-bold text-sm text-duvora-plum">{game.title}</h4>
-                    <p className="text-[11px] text-duvora-plum/70 line-clamp-2 mt-0.5">{game.description}</p>
+                    <h4 className="font-heading font-bold text-sm text-aashi-plum">{game.title}</h4>
+                    <p className="text-[11px] text-aashi-plum/70 line-clamp-2 mt-0.5">{game.description}</p>
                   </div>
-                  <span className="mt-2 text-[10px] font-bold text-duvora-berry self-end">Click to Start →</span>
+                  <span className="mt-2 text-[10px] font-bold text-aashi-berry self-end">Click to Start →</span>
                 </button>
               ))}
             </div>

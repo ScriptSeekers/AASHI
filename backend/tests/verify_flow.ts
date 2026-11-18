@@ -17,14 +17,14 @@ async function run() {
   console.log('[2] Logging in Arpit...');
   const resArpit = await request(app)
     .post('/api/auth/login')
-    .send({ email: 'Arpit@duvora.com', password: 'Love2927' });
+    .send({ email: 'Arpit@aashi.com', password: 'Love2927' });
   const arpitToken = resArpit.body.token;
   console.log('[2] Arpit token:', !!arpitToken);
 
   console.log('[3] Logging in Shree...');
   const resShree = await request(app)
     .post('/api/auth/login')
-    .send({ email: 'Shree@duvora.com', password: 'Love2927' });
+    .send({ email: 'Shree@aashi.com', password: 'Love2927' });
   const shreeToken = resShree.body.token;
   console.log('[3] Shree token:', !!shreeToken);
 

@@ -17,6 +17,7 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
+      "@aashi/shared": ["src/shared/index.ts"],
       "@duvora/shared": ["src/shared/index.ts"]
     }
   },

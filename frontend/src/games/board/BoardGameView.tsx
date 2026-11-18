@@ -28,9 +28,9 @@ export const BoardGameView: React.FC<BoardGameViewProps> = ({
     const isMyTurn = state.currentTurnUserId === userId;
 
     return (
-      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass">
-        <div className="w-full flex items-center justify-between pb-3 border-b border-duvora-pink/40">
-          <span className="font-semibold text-sm text-duvora-plum">
+      <div className="w-full max-w-md mx-auto flex flex-col items-center gap-6 p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass">
+        <div className="w-full flex items-center justify-between pb-3 border-b border-aashi-pink/40">
+          <span className="font-semibold text-sm text-aashi-plum">
             {isGameOver
               ? state.isDraw
                 ? "It's a Draw! 🤝"
@@ -41,14 +41,14 @@ export const BoardGameView: React.FC<BoardGameViewProps> = ({
               ? '✨ Your Turn!'
               : 'Waiting for partner...'}
           </span>
-          <div className="flex gap-4 text-xs font-bold text-duvora-plum">
+          <div className="flex gap-4 text-xs font-bold text-aashi-plum">
             <span>{state.players[0].name}: {state.players[0].symbol}</span>
             <span>{state.players[1].name}: {state.players[1].symbol}</span>
           </div>
         </div>
 
         {/* 3x3 Grid */}
-        <div className="grid grid-cols-3 gap-3 p-3 bg-duvora-plum rounded-3xl shadow-glow border-4 border-white">
+        <div className="grid grid-cols-3 gap-3 p-3 bg-aashi-plum rounded-3xl shadow-glow border-4 border-white">
           {state.board.map((cell: string | null, idx: number) => (
             <motion.button
               key={idx}
@@ -66,7 +66,7 @@ export const BoardGameView: React.FC<BoardGameViewProps> = ({
                   ? 'bg-rose-100 text-rose-500'
                   : cell === 'O'
                   ? 'bg-sky-100 text-sky-500'
-                  : 'bg-white hover:bg-duvora-lilac/50 text-transparent'
+                  : 'bg-white hover:bg-aashi-lilac/50 text-transparent'
               }`}
             >
               {cell}
@@ -77,7 +77,7 @@ export const BoardGameView: React.FC<BoardGameViewProps> = ({
         {isGameOver && onRematch && (
           <button
             onClick={onRematch}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all"
           >
             <RefreshCw className="w-4 h-4" />
             <span>PLAY REMATCH</span>
@@ -92,9 +92,9 @@ export const BoardGameView: React.FC<BoardGameViewProps> = ({
     const isMyTurn = state.currentTurnUserId === userId;
 
     return (
-      <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-4 p-4 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass">
-        <div className="w-full flex items-center justify-between pb-2 border-b border-duvora-pink/40">
-          <span className="font-semibold text-sm text-duvora-plum">
+      <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-4 p-4 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass">
+        <div className="w-full flex items-center justify-between pb-2 border-b border-aashi-pink/40">
+          <span className="font-semibold text-sm text-aashi-plum">
             {isGameOver
               ? isWinner
                 ? '🎉 Connect Four! You Won!'
@@ -106,7 +106,7 @@ export const BoardGameView: React.FC<BoardGameViewProps> = ({
         </div>
 
         {/* 6 rows x 7 cols Board */}
-        <div className="p-3 bg-duvora-plum rounded-3xl shadow-glow border-4 border-white flex flex-col gap-2">
+        <div className="p-3 bg-aashi-plum rounded-3xl shadow-glow border-4 border-white flex flex-col gap-2">
           {state.grid.map((row: (string | null)[], rIdx: number) => (
             <div key={rIdx} className="flex gap-2">
               {row.map((cell: string | null, cIdx: number) => (
@@ -119,12 +119,12 @@ export const BoardGameView: React.FC<BoardGameViewProps> = ({
                     }
                   }}
                   disabled={!isMyTurn || isGameOver}
-                  className={`w-9 h-9 sm:w-11 sm:h-11 rounded-full border-2 border-duvora-plum shadow-inner transition-transform hover:scale-105 ${
+                  className={`w-9 h-9 sm:w-11 sm:h-11 rounded-full border-2 border-aashi-plum shadow-inner transition-transform hover:scale-105 ${
                     cell === 'pink'
-                      ? 'bg-duvora-berry shadow-neon'
+                      ? 'bg-aashi-berry shadow-neon'
                       : cell === 'lavender'
-                      ? 'bg-duvora-lavender shadow-glow'
-                      : 'bg-duvora-lilac/30 hover:bg-duvora-lilac/60'
+                      ? 'bg-aashi-lavender shadow-glow'
+                      : 'bg-aashi-lilac/30 hover:bg-aashi-lilac/60'
                   }`}
                 />
               ))}
@@ -135,7 +135,7 @@ export const BoardGameView: React.FC<BoardGameViewProps> = ({
         {isGameOver && onRematch && (
           <button
             onClick={onRematch}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all mt-2"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all mt-2"
           >
             <RefreshCw className="w-4 h-4" />
             <span>PLAY REMATCH</span>
@@ -206,9 +206,9 @@ export const BoardGameView: React.FC<BoardGameViewProps> = ({
     };
 
     return (
-      <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-4 p-4 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass">
-        <div className="w-full flex items-center justify-between pb-2 border-b border-duvora-pink/40">
-          <span className="font-semibold text-sm text-duvora-plum">
+      <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-4 p-4 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass">
+        <div className="w-full flex items-center justify-between pb-2 border-b border-aashi-pink/40">
+          <span className="font-semibold text-sm text-aashi-plum">
             {isGameOver
               ? isWinner
                 ? '🎉 Victory! All opponent checkers captured!'
@@ -223,15 +223,15 @@ export const BoardGameView: React.FC<BoardGameViewProps> = ({
             <span className="text-rose-500">
               {state.players[0]?.name}: {state.pieces?.filter((p: any) => p.playerIndex === 0).length}
             </span>
-            <span className="text-duvora-plum/40">vs</span>
-            <span className="text-duvora-berry">
+            <span className="text-aashi-plum/40">vs</span>
+            <span className="text-aashi-berry">
               {state.players[1]?.name}: {state.pieces?.filter((p: any) => p.playerIndex === 1).length}
             </span>
           </div>
         </div>
 
         {/* 8x8 Board */}
-        <div className="grid grid-cols-8 grid-rows-8 w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] p-2 bg-duvora-plum rounded-2xl shadow-glow border-4 border-white select-none">
+        <div className="grid grid-cols-8 grid-rows-8 w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] p-2 bg-aashi-plum rounded-2xl shadow-glow border-4 border-white select-none">
           {Array(8).fill(null).map((_, r) =>
             Array(8).fill(null).map((_, c) => {
               const isDark = (r + c) % 2 === 1;
@@ -246,8 +246,8 @@ export const BoardGameView: React.FC<BoardGameViewProps> = ({
                   onClick={() => handleSquareClick(r, c)}
                   disabled={!isMyTurn || isGameOver || (!isDark && !piece)}
                   className={`relative flex items-center justify-center transition-all ${
-                    isDark ? 'bg-duvora-plum/85 hover:bg-duvora-plum' : 'bg-duvora-lilac/60'
-                  } ${isSelected ? 'ring-4 ring-duvora-berry z-10' : ''}`}
+                    isDark ? 'bg-aashi-plum/85 hover:bg-aashi-plum' : 'bg-aashi-lilac/60'
+                  } ${isSelected ? 'ring-4 ring-aashi-berry z-10' : ''}`}
                 >
                   {/* Checker Piece */}
                   {piece && (
@@ -256,7 +256,7 @@ export const BoardGameView: React.FC<BoardGameViewProps> = ({
                       className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-md border-2 ${
                         piece.playerIndex === 0
                           ? 'bg-rose-500 text-white border-rose-300'
-                          : 'bg-gradient-to-tr from-duvora-berry to-duvora-lavender text-white border-white'
+                          : 'bg-gradient-to-tr from-aashi-berry to-aashi-lavender text-white border-white'
                       } ${isSelected ? 'ring-4 ring-white animate-bounce' : ''}`}
                     >
                       {piece.isKing ? '👑' : ''}
@@ -282,7 +282,7 @@ export const BoardGameView: React.FC<BoardGameViewProps> = ({
         {isGameOver && onRematch && (
           <button
             onClick={onRematch}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all mt-2"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all mt-2"
           >
             <RefreshCw className="w-4 h-4" />
             <span>PLAY REMATCH</span>

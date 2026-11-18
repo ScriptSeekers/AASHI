@@ -7,7 +7,7 @@ import { LudoGameEngine } from '../src/games/ludo/index.js';
 import { QuickGamesEngine } from '../src/games/quick/index.js';
 import { TicTacToeEngine, ConnectFourEngine, CheckersEngine } from '../src/games/board/index.js';
 
-describe('DUVORA Full-Stack Test Suite (Exclusive Arpit & Shree Realm)', () => {
+describe('AASHI Full-Stack Test Suite (Exclusive Arpit & Shree Realm)', () => {
   let user1Token: string;
   let user2Token: string;
   let user1Id: string;
@@ -17,12 +17,12 @@ describe('DUVORA Full-Stack Test Suite (Exclusive Arpit & Shree Realm)', () => {
   let testInvitationId: string;
 
   const arpitCredentials = {
-    email: 'Arpit@duvora.com',
+    email: 'Arpit@aashi.com',
     password: 'Love2927'
   };
 
   const shreeCredentials = {
-    email: 'Shree@duvora.com',
+    email: 'Shree@aashi.com',
     password: 'Love2927'
   };
 
@@ -31,7 +31,7 @@ describe('DUVORA Full-Stack Test Suite (Exclusive Arpit & Shree Realm)', () => {
       const res = await request(app)
         .post('/api/auth/register')
         .send({
-          email: 'stranger@duvora.com',
+          email: 'stranger@aashi.com',
           password: 'Password123',
           name: 'Stranger',
           username: 'stranger'
@@ -48,7 +48,7 @@ describe('DUVORA Full-Stack Test Suite (Exclusive Arpit & Shree Realm)', () => {
         .expect(200);
 
       expect(res.body.token).toBeDefined();
-      expect(res.body.user.email).toBe('arpit@duvora.com');
+      expect(res.body.user.email).toBe('arpit@aashi.com');
       expect(res.body.user.name).toBe('Arpit');
       user1Token = res.body.token;
       user1Id = res.body.user.id;
@@ -56,7 +56,7 @@ describe('DUVORA Full-Stack Test Suite (Exclusive Arpit & Shree Realm)', () => {
       // Verify cookie
       const cookies = res.headers['set-cookie'];
       expect(cookies).toBeDefined();
-      expect(cookies[0]).toContain('duvora_session=');
+      expect(cookies[0]).toContain('aashi_session=');
     });
 
     it('should login successfully as Shree with password Love2927', async () => {
@@ -66,7 +66,7 @@ describe('DUVORA Full-Stack Test Suite (Exclusive Arpit & Shree Realm)', () => {
         .expect(200);
 
       expect(res.body.token).toBeDefined();
-      expect(res.body.user.email).toBe('shree@duvora.com');
+      expect(res.body.user.email).toBe('shree@aashi.com');
       expect(res.body.user.name).toBe('Shree');
       user2Token = res.body.token;
       user2Id = res.body.user.id;
@@ -76,7 +76,7 @@ describe('DUVORA Full-Stack Test Suite (Exclusive Arpit & Shree Realm)', () => {
       const res = await request(app)
         .post('/api/auth/login')
         .send({
-          email: 'Arpit@duvora.com',
+          email: 'Arpit@aashi.com',
           password: 'WrongPassword999'
         })
         .expect(401);
@@ -88,7 +88,7 @@ describe('DUVORA Full-Stack Test Suite (Exclusive Arpit & Shree Realm)', () => {
       const res = await request(app)
         .post('/api/auth/login')
         .send({
-          email: 'unknown_404@duvora.com',
+          email: 'unknown_404@aashi.com',
           password: 'Love2927'
         })
         .expect(401);
@@ -134,7 +134,7 @@ describe('DUVORA Full-Stack Test Suite (Exclusive Arpit & Shree Realm)', () => {
         .set('Authorization', `Bearer ${user1Token}`)
         .send({
           roomId: createdRoomId,
-          recipientIdentifier: 'shree@duvora.com'
+          recipientIdentifier: 'shree@aashi.com'
         })
         .expect(201);
 

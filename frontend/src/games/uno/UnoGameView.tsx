@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { UnoGameState, UnoCard, UnoColor } from '@duvora/shared';
+import { UnoGameState, UnoCard, UnoColor } from '@aashi/shared';
 import { soundManager } from '../../utils/sound.js';
 import { Flame, ShieldAlert, Sparkles, RefreshCw, Trophy } from 'lucide-react';
 
@@ -81,12 +81,12 @@ export const UnoGameView: React.FC<UnoGameViewProps> = ({ state, userId, onActio
   const myPlayer = state.players.find(p => p.userId === userId);
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto flex flex-col items-center justify-between min-h-[560px] p-4 bg-duvora-cloud/80 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass overflow-hidden select-none">
+    <div className="relative w-full max-w-4xl mx-auto flex flex-col items-center justify-between min-h-[560px] p-4 bg-aashi-cloud/80 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass overflow-hidden select-none">
       {/* Turn & Status Header */}
-      <div className="w-full flex items-center justify-between pb-3 border-b border-duvora-pink/40">
+      <div className="w-full flex items-center justify-between pb-3 border-b border-aashi-pink/40">
         <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full animate-pulse bg-duvora-berry" />
-          <span className="text-sm font-semibold text-duvora-plum">
+          <span className="w-3 h-3 rounded-full animate-pulse bg-aashi-berry" />
+          <span className="text-sm font-semibold text-aashi-plum">
             {isGameOver
               ? 'Match Finished'
               : isMyTurn
@@ -96,10 +96,10 @@ export const UnoGameView: React.FC<UnoGameViewProps> = ({ state, userId, onActio
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-duvora-plum/60">Color:</span>
+          <span className="text-xs font-medium text-aashi-plum/60">Color:</span>
           <span
             className={`w-5 h-5 rounded-full border-2 border-white shadow-sm ${
-              COLOR_MAP[state.currentColor]?.bg || 'bg-duvora-pink'
+              COLOR_MAP[state.currentColor]?.bg || 'bg-aashi-pink'
             }`}
           />
         </div>
@@ -117,18 +117,18 @@ export const UnoGameView: React.FC<UnoGameViewProps> = ({ state, userId, onActio
             <div
               className={`relative p-1 rounded-2xl transition-all ${
                 state.players[state.currentTurnIndex]?.userId === opp.userId
-                  ? 'ring-4 ring-duvora-berry ring-offset-2 scale-105'
+                  ? 'ring-4 ring-aashi-berry ring-offset-2 scale-105'
                   : ''
               }`}
             >
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-duvora-berry to-duvora-lavender flex items-center justify-center text-white font-heading text-xl font-bold shadow-md">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-aashi-berry to-aashi-lavender flex items-center justify-center text-white font-heading text-xl font-bold shadow-md">
                 {opp.name.charAt(0)}
               </div>
-              <span className="absolute -bottom-2 -right-2 px-2 py-0.5 rounded-full bg-duvora-plum text-white font-bold text-xs shadow-md">
+              <span className="absolute -bottom-2 -right-2 px-2 py-0.5 rounded-full bg-aashi-plum text-white font-bold text-xs shadow-md">
                 {opp.cardCount}
               </span>
             </div>
-            <span className="text-xs font-semibold text-duvora-plum">{opp.name}</span>
+            <span className="text-xs font-semibold text-aashi-plum">{opp.name}</span>
 
             {/* Catch UNO button if opponent forgot to declare UNO */}
             {opp.cardCount === 1 && !opp.calledUno && !isGameOver && (
@@ -153,13 +153,13 @@ export const UnoGameView: React.FC<UnoGameViewProps> = ({ state, userId, onActio
             whileTap={isMyTurn ? { scale: 0.95 } : {}}
             onClick={handleDraw}
             disabled={!isMyTurn || isGameOver}
-            className={`w-24 h-36 rounded-2xl bg-duvora-plum border-2 border-white/80 shadow-glow flex flex-col items-center justify-center text-white relative transition-opacity ${
-              isMyTurn ? 'cursor-pointer hover:border-duvora-pink' : 'opacity-70 cursor-not-allowed'
+            className={`w-24 h-36 rounded-2xl bg-aashi-plum border-2 border-white/80 shadow-glow flex flex-col items-center justify-center text-white relative transition-opacity ${
+              isMyTurn ? 'cursor-pointer hover:border-aashi-pink' : 'opacity-70 cursor-not-allowed'
             }`}
           >
-            <div className="w-16 h-24 rounded-xl border border-white/40 flex items-center justify-center rotate-6 bg-gradient-to-tr from-duvora-berry to-duvora-plum">
-              <span className="font-heading font-extrabold text-lg tracking-wider text-duvora-pink drop-shadow">
-                DUVORA
+            <div className="w-16 h-24 rounded-xl border border-white/40 flex items-center justify-center rotate-6 bg-gradient-to-tr from-aashi-berry to-aashi-plum">
+              <span className="font-heading font-extrabold text-lg tracking-wider text-aashi-pink drop-shadow">
+                AASHI
               </span>
             </div>
             <span className="text-[11px] font-bold mt-1 text-white/80">DRAW CARD</span>
@@ -172,7 +172,7 @@ export const UnoGameView: React.FC<UnoGameViewProps> = ({ state, userId, onActio
             key={state.topCard.id}
             initial={{ scale: 0.8, rotate: -8 }}
             animate={{ scale: 1, rotate: 0 }}
-            className={`w-24 h-36 rounded-2xl ${COLOR_MAP[state.topCard.color]?.bg || 'bg-duvora-pink'} border-2 border-white shadow-xl flex flex-col items-center justify-between p-2 text-white relative`}
+            className={`w-24 h-36 rounded-2xl ${COLOR_MAP[state.topCard.color]?.bg || 'bg-aashi-pink'} border-2 border-white shadow-xl flex flex-col items-center justify-between p-2 text-white relative`}
           >
             <span className="text-xs font-extrabold self-start">{state.topCard.value.toUpperCase()}</span>
             <div className="w-14 h-20 rounded-full border border-white/60 flex items-center justify-center bg-white/20 shadow-inner">
@@ -192,21 +192,21 @@ export const UnoGameView: React.FC<UnoGameViewProps> = ({ state, userId, onActio
             </div>
             <span className="text-xs font-extrabold self-end rotate-180">{state.topCard.value.toUpperCase()}</span>
           </motion.div>
-          <span className="text-[11px] font-semibold text-duvora-plum/60">DISCARD PILE</span>
+          <span className="text-[11px] font-semibold text-aashi-plum/60">DISCARD PILE</span>
         </div>
       </div>
 
       {/* Action Description Log */}
       {state.lastActionDescription && (
-        <div className="w-full text-center py-1.5 px-4 bg-duvora-lilac/50 rounded-xl text-xs font-medium text-duvora-plum mb-3">
+        <div className="w-full text-center py-1.5 px-4 bg-aashi-lilac/50 rounded-xl text-xs font-medium text-aashi-plum mb-3">
           {state.lastActionDescription}
         </div>
       )}
 
       {/* Player's Own Hand */}
-      <div className="w-full flex flex-col items-center gap-2 pt-2 border-t border-duvora-pink/40">
+      <div className="w-full flex flex-col items-center gap-2 pt-2 border-t border-aashi-pink/40">
         <div className="w-full flex items-center justify-between px-2">
-          <span className="text-xs font-bold text-duvora-plum">
+          <span className="text-xs font-bold text-aashi-plum">
             Your Hand ({state.myHand?.length || 0} cards)
           </span>
 
@@ -241,7 +241,7 @@ export const UnoGameView: React.FC<UnoGameViewProps> = ({ state, userId, onActio
                 onClick={() => isCardPlayable && handleCardClick(card)}
                 disabled={!isCardPlayable || isGameOver}
                 className={`flex-shrink-0 w-16 h-24 sm:w-20 sm:h-30 rounded-xl ${
-                  COLOR_MAP[card.color]?.bg || 'bg-duvora-pink'
+                  COLOR_MAP[card.color]?.bg || 'bg-aashi-pink'
                 } border-2 border-white shadow-md flex flex-col items-center justify-between p-1.5 text-white transition-all ${
                   isCardPlayable
                     ? 'cursor-pointer hover:shadow-neon'
@@ -272,14 +272,14 @@ export const UnoGameView: React.FC<UnoGameViewProps> = ({ state, userId, onActio
       {/* Wild Color Picker Modal */}
       <AnimatePresence>
         {selectedWildCard && (
-          <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-duvora-plum/60 backdrop-blur-sm">
+          <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-aashi-plum/60 backdrop-blur-sm">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
-              className="p-6 rounded-3xl bg-white border border-duvora-pink shadow-glow text-center max-w-xs w-full"
+              className="p-6 rounded-3xl bg-white border border-aashi-pink shadow-glow text-center max-w-xs w-full"
             >
-              <h3 className="font-heading font-bold text-lg text-duvora-plum mb-4">Choose Next Color</h3>
+              <h3 className="font-heading font-bold text-lg text-aashi-plum mb-4">Choose Next Color</h3>
               <div className="grid grid-cols-2 gap-3">
                 {(['red', 'blue', 'green', 'yellow'] as const).map(color => (
                   <button
@@ -299,25 +299,25 @@ export const UnoGameView: React.FC<UnoGameViewProps> = ({ state, userId, onActio
       {/* Game Over Modal */}
       <AnimatePresence>
         {isGameOver && (
-          <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-duvora-plum/70 backdrop-blur-sm">
+          <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-aashi-plum/70 backdrop-blur-sm">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="p-8 rounded-3xl bg-white border border-duvora-pink shadow-glow text-center max-w-sm w-full"
+              className="p-8 rounded-3xl bg-white border border-aashi-pink shadow-glow text-center max-w-sm w-full"
             >
-              <div className="w-16 h-16 mx-auto rounded-full bg-duvora-pink/40 flex items-center justify-center text-duvora-berry mb-4">
-                <Trophy className="w-8 h-8 fill-duvora-berry" />
+              <div className="w-16 h-16 mx-auto rounded-full bg-aashi-pink/40 flex items-center justify-center text-aashi-berry mb-4">
+                <Trophy className="w-8 h-8 fill-aashi-berry" />
               </div>
-              <h3 className="font-heading font-extrabold text-2xl text-duvora-plum mb-2">
+              <h3 className="font-heading font-extrabold text-2xl text-aashi-plum mb-2">
                 {amIWinner ? '🎉 You Won!' : 'Match Finished!'}
               </h3>
-              <p className="text-sm text-duvora-plum/70 mb-6 font-medium">
+              <p className="text-sm text-aashi-plum/70 mb-6 font-medium">
                 {state.lastActionDescription || 'What an exhilarating battle!'}
               </p>
               {onRematch && (
                 <button
                   onClick={onRematch}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all"
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all"
                 >
                   <RefreshCw className="w-4 h-4" />
                   <span>PLAY REMATCH</span>

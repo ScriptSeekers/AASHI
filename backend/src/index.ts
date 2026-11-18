@@ -66,7 +66,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.get('/api/health', (_req: Request, res: Response) => {
   res.json({
     status: 'ok',
-    brand: 'DUVORA',
+    brand: 'AASHI',
     tagline: 'Love hard. Play harder.',
     timestamp: new Date().toISOString()
   });
@@ -110,10 +110,27 @@ initSocketManager(io);
 
 async function ensureDbSeeded() {
   try {
-    const userCount = await prisma.user.count();
-    if (userCount === 0) {
-      console.log('⚡ Empty database detected. Auto-seeding Arpit & Shree...');
+    const existingArpit = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: 'arpit@aashi.com' },
+          { email: 'arpit@duvora.com' }
+        ]
+      }
+    });
+    if (!existingArpit) {
+      console.log('⚡ Empty database detected. Auto-seeding Arpit & Shree for AASHI...');
       await seedDatabase();
+    } else if (existingArpit.email === 'arpit@duvora.com') {
+      await prisma.user.updateMany({
+        where: { email: 'arpit@duvora.com' },
+        data: { email: 'arpit@aashi.com' }
+      });
+      await prisma.user.updateMany({
+        where: { email: 'shree@duvora.com' },
+        data: { email: 'shree@aashi.com' }
+      });
+      console.log('⚡ Auto-migrated accounts to arpit@aashi.com & shree@aashi.com');
     }
   } catch (err: any) {
     console.warn('⚡ DB init notice:', err.message);
@@ -126,7 +143,7 @@ if (process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
     if (!server.listening) {
       server.listen(PORT, '0.0.0.0', () => {
       console.log(`
-      💗 DUVORA SERVER ONLINE
+      💗 AASHI SERVER ONLINE
       ═════════════════════════════════════════════════
       📡 API Running at:    http://0.0.0.0:${PORT}/api
       ⚡ Socket.IO Ready:   ws://0.0.0.0:${PORT}

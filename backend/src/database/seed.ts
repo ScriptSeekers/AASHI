@@ -3,7 +3,7 @@ import { hashPassword } from '../utils/auth.js';
 import { GAME_CATALOG } from '../shared/index.js';
 
 export async function seedDatabase() {
-  console.log('Seeding Duvora database exclusively for Arpit & Shree...');
+  console.log('Seeding Aashi database exclusively for Arpit & Shree...');
 
   // 1. Seed Games Catalog
   for (const game of GAME_CATALOG) {
@@ -98,7 +98,7 @@ export async function seedDatabase() {
 
   const arpit = await prisma.user.create({
     data: {
-      email: 'arpit@duvora.com',
+      email: 'arpit@aashi.com',
       username: 'arpit',
       name: 'Arpit',
       passwordHash,
@@ -111,7 +111,7 @@ export async function seedDatabase() {
 
   const shree = await prisma.user.create({
     data: {
-      email: 'shree@duvora.com',
+      email: 'shree@aashi.com',
       username: 'shree',
       name: 'Shree',
       passwordHash,
@@ -163,14 +163,14 @@ export async function seedDatabase() {
 
   // Initial welcome achievement
   await prisma.userAchievement.create({
-    data: { userId: arpit.id, key: 'duvora_welcome', title: 'Soulmates', icon: 'Heart' }
+    data: { userId: arpit.id, key: 'aashi_welcome', title: 'Soulmates', icon: 'Heart' }
   });
   await prisma.userAchievement.create({
-    data: { userId: shree.id, key: 'duvora_welcome', title: 'Soulmates', icon: 'Heart' }
+    data: { userId: shree.id, key: 'aashi_welcome', title: 'Soulmates', icon: 'Heart' }
   });
 
-  console.log('✓ Successfully created exclusive accounts: Arpit@duvora.com & Shree@duvora.com (Password: Love2927)');
-  console.log('Duvora database seeded successfully! 💖');
+  console.log('✓ Successfully created exclusive accounts: Arpit@aashi.com & Shree@aashi.com (Password: Love2927)');
+  console.log('Aashi database seeded successfully! 💖');
 }
 
 // Auto-run if executed directly via CLI

@@ -34,7 +34,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   if (loading) {
     return (
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-4 border-duvora-pink border-t-duvora-berry animate-spin" />
+        <div className="w-8 h-8 rounded-full border-4 border-aashi-pink border-t-aashi-berry animate-spin" />
       </div>
     );
   }
@@ -61,7 +61,7 @@ export const App: React.FC = () => {
       <BrowserRouter>
         <AuthProvider>
           <SocketProvider>
-            <div className="relative min-h-screen flex flex-col font-body text-duvora-plum selection:bg-duvora-berry selection:text-white">
+            <div className="relative min-h-screen flex flex-col font-body text-aashi-plum selection:bg-aashi-berry selection:text-white">
               {/* Subtle ambient hearts & sparkles */}
               <FloatingHearts />
 

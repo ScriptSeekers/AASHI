@@ -138,6 +138,7 @@ export async function getRoomStatistics(req: Request, res: Response, next: NextF
 
 export function isUserArpit(user: { email: string; username?: string | null }): boolean {
   return (
+    user.email.toLowerCase() === 'arpit@aashi.com' ||
     user.email.toLowerCase() === 'arpit@duvora.com' ||
     user.username?.toLowerCase() === 'arpit'
   );

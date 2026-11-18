@@ -1,7 +1,7 @@
-# DUVORA Security Audit & Threat Modeling
+# AASHI Security Audit & Threat Modeling
 
 ## Overview
-DUVORA is built with a zero-trust, server-authoritative multiplayer security architecture. Clients are considered untrusted presentation layers. No game rule, dice roll, card deal, or scoring calculation is ever determined or accepted from the frontend.
+AASHI is built with a zero-trust, server-authoritative multiplayer security architecture. Clients are considered untrusted presentation layers. No game rule, dice roll, card deal, or scoring calculation is ever determined or accepted from the frontend.
 
 ---
 
@@ -9,7 +9,7 @@ DUVORA is built with a zero-trust, server-authoritative multiplayer security arc
 - **Password Storage**: Passwords are never stored in plaintext. Passwords are salted and hashed using bcrypt with 10 rounds of salt generation.
 - **Session Tokens**: Cryptographically secure 256-bit entropy random tokens generated via Node.js `crypto.randomBytes(32).toString('hex')`.
 - **Cookie Security**:
-  - `HttpOnly`: Enforced on `duvora_session` cookie to prevent client-side JavaScript access (mitigating XSS session theft).
+  - `HttpOnly`: Enforced on `aashi_session` cookie to prevent client-side JavaScript access (mitigating XSS session theft).
   - `SameSite=Lax`: Prevents Cross-Site Request Forgery (CSRF).
   - `Secure`: Enabled in production over HTTPS.
 - **Session Expiry**: Sessions are time-bounded to 30 days and actively checked in database queries. Expired sessions are purged.

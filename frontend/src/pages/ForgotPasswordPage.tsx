@@ -13,13 +13,13 @@ export const ForgotPasswordPage: React.FC = () => {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4">
-      <div className="w-full max-w-md p-8 rounded-3xl bg-duvora-cloud/90 backdrop-blur-md border border-duvora-pink shadow-glass text-center">
-        <div className="w-14 h-14 mx-auto rounded-2xl bg-duvora-pink/40 p-1 shadow-neon mb-4 flex items-center justify-center text-duvora-berry">
-          <Heart className="w-7 h-7 fill-duvora-berry" />
+      <div className="w-full max-w-md p-8 rounded-3xl bg-aashi-cloud/90 backdrop-blur-md border border-aashi-pink shadow-glass text-center">
+        <div className="w-14 h-14 mx-auto rounded-2xl bg-aashi-pink/40 p-1 shadow-neon mb-4 flex items-center justify-center text-aashi-berry">
+          <Heart className="w-7 h-7 fill-aashi-berry" />
         </div>
 
-        <h1 className="font-heading font-extrabold text-2xl text-duvora-plum mb-2">Reset Password</h1>
-        <p className="text-xs text-duvora-plum/70 font-medium mb-6">
+        <h1 className="font-heading font-extrabold text-2xl text-aashi-plum mb-2">Reset Password</h1>
+        <p className="text-xs text-aashi-plum/70 font-medium mb-6">
           Enter your registered email address and we'll send you a recovery link.
         </p>
 
@@ -31,29 +31,29 @@ export const ForgotPasswordPage: React.FC = () => {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="relative text-left">
-              <Mail className="w-4 h-4 text-duvora-plum/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Mail className="w-4 h-4 text-aashi-plum/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                placeholder="your-email@duvora.com"
-                className="w-full pl-10 pr-4 py-3 rounded-2xl border border-duvora-pink bg-white/90 text-sm font-medium outline-none focus:ring-2 focus:ring-duvora-berry"
+                placeholder="your-email@aashi.com"
+                className="w-full pl-10 pr-4 py-3 rounded-2xl border border-aashi-pink bg-white/90 text-sm font-medium outline-none focus:ring-2 focus:ring-aashi-berry"
               />
             </div>
             <button
               type="submit"
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-heading font-bold text-sm shadow-neon hover:opacity-95 transition-all"
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-heading font-bold text-sm shadow-neon hover:opacity-95 transition-all"
             >
               SEND RESET LINK
             </button>
           </form>
         )}
 
-        <div className="mt-6 pt-4 border-t border-duvora-pink/40">
+        <div className="mt-6 pt-4 border-t border-aashi-pink/40">
           <Link
             to="/login"
-            className="inline-flex items-center gap-2 text-xs font-bold text-duvora-plum/70 hover:text-duvora-berry"
+            className="inline-flex items-center gap-2 text-xs font-bold text-aashi-plum/70 hover:text-aashi-berry"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Sign In</span>

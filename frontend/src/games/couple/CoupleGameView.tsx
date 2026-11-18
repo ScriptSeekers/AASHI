@@ -43,24 +43,24 @@ export const CoupleGameView: React.FC<CoupleGameViewProps> = ({
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto flex flex-col items-center gap-6 p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass">
+    <div className="w-full max-w-xl mx-auto flex flex-col items-center gap-6 p-6 bg-aashi-cloud/90 backdrop-blur-md rounded-3xl border border-aashi-pink shadow-glass">
       {/* Top Header */}
-      <div className="w-full flex items-center justify-between pb-3 border-b border-duvora-pink/40">
+      <div className="w-full flex items-center justify-between pb-3 border-b border-aashi-pink/40">
         <div className="flex items-center gap-2">
-          <Heart className="w-5 h-5 text-duvora-berry fill-duvora-berry animate-heartbeat" />
-          <span className="font-heading font-bold text-lg text-duvora-plum capitalize">
+          <Heart className="w-5 h-5 text-aashi-berry fill-aashi-berry animate-heartbeat" />
+          <span className="font-heading font-bold text-lg text-aashi-plum capitalize">
             {gameType.replace(/_/g, ' ')}
           </span>
         </div>
-        <span className="text-xs font-bold text-duvora-berry bg-duvora-pink/40 px-3 py-1 rounded-full">
+        <span className="text-xs font-bold text-aashi-berry bg-aashi-pink/40 px-3 py-1 rounded-full">
           Round {state.currentRound} / {state.totalRounds}
         </span>
       </div>
 
       {/* Prompt Card */}
-      <div className="w-full p-6 rounded-3xl bg-gradient-to-tr from-white to-duvora-lilac/30 border border-duvora-pink/50 shadow-sm text-center relative overflow-hidden">
-        <Sparkles className="absolute top-3 right-3 w-5 h-5 text-duvora-lavender opacity-60" />
-        <h3 className="font-heading font-extrabold text-xl sm:text-2xl text-duvora-plum leading-snug">
+      <div className="w-full p-6 rounded-3xl bg-gradient-to-tr from-white to-aashi-lilac/30 border border-aashi-pink/50 shadow-sm text-center relative overflow-hidden">
+        <Sparkles className="absolute top-3 right-3 w-5 h-5 text-aashi-lavender opacity-60" />
+        <h3 className="font-heading font-extrabold text-xl sm:text-2xl text-aashi-plum leading-snug">
           "{state.currentPrompt?.text || 'Ready for the next prompt?'}"
         </h3>
       </div>
@@ -81,11 +81,11 @@ export const CoupleGameView: React.FC<CoupleGameViewProps> = ({
                   disabled={myAnswer !== undefined}
                   className={`p-5 rounded-2xl border-2 font-semibold text-sm transition-all text-center flex flex-col items-center justify-center gap-2 ${
                     myAnswer === opt.key
-                      ? 'border-duvora-berry bg-duvora-pink/50 text-duvora-plum shadow-neon scale-[1.02]'
-                      : 'border-duvora-pink/50 bg-white hover:bg-duvora-lilac/40 text-duvora-plum shadow-sm'
+                      ? 'border-aashi-berry bg-aashi-pink/50 text-aashi-plum shadow-neon scale-[1.02]'
+                      : 'border-aashi-pink/50 bg-white hover:bg-aashi-lilac/40 text-aashi-plum shadow-sm'
                   }`}
                 >
-                  <span className="text-xs font-black text-duvora-berry bg-white px-2 py-0.5 rounded-full shadow-xs">
+                  <span className="text-xs font-black text-aashi-berry bg-white px-2 py-0.5 rounded-full shadow-xs">
                     OPTION {opt.key}
                   </span>
                   <span>{opt.text}</span>
@@ -128,17 +128,17 @@ export const CoupleGameView: React.FC<CoupleGameViewProps> = ({
               <motion.div
                 animate={{ rotate: spinning ? 1440 : 0 }}
                 transition={{ duration: 1.2, ease: 'easeOut' }}
-                className="w-36 h-36 rounded-full bg-gradient-to-tr from-duvora-berry via-duvora-pink to-duvora-lavender p-1 shadow-glow flex items-center justify-center"
+                className="w-36 h-36 rounded-full bg-gradient-to-tr from-aashi-berry via-aashi-pink to-aashi-lavender p-1 shadow-glow flex items-center justify-center"
               >
-                <div className="w-full h-full bg-duvora-plum rounded-full flex items-center justify-center text-white">
-                  <Compass className="w-16 h-16 text-duvora-pink animate-pulse" />
+                <div className="w-full h-full bg-aashi-plum rounded-full flex items-center justify-center text-white">
+                  <Compass className="w-16 h-16 text-aashi-pink animate-pulse" />
                 </div>
               </motion.div>
 
               <button
                 onClick={handleSpinWheel}
                 disabled={spinning}
-                className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all"
+                className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all"
               >
                 {spinning ? 'SPINNING...' : 'SPIN THE ROULETTE 🎡'}
               </button>
@@ -151,7 +151,7 @@ export const CoupleGameView: React.FC<CoupleGameViewProps> = ({
               <button
                 onClick={() => handleSelectOption('completed')}
                 disabled={myAnswer !== undefined}
-                className="px-6 py-3 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-bold text-sm shadow-neon hover:scale-105 transition-all"
+                className="px-6 py-3 rounded-2xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-bold text-sm shadow-neon hover:scale-105 transition-all"
               >
                 {myAnswer ? 'Answer Locked In 🔒' : 'Complete Challenge / Answer!'}
               </button>
@@ -160,13 +160,13 @@ export const CoupleGameView: React.FC<CoupleGameViewProps> = ({
 
           {/* Reveal Status */}
           {isRevealed && (
-            <div className="w-full flex flex-col items-center gap-3 mt-2 p-4 rounded-2xl bg-duvora-lilac/40 border border-duvora-pink">
-              <span className="font-heading font-bold text-sm text-duvora-berry">✨ Answers Revealed!</span>
-              <div className="flex justify-around w-full text-xs font-semibold text-duvora-plum">
+            <div className="w-full flex flex-col items-center gap-3 mt-2 p-4 rounded-2xl bg-aashi-lilac/40 border border-aashi-pink">
+              <span className="font-heading font-bold text-sm text-aashi-berry">✨ Answers Revealed!</span>
+              <div className="flex justify-around w-full text-xs font-semibold text-aashi-plum">
                 {state.players.map((p: any) => (
                   <div key={p.userId} className="flex flex-col items-center gap-1">
                     <span>{p.name}</span>
-                    <span className="px-3 py-1 rounded-lg bg-white shadow-xs font-bold uppercase text-duvora-berry">
+                    <span className="px-3 py-1 rounded-lg bg-white shadow-xs font-bold uppercase text-aashi-berry">
                       {state.answers?.[p.userId] || 'Waiting'}
                     </span>
                   </div>
@@ -174,7 +174,7 @@ export const CoupleGameView: React.FC<CoupleGameViewProps> = ({
               </div>
               <button
                 onClick={handleNext}
-                className="mt-2 flex items-center gap-2 px-5 py-2 rounded-xl bg-duvora-plum text-white text-xs font-bold shadow-md hover:bg-duvora-plum/90 transition-all"
+                className="mt-2 flex items-center gap-2 px-5 py-2 rounded-xl bg-aashi-plum text-white text-xs font-bold shadow-md hover:bg-aashi-plum/90 transition-all"
               >
                 <span>NEXT ROUND</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -184,17 +184,17 @@ export const CoupleGameView: React.FC<CoupleGameViewProps> = ({
         </div>
       ) : (
         <div className="w-full flex flex-col items-center gap-4 py-4 text-center">
-          <div className="w-16 h-16 rounded-full bg-duvora-pink/40 flex items-center justify-center text-duvora-berry mb-2">
-            <Heart className="w-8 h-8 fill-duvora-berry" />
+          <div className="w-16 h-16 rounded-full bg-aashi-pink/40 flex items-center justify-center text-aashi-berry mb-2">
+            <Heart className="w-8 h-8 fill-aashi-berry" />
           </div>
-          <h3 className="font-heading font-extrabold text-2xl text-duvora-plum">Romantic Match Completed!</h3>
-          <p className="text-sm text-duvora-plum/80 font-medium max-w-sm">
+          <h3 className="font-heading font-extrabold text-2xl text-aashi-plum">Romantic Match Completed!</h3>
+          <p className="text-sm text-aashi-plum/80 font-medium max-w-sm">
             You both connected, confessed and shared moments together!
           </p>
           {onRematch && (
             <button
               onClick={onRematch}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all"
             >
               <RefreshCw className="w-4 h-4" />
               <span>PLAY AGAIN</span>

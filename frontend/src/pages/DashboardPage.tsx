@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
 import { useSocket } from '../context/SocketContext.js';
 import { statsApi, invitationApi } from '../api/endpoints.js';
-import { UserStatsDTO, RoomInvitationDTO, GAME_CATALOG } from '@duvora/shared';
+import { UserStatsDTO, RoomInvitationDTO, GAME_CATALOG } from '@aashi/shared';
 import { soundManager } from '../utils/sound.js';
 import {
   Heart,
@@ -47,7 +47,7 @@ export const DashboardPage: React.FC = () => {
     const partnerName = user?.partnerName || partnerInfo?.name || 'Your partner';
 
     if (!partnerOnline) {
-      setOfflineNotice(`${partnerName} is currently offline. You can play together as soon as they log into DUVORA!`);
+      setOfflineNotice(`${partnerName} is currently offline. You can play together as soon as they log into AASHI!`);
       return;
     }
 
@@ -61,18 +61,18 @@ export const DashboardPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 pb-24 md:pb-12">
       {/* Personalized Greeting & Direct Partner Status Pill */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-duvora-pink/40 via-duvora-lilac/50 to-duvora-peach/30 border border-duvora-pink/60 shadow-glass">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-aashi-pink/40 via-aashi-lilac/50 to-aashi-peach/30 border border-aashi-pink/60 shadow-glass">
         <div>
           <div className="flex flex-wrap items-center gap-2 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-duvora-berry bg-white/70 px-3 py-1 rounded-full shadow-xs">
+            <span className="text-xs font-bold uppercase tracking-wider text-aashi-berry bg-white/70 px-3 py-1 rounded-full shadow-xs">
               Welcome Back
             </span>
-            <span className="text-xs text-duvora-plum/60 font-semibold">
+            <span className="text-xs text-aashi-plum/60 font-semibold">
               {new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}
             </span>
             {user?.partnerName && (
-              <span className="text-xs font-bold text-duvora-berry bg-white/80 px-3 py-1 rounded-full border border-duvora-pink/50 flex items-center gap-1.5 shadow-xs">
-                <Heart className="w-3.5 h-3.5 fill-duvora-berry text-duvora-berry" />
+              <span className="text-xs font-bold text-aashi-berry bg-white/80 px-3 py-1 rounded-full border border-aashi-pink/50 flex items-center gap-1.5 shadow-xs">
+                <Heart className="w-3.5 h-3.5 fill-aashi-berry text-aashi-berry" />
                 Partner: {user.partnerName}
                 {partnerOnline ? (
                   <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
@@ -88,10 +88,10 @@ export const DashboardPage: React.FC = () => {
               </span>
             )}
           </div>
-          <h1 className="font-heading font-black text-3xl sm:text-4xl text-duvora-plum">
+          <h1 className="font-heading font-black text-3xl sm:text-4xl text-aashi-plum">
             Hey {user?.name.split(' ')[0]} 💕
           </h1>
-          <p className="text-sm text-duvora-plum/80 font-medium mt-1">
+          <p className="text-sm text-aashi-plum/80 font-medium mt-1">
             Challenge your partner to any game with a single click.
           </p>
         </div>
@@ -100,7 +100,7 @@ export const DashboardPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => handlePlayTogetherClick()}
-            className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-heading font-bold text-sm shadow-neon hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-aashi-berry to-aashi-lavender text-white font-heading font-bold text-sm shadow-neon hover:scale-105 active:scale-95 transition-all"
           >
             <Play className="w-4 h-4 fill-white" />
             <span>PLAY TOGETHER</span>
@@ -120,20 +120,20 @@ export const DashboardPage: React.FC = () => {
 
       {/* Pending Invitations Section (If Any) */}
       {pendingInvitations.length > 0 && (
-        <div className="p-6 rounded-3xl bg-white/90 border border-duvora-pink shadow-glow space-y-4">
-          <div className="flex items-center gap-2 text-duvora-berry font-heading font-bold text-lg">
-            <Heart className="w-5 h-5 fill-duvora-berry" />
+        <div className="p-6 rounded-3xl bg-white/90 border border-aashi-pink shadow-glow space-y-4">
+          <div className="flex items-center gap-2 text-aashi-berry font-heading font-bold text-lg">
+            <Heart className="w-5 h-5 fill-aashi-berry" />
             <span>Pending Game Invitations ({pendingInvitations.length})</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {pendingInvitations.map(inv => (
               <div
                 key={inv.id}
-                className="p-4 rounded-2xl bg-duvora-lilac/30 border border-duvora-pink/60 flex items-center justify-between gap-4"
+                className="p-4 rounded-2xl bg-aashi-lilac/30 border border-aashi-pink/60 flex items-center justify-between gap-4"
               >
                 <div>
-                  <h4 className="font-bold text-sm text-duvora-plum">{inv.senderName} invited you!</h4>
-                  <p className="text-xs text-duvora-berry font-semibold">{inv.gameTitle || 'Couple Game'}</p>
+                  <h4 className="font-bold text-sm text-aashi-plum">{inv.senderName} invited you!</h4>
+                  <p className="text-xs text-aashi-berry font-semibold">{inv.gameTitle || 'Couple Game'}</p>
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -141,7 +141,7 @@ export const DashboardPage: React.FC = () => {
                       await acceptInvitation(inv.id);
                       setPendingInvitations(prev => prev.filter(i => i.id !== inv.id));
                     }}
-                    className="px-3 py-1.5 rounded-xl bg-duvora-berry text-white font-bold text-xs shadow-sm hover:opacity-90"
+                    className="px-3 py-1.5 rounded-xl bg-aashi-berry text-white font-bold text-xs shadow-sm hover:opacity-90"
                   >
                     Accept
                   </button>
@@ -150,7 +150,7 @@ export const DashboardPage: React.FC = () => {
                       await declineInvitation(inv.id);
                       setPendingInvitations(prev => prev.filter(i => i.id !== inv.id));
                     }}
-                    className="px-3 py-1.5 rounded-xl bg-white border border-duvora-pink text-duvora-plum font-semibold text-xs hover:bg-gray-50"
+                    className="px-3 py-1.5 rounded-xl bg-white border border-aashi-pink text-aashi-plum font-semibold text-xs hover:bg-gray-50"
                   >
                     Decline
                   </button>
@@ -164,7 +164,7 @@ export const DashboardPage: React.FC = () => {
       {/* Player Stats Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: 'GAMES PLAYED', value: stats?.gamesPlayed ?? 0, icon: Gamepad2, color: 'text-duvora-berry' },
+          { label: 'GAMES PLAYED', value: stats?.gamesPlayed ?? 0, icon: Gamepad2, color: 'text-aashi-berry' },
           { label: 'GAMES WON', value: stats?.gamesWon ?? 0, icon: Trophy, color: 'text-amber-500' },
           { label: 'CURRENT STREAK', value: `${stats?.currentStreak ?? 0} 🔥`, icon: Flame, color: 'text-rose-500' },
           { label: 'WIN RATE', value: `${stats?.winRate ?? 0}%`, icon: TrendingUp, color: 'text-emerald-500' }
@@ -173,15 +173,15 @@ export const DashboardPage: React.FC = () => {
           return (
             <div
               key={idx}
-              className="p-5 rounded-3xl bg-white/80 backdrop-blur-sm border border-duvora-pink/50 shadow-glass flex flex-col justify-between"
+              className="p-5 rounded-3xl bg-white/80 backdrop-blur-sm border border-aashi-pink/50 shadow-glass flex flex-col justify-between"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-bold tracking-wider text-duvora-plum/60 uppercase">
+                <span className="text-[10px] font-bold tracking-wider text-aashi-plum/60 uppercase">
                   {item.label}
                 </span>
                 <Icon className={`w-4 h-4 ${item.color}`} />
               </div>
-              <span className="font-heading font-black text-2xl sm:text-3xl text-duvora-plum">
+              <span className="font-heading font-black text-2xl sm:text-3xl text-aashi-plum">
                 {item.value}
               </span>
             </div>
@@ -193,10 +193,10 @@ export const DashboardPage: React.FC = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-heading font-black text-2xl text-duvora-plum">Featured Games</h2>
-            <p className="text-xs text-duvora-plum/70 font-medium">Click "Play Together" to invite your partner instantly</p>
+            <h2 className="font-heading font-black text-2xl text-aashi-plum">Featured Games</h2>
+            <p className="text-xs text-aashi-plum/70 font-medium">Click "Play Together" to invite your partner instantly</p>
           </div>
-          <Link to="/games" className="text-xs font-bold text-duvora-berry hover:underline flex items-center gap-1">
+          <Link to="/games" className="text-xs font-bold text-aashi-berry hover:underline flex items-center gap-1">
             Explore All 26 Games <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -205,28 +205,28 @@ export const DashboardPage: React.FC = () => {
           {GAME_CATALOG.slice(0, 6).map(game => (
             <div
               key={game.id}
-              className="p-5 rounded-3xl bg-white/85 backdrop-blur-md border border-duvora-pink/60 shadow-glass hover:shadow-glass-hover transition-all flex flex-col justify-between"
+              className="p-5 rounded-3xl bg-white/85 backdrop-blur-md border border-aashi-pink/60 shadow-glass hover:shadow-glass-hover transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-duvora-berry bg-duvora-pink/40">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-aashi-berry bg-aashi-pink/40">
                     {game.category}
                   </span>
-                  <span className="text-[11px] font-semibold text-duvora-plum/60 flex items-center gap-1">
+                  <span className="text-[11px] font-semibold text-aashi-plum/60 flex items-center gap-1">
                     <Clock className="w-3 h-3" /> ~{game.estimatedMinutes}m
                   </span>
                 </div>
-                <h3 className="font-heading font-bold text-lg text-duvora-plum mb-1">{game.title}</h3>
-                <p className="text-xs text-duvora-plum/75 font-body line-clamp-2 leading-relaxed">
+                <h3 className="font-heading font-bold text-lg text-aashi-plum mb-1">{game.title}</h3>
+                <p className="text-xs text-aashi-plum/75 font-body line-clamp-2 leading-relaxed">
                   {game.description}
                 </p>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-duvora-pink/30 flex items-center justify-between">
-                <span className="text-xs font-bold text-duvora-plum/60">{game.minPlayers}-{game.maxPlayers} Players</span>
+              <div className="mt-4 pt-3 border-t border-aashi-pink/30 flex items-center justify-between">
+                <span className="text-xs font-bold text-aashi-plum/60">{game.minPlayers}-{game.maxPlayers} Players</span>
                 <button
                   onClick={() => handlePlayTogetherClick(game.id)}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-duvora-plum text-white font-bold text-xs shadow-sm hover:bg-duvora-berry hover:scale-105 active:scale-95 transition-all"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-aashi-plum text-white font-bold text-xs shadow-sm hover:bg-aashi-berry hover:scale-105 active:scale-95 transition-all"
                 >
                   <Play className="w-3.5 h-3.5 fill-white" />
                   <span>Play Together</span>
@@ -239,16 +239,16 @@ export const DashboardPage: React.FC = () => {
 
       {/* SELECT GAME TO PLAY MODAL */}
       {isSelectGameModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-duvora-plum/60 backdrop-blur-sm">
-          <div className="w-full max-w-2xl max-h-[85vh] p-6 rounded-3xl bg-white border border-duvora-pink shadow-glow flex flex-col overflow-hidden">
-            <div className="flex items-center justify-between pb-3 border-b border-duvora-pink/40 mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-aashi-plum/60 backdrop-blur-sm">
+          <div className="w-full max-w-2xl max-h-[85vh] p-6 rounded-3xl bg-white border border-aashi-pink shadow-glow flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between pb-3 border-b border-aashi-pink/40 mb-4">
               <div>
-                <h3 className="font-heading font-bold text-xl text-duvora-plum">Select Game to Play Together</h3>
-                <p className="text-xs text-duvora-plum/60 font-medium">Partner: {user?.partnerName || 'Connected'}</p>
+                <h3 className="font-heading font-bold text-xl text-aashi-plum">Select Game to Play Together</h3>
+                <p className="text-xs text-aashi-plum/60 font-medium">Partner: {user?.partnerName || 'Connected'}</p>
               </div>
               <button
                 onClick={() => setIsSelectGameModalOpen(false)}
-                className="p-1 rounded-lg text-duvora-plum/50 hover:text-duvora-plum"
+                className="p-1 rounded-lg text-aashi-plum/50 hover:text-aashi-plum"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -261,16 +261,16 @@ export const DashboardPage: React.FC = () => {
                     setIsSelectGameModalOpen(false);
                     handlePlayTogetherClick(game.id);
                   }}
-                  className="p-3.5 rounded-2xl border border-duvora-pink/50 hover:border-duvora-berry bg-duvora-cloud/60 hover:bg-white text-left transition-all hover:scale-[1.01] flex flex-col justify-between"
+                  className="p-3.5 rounded-2xl border border-aashi-pink/50 hover:border-aashi-berry bg-aashi-cloud/60 hover:bg-white text-left transition-all hover:scale-[1.01] flex flex-col justify-between"
                 >
                   <div>
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-duvora-berry">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-aashi-berry">
                       {game.category}
                     </span>
-                    <h4 className="font-heading font-bold text-sm text-duvora-plum">{game.title}</h4>
-                    <p className="text-[11px] text-duvora-plum/70 line-clamp-2 mt-0.5">{game.description}</p>
+                    <h4 className="font-heading font-bold text-sm text-aashi-plum">{game.title}</h4>
+                    <p className="text-[11px] text-aashi-plum/70 line-clamp-2 mt-0.5">{game.description}</p>
                   </div>
-                  <span className="mt-2 text-[10px] font-bold text-duvora-berry self-end flex items-center gap-1">
+                  <span className="mt-2 text-[10px] font-bold text-aashi-berry self-end flex items-center gap-1">
                     Play with Partner →
                   </span>
                 </button>

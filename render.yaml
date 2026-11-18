@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: duvora-backend
+    name: aashi-backend
     env: node
     plan: free
     region: oregon

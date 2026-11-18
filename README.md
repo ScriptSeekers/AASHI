@@ -1,8 +1,8 @@
-# DUVORA
+# AASHI
 ### Love hard. Play harder.
 > *A private universe for two.*
 
-DUVORA is a modern, responsive, real-time multiplayer gaming platform designed exclusively for couples. It pairs competitive strategy, playful games, intimate question prompts, and party card games into a romantic experience.
+AASHI is a modern, responsive, real-time multiplayer gaming platform designed exclusively for couples. It pairs competitive strategy, playful games, intimate question prompts, and party card games into a romantic experience.
 
 ---
 
@@ -59,7 +59,7 @@ DUVORA is a modern, responsive, real-time multiplayer gaming platform designed e
 ## Project Structure
 
 ```
-DUVORA/
+AASHI/
 ├── backend/                  # Standalone Express + Socket.IO + SQLite (Prisma)
 │   ├── prisma/               # schema.prisma & dev.db
 │   ├── src/                  # Controllers, 26 game engines, auth, sockets
@@ -116,9 +116,9 @@ npm run dev
 ---
 
 ### Exclusive Couple Credentials
-DUVORA is configured exclusively for **Arpit & Shree**:
-- **Arpit**: `Arpit@duvora.com` / `Love2927`
-- **Shree**: `Shree@duvora.com` / `Love2927`
+AASHI is configured exclusively for **Arpit & Shree**:
+- **Arpit**: `Arpit@aashi.com` / `Love2927`
+- **Shree**: `Shree@aashi.com` / `Love2927`
 
 Public signup is disabled. Both accounts are already linked as partners.
 
@@ -153,4 +153,4 @@ npm --prefix backend test
 ---
 
 ## License
-MIT © 2026 DUVORA. Love hard. Play harder.
+MIT © 2026 AASHI. Love hard. Play harder.

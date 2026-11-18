@@ -54,7 +54,7 @@ export const QuickDuelScreen: React.FC = () => {
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FFE8F0] shadow-xs mb-8">
           <span className="w-2 h-2 rounded-full bg-[#D979AE] animate-pulse" />
           <span className="text-xs font-bold text-[#954072] uppercase tracking-wider">
-            DUVORA DUEL • ARPIT & SHREE
+            AASHI DUEL • ARPIT & SHREE
           </span>
         </div>
 

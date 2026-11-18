@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { UserDTO, LoginInput, RegisterInput } from '@duvora/shared';
+import { UserDTO, LoginInput, RegisterInput } from '@aashi/shared';
 import { authApi } from '../api/endpoints.js';
 import { soundManager } from '../utils/sound.js';
 
@@ -25,6 +25,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       soundManager.setEnabled(res.user.soundEnabled ?? true);
     } catch {
       setUser(null);
+      localStorage.removeItem('aashi_token');
       localStorage.removeItem('duvora_token');
     } finally {
       setLoading(false);
@@ -40,7 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const res = await authApi.login(data);
       if (res.token) {
-        localStorage.setItem('duvora_token', res.token);
+        localStorage.setItem('aashi_token', res.token);
       }
       setUser(res.user);
       soundManager.setEnabled(res.user.soundEnabled ?? true);
@@ -55,7 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const res = await authApi.register(data);
       if (res.token) {
-        localStorage.setItem('duvora_token', res.token);
+        localStorage.setItem('aashi_token', res.token);
       }
       setUser(res.user);
       soundManager.setEnabled(true);
@@ -69,6 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await authApi.logout();
     } catch {}
+    localStorage.removeItem('aashi_token');
     localStorage.removeItem('duvora_token');
     setUser(null);
     soundManager.playPop();

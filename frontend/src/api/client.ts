@@ -17,7 +17,7 @@ export async function apiRequest<T = any>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const token = localStorage.getItem('duvora_token');
+  const token = localStorage.getItem('aashi_token') || localStorage.getItem('duvora_token');
   const headers = new Headers(options.headers || {});
 
   if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {

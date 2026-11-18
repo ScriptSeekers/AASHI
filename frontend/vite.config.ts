@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      '@aashi/shared': path.resolve(__dirname, './src/shared/index.ts'),
       '@duvora/shared': path.resolve(__dirname, './src/shared/index.ts')
     }
   },

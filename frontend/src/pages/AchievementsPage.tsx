@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Trophy, Heart, Flame, Crown, Sparkles, Star, Zap } from 'lucide-react';
 import { statsApi } from '../api/endpoints.js';
-import { UserStatsDTO } from '@duvora/shared';
+import { UserStatsDTO } from '@aashi/shared';
 
 export const AchievementsPage: React.FC = () => {
   const [stats, setStats] = useState<UserStatsDTO | null>(null);
@@ -13,9 +13,9 @@ export const AchievementsPage: React.FC = () => {
   const achievements = [
     {
       id: '1',
-      key: 'duvora_welcome',
+      key: 'aashi_welcome',
       title: 'Love Birds',
-      desc: 'Welcome to Duvora! Began your exclusive couples journey.',
+      desc: 'Welcome to Aashi! Began your exclusive couples journey.',
       icon: Heart,
       unlocked: true
     },
@@ -72,12 +72,12 @@ export const AchievementsPage: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 pb-24 md:pb-12">
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-duvora-pink/40 text-duvora-berry flex items-center justify-center shadow-sm">
+        <div className="w-12 h-12 rounded-2xl bg-aashi-pink/40 text-aashi-berry flex items-center justify-center shadow-sm">
           <Trophy className="w-6 h-6" />
         </div>
         <div>
-          <h1 className="font-heading font-black text-3xl text-duvora-plum">Couple Achievements</h1>
-          <p className="text-xs text-duvora-plum/70 font-medium">Badges and milestones unlocked through your multiplayer adventures</p>
+          <h1 className="font-heading font-black text-3xl text-aashi-plum">Couple Achievements</h1>
+          <p className="text-xs text-aashi-plum/70 font-medium">Badges and milestones unlocked through your multiplayer adventures</p>
         </div>
       </div>
 
@@ -89,14 +89,14 @@ export const AchievementsPage: React.FC = () => {
               key={ach.id}
               className={`p-5 rounded-3xl border transition-all flex items-start gap-4 ${
                 ach.unlocked
-                  ? 'bg-white/90 border-duvora-pink/80 shadow-glass'
+                  ? 'bg-white/90 border-aashi-pink/80 shadow-glass'
                   : 'bg-white/40 border-gray-200 opacity-60'
               }`}
             >
               <div
                 className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm ${
                   ach.unlocked
-                    ? 'bg-gradient-to-tr from-duvora-berry to-duvora-lavender text-white'
+                    ? 'bg-gradient-to-tr from-aashi-berry to-aashi-lavender text-white'
                     : 'bg-gray-200 text-gray-500'
                 }`}
               >
@@ -104,18 +104,18 @@ export const AchievementsPage: React.FC = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-heading font-bold text-base text-duvora-plum">{ach.title}</h3>
+                  <h3 className="font-heading font-bold text-base text-aashi-plum">{ach.title}</h3>
                   {ach.unlocked ? (
                     <span className="text-[9px] font-black uppercase text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
                       UNLOCKED
                     </span>
                   ) : (
-                    <span className="text-[9px] font-semibold text-duvora-plum/40 bg-gray-100 px-2 py-0.5 rounded-full">
+                    <span className="text-[9px] font-semibold text-aashi-plum/40 bg-gray-100 px-2 py-0.5 rounded-full">
                       LOCKED
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-duvora-plum/70 font-body leading-relaxed">{ach.desc}</p>
+                <p className="text-xs text-aashi-plum/70 font-body leading-relaxed">{ach.desc}</p>
               </div>
             </div>
           );

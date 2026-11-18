@@ -28,7 +28,7 @@ export const UpdateProfileSchema = z.object({
 export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>;
 
 export const CreateRoomSchema = z.object({
-  name: z.string().trim().min(1).max(50).default('Duvora Secret Haven'),
+  name: z.string().trim().min(1).max(50).default('Aashi Secret Haven'),
   isPrivate: z.boolean().default(true),
   maxPlayers: z.number().int().min(2).max(4).default(2)
 });

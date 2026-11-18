@@ -1,5 +1,5 @@
 export const BRAND = {
-  name: 'DUVORA',
+  name: 'AASHI',
   tagline: 'Love hard. Play harder.',
   positioning: 'A private universe for two.',
   colors: {
@@ -32,7 +32,7 @@ export const GAME_CATALOG: GameMetadata[] = [
   // Card
   {
     id: 'uno',
-    title: 'UNO: Duvora Edition',
+    title: 'UNO: Aashi Edition',
     description: 'The beloved card-shedding classic! Draw cards, skip, reverse, match colors and numbers, and hit UNO before anyone catches you.',
     category: 'card',
     minPlayers: 2,

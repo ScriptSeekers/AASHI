@@ -11,7 +11,7 @@ import {
   CreateRoomInput,
   JoinRoomInput,
   InvitePartnerInput
-} from '@duvora/shared';
+} from '@aashi/shared';
 
 // Auth
 export const authApi = {
