@@ -1,4 +1,5 @@
-const BASE_URL = '/api';
+export const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || 'https://aashi-8uri.onrender.com').replace(/\/$/, '');
+const BASE_URL = `${BACKEND_URL}/api`;
 
 export class ApiError extends Error {
   public statusCode: number;
@@ -27,7 +28,8 @@ export async function apiRequest<T = any>(
     headers.set('Authorization', `Bearer ${token}`);
   }
 
-  const url = endpoint.startsWith('http') ? endpoint : `${BASE_URL}${endpoint}`;
+  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = endpoint.startsWith('http') ? endpoint : `${BASE_URL}${normalizedEndpoint}`;
 
   const res = await fetch(url, {
     ...options,

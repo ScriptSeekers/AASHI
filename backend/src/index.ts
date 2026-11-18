@@ -21,6 +21,7 @@ import notificationRoutes from './routes/notificationRoutes.js';
 
 import { errorHandler } from './middleware/errorHandler.js';
 import { initSocketManager } from './sockets/socketManager.js';
+import { ensureDatabaseReady } from './database/init.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -101,6 +102,8 @@ initSocketManager(io);
 
 // Start server
 if (process.env.NODE_ENV !== 'test') {
+  ensureDatabaseReady().catch(console.error);
+
   server.listen(PORT, () => {
     console.log(`
     💗 DUVORA SERVER ONLINE

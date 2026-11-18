@@ -2,7 +2,7 @@ import { prisma } from './db.js';
 import { hashPassword } from '../utils/auth.js';
 import { GAME_CATALOG } from '../shared/index.js';
 
-async function main() {
+export async function seedDatabase() {
   console.log('Seeding Duvora database exclusively for Arpit & Shree...');
 
   // 1. Seed Games Catalog
@@ -173,11 +173,15 @@ async function main() {
   console.log('Duvora database seeded successfully! 💖');
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+// If executed directly via CLI
+const isDirectRun = process.argv[1]?.includes('seed');
+if (isDirectRun) {
+  seedDatabase()
+    .catch((e) => {
+      console.error(e);
+      process.exit(1);
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}
