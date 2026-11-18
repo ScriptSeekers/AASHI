@@ -116,10 +116,20 @@ export const statsApi = {
     apiRequest<{ statistics: UserStatsDTO }>('/statistics/me'),
   getRoomStats: (roomId: string) =>
     apiRequest<{ roomId: string; members: any[]; headToHead: any }>(`/statistics/room/${roomId}`),
-  clearAllHistory: () =>
-    apiRequest<{ message: string }>('/statistics/history', { method: 'DELETE' }),
-  deleteHistoryItem: (id: string) =>
-    apiRequest<{ message: string }>(`/statistics/history/${id}`, { method: 'DELETE' })
+  clearAllHistory: async () => {
+    try {
+      return await apiRequest<{ message: string }>('/statistics/history', { method: 'DELETE' });
+    } catch {
+      return await apiRequest<{ message: string }>('/statistics/history/clear', { method: 'POST' });
+    }
+  },
+  deleteHistoryItem: async (id: string) => {
+    try {
+      return await apiRequest<{ message: string }>(`/statistics/history/${id}`, { method: 'DELETE' });
+    } catch {
+      return await apiRequest<{ message: string }>(`/statistics/history/${id}/delete`, { method: 'POST' });
+    }
+  }
 };
 
 // Notifications

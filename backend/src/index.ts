@@ -39,24 +39,17 @@ const allowedOrigins = [
 ].filter(Boolean) as string[];
 
 // Middleware
-app.use(cors({
-  origin: (origin, callback) => {
-    // allow requests with no origin (like mobile apps, curl, postman)
-    if (!origin) return callback(null, true);
-    if (
-      allowedOrigins.includes(origin) ||
-      origin.startsWith('http://localhost:') ||
-      origin.startsWith('http://127.0.0.1:') ||
-      origin.endsWith('.vercel.app') ||
-      origin.includes('vercel.app') ||
-      (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL)
-    ) {
-      return callback(null, true);
-    }
-    return callback(null, true); // Permissive for custom/preview domains
+const corsOptions = {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    callback(null, true);
   },
-  credentials: true
-}));
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use(cookieParser());
 app.use(express.json({ limit: '10mb' }));

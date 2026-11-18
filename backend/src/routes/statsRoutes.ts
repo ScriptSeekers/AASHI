@@ -14,6 +14,8 @@ router.use(authenticate);
 router.get('/me', getMyStatistics);
 router.get('/room/:roomId', getRoomStatistics);
 router.delete('/history', clearAllGameHistory);
+router.post('/history/clear', clearAllGameHistory);
 router.delete('/history/:id', deleteGameHistoryItem);
+router.post('/history/:id/delete', deleteGameHistoryItem);
 
 export default router;

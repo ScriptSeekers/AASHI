@@ -20,7 +20,7 @@ export async function apiRequest<T = any>(
   const token = localStorage.getItem('aashi_token') || localStorage.getItem('duvora_token');
   const headers = new Headers(options.headers || {});
 
-  if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {
+  if (options.body && !headers.has('Content-Type') && !(options.body instanceof FormData)) {
     headers.set('Content-Type', 'application/json');
   }
 
@@ -44,7 +44,11 @@ export async function apiRequest<T = any>(
   const data = isJson ? await res.json() : await res.text();
 
   if (!res.ok) {
-    const errorMsg = data?.message || data?.error || res.statusText || 'Request failed';
+    const errorMsg =
+      (typeof data === 'object' && data && (data.message || data.error)) ||
+      (typeof data === 'string' && data.length < 200 && data.trim()) ||
+      res.statusText ||
+      `Request failed (HTTP ${res.status})`;
     throw new ApiError(errorMsg, res.status, data);
   }
 
