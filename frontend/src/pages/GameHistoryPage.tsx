@@ -11,7 +11,8 @@ import {
   ShieldAlert, 
   CheckCircle2, 
   AlertCircle,
-  Loader2
+  Loader2,
+  RefreshCw
 } from 'lucide-react';
 
 export const GameHistoryPage: React.FC = () => {
@@ -21,13 +22,15 @@ export const GameHistoryPage: React.FC = () => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isClearingAll, setIsClearingAll] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [itemPendingDelete, setItemPendingDelete] = useState<GameHistoryItemDTO | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  // Arpit has exclusive administrative rights
   const isArpit = Boolean(
     user && (
-      user.email.toLowerCase() === 'arpit@aashi.com' ||
-      user.email.toLowerCase() === 'arpit@duvora.com' ||
-      user.username.toLowerCase() === 'arpit'
+      (user.email && user.email.toLowerCase().includes('arpit')) ||
+      (user.username && user.username.toLowerCase().includes('arpit')) ||
+      (user.name && user.name.toLowerCase().includes('arpit'))
     )
   );
 
@@ -52,8 +55,9 @@ export const GameHistoryPage: React.FC = () => {
       const res = await statsApi.clearAllHistory();
       setHistory([]);
       setShowConfirmModal(false);
-      setMessage({ type: 'success', text: res.message || 'All game history cleared successfully.' });
-      setTimeout(() => setMessage(null), 4000);
+      setMessage({ type: 'success', text: res.message || 'All game history and statistics have been successfully cleared by Arpit.' });
+      setTimeout(() => setMessage(null), 5000);
+      fetchHistory();
     } catch (err: any) {
       setMessage({ type: 'error', text: err.message || 'Failed to clear game history.' });
     } finally {
@@ -61,19 +65,20 @@ export const GameHistoryPage: React.FC = () => {
     }
   };
 
-  const handleDeleteItem = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!isArpit || deletingId) return;
-    if (!window.confirm('Delete this match record? This action cannot be undone.')) return;
-
-    setDeletingId(id);
+  const confirmDeleteItem = async () => {
+    if (!itemPendingDelete || !isArpit || deletingId) return;
+    const target = itemPendingDelete;
+    setDeletingId(target.id);
     setMessage(null);
+
     try {
       soundManager.playPop();
-      await statsApi.deleteHistoryItem(id);
-      setHistory(prev => prev.filter(item => item.id !== id));
-      setMessage({ type: 'success', text: 'Match record deleted successfully.' });
-      setTimeout(() => setMessage(null), 3000);
+      await statsApi.deleteHistoryItem(target.id);
+      setHistory(prev => prev.filter(item => item.id !== target.id));
+      setItemPendingDelete(null);
+      setMessage({ type: 'success', text: `Match record for "${target.gameTitle}" deleted successfully.` });
+      setTimeout(() => setMessage(null), 4000);
+      fetchHistory();
     } catch (err: any) {
       setMessage({ type: 'error', text: err.message || 'Failed to delete match record.' });
     } finally {
@@ -95,30 +100,45 @@ export const GameHistoryPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Arpit's Exclusive Clear All History Button */}
-        {isArpit && history.length > 0 && (
+        <div className="flex items-center gap-2">
+          {/* Refresh Button */}
           <button
             type="button"
-            onClick={() => setShowConfirmModal(true)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition-all shadow-xs hover:scale-[1.02] active:scale-95"
+            onClick={fetchHistory}
+            disabled={loading}
+            title="Refresh history"
+            className="p-2.5 rounded-2xl bg-white/80 hover:bg-white border border-aashi-pink/40 text-aashi-plum/70 hover:text-aashi-berry transition-all shadow-xs"
           >
-            <Trash2 className="w-4 h-4 text-rose-600" />
-            <span>CLEAR ALL HISTORY</span>
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
-        )}
+
+          {/* Arpit's Exclusive Clear All History Button - Always accessible to Arpit */}
+          {isArpit && (
+            <button
+              type="button"
+              onClick={() => setShowConfirmModal(true)}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition-all shadow-xs hover:scale-[1.02] active:scale-95"
+            >
+              <Trash2 className="w-4 h-4 text-rose-600" />
+              <span>CLEAR ALL HISTORY</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Arpit Authority Notice Badge */}
       {isArpit && (
-        <div className="flex items-center gap-2 p-3 rounded-2xl bg-aashi-lilac/30 border border-aashi-lavender/60 text-aashi-plum text-xs font-semibold">
+        <div className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-gradient-to-r from-aashi-lilac/40 to-aashi-pink/30 border border-aashi-lavender/60 text-aashi-plum text-xs font-semibold shadow-xs">
           <ShieldAlert className="w-4 h-4 text-aashi-berry flex-shrink-0" />
-          <span>Arpit Master Control: You have administrator authority to delete match history and reset statistics.</span>
+          <span>
+            <strong>Arpit Master Control Active:</strong> You hold exclusive administrator authority to delete individual match logs or clear all couple game history and reset statistics.
+          </span>
         </div>
       )}
 
       {/* Feedback Alert */}
       {message && (
-        <div className={`flex items-center gap-2 p-3.5 rounded-2xl text-xs font-bold ${
+        <div className={`flex items-center gap-2.5 p-3.5 rounded-2xl text-xs font-bold shadow-xs ${
           message.type === 'success' 
             ? 'bg-emerald-50 border border-emerald-200 text-emerald-800' 
             : 'bg-rose-50 border border-rose-200 text-rose-700'
@@ -139,12 +159,24 @@ export const GameHistoryPage: React.FC = () => {
           <p className="text-xs font-semibold">Loading match history...</p>
         </div>
       ) : history.length === 0 ? (
-        <div className="p-12 text-center rounded-3xl bg-white/80 border border-aashi-pink shadow-sm">
-          <Swords className="w-12 h-12 text-aashi-berry/40 mx-auto mb-3" />
-          <h3 className="font-heading font-bold text-lg text-aashi-plum mb-1">No Games Played Yet</h3>
-          <p className="text-xs text-aashi-plum/70 max-w-sm mx-auto">
-            Invite your partner from the Couple Zone and start your very first duel!
-          </p>
+        <div className="p-12 text-center rounded-3xl bg-white/80 border border-aashi-pink shadow-sm space-y-4">
+          <Swords className="w-12 h-12 text-aashi-berry/40 mx-auto" />
+          <div className="space-y-1">
+            <h3 className="font-heading font-bold text-lg text-aashi-plum">No Games Played Yet</h3>
+            <p className="text-xs text-aashi-plum/70 max-w-sm mx-auto">
+              Match history is completely clean. Start your next duel from the Game Library or Couple Zone!
+            </p>
+          </div>
+          {isArpit && (
+            <button
+              type="button"
+              onClick={() => setShowConfirmModal(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition-all"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Reset All Player Statistics to 0</span>
+            </button>
+          )}
         </div>
       ) : (
         /* Match History List */
@@ -194,7 +226,10 @@ export const GameHistoryPage: React.FC = () => {
                 {isArpit && (
                   <button
                     type="button"
-                    onClick={(e) => handleDeleteItem(item.id, e)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setItemPendingDelete(item);
+                    }}
                     disabled={deletingId === item.id}
                     title="Delete this match record (Arpit exclusive)"
                     className="p-2 rounded-xl text-aashi-plum/40 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-all ml-1"
@@ -212,6 +247,47 @@ export const GameHistoryPage: React.FC = () => {
         </div>
       )}
 
+      {/* In-App Confirmation Modal for Deleting a Single Match Record */}
+      {itemPendingDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-aashi-plum/60 backdrop-blur-sm">
+          <div className="w-full max-w-sm p-6 rounded-3xl bg-white border border-aashi-pink shadow-glow space-y-4 animate-scaleIn">
+            <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto">
+              <Trash2 className="w-6 h-6" />
+            </div>
+            <div className="text-center space-y-1">
+              <h3 className="font-heading font-black text-xl text-aashi-plum">Delete Match Record?</h3>
+              <p className="text-xs text-aashi-plum/70 leading-relaxed">
+                Delete the match record for <strong>{itemPendingDelete.gameTitle}</strong> against <strong>{itemPendingDelete.opponentName}</strong>?
+              </p>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setItemPendingDelete(null)}
+                className="flex-1 py-2.5 rounded-xl border border-aashi-pink text-xs font-bold text-aashi-plum hover:bg-gray-50 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmDeleteItem}
+                disabled={Boolean(deletingId)}
+                className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md transition-all flex items-center justify-center gap-1.5"
+              >
+                {deletingId ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  <span>Delete Match</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Confirmation Modal for Clearing All History */}
       {showConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-aashi-plum/60 backdrop-blur-sm">
@@ -222,7 +298,7 @@ export const GameHistoryPage: React.FC = () => {
             <div className="text-center space-y-1">
               <h3 className="font-heading font-black text-xl text-aashi-plum">Clear All Match History?</h3>
               <p className="text-xs text-aashi-plum/70 leading-relaxed">
-                As Arpit, confirming this will permanently delete all match records and reset both player statistics to 0. This action cannot be reversed.
+                As Arpit, confirming this will permanently delete all match history records and reset both player statistics (Games Played, Wins, Streak, Win Rate) to 0. This action cannot be reversed.
               </p>
             </div>
             <div className="flex gap-3 pt-2">
@@ -242,7 +318,7 @@ export const GameHistoryPage: React.FC = () => {
                 {isClearingAll ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Clearing...</span>
+                    <span>Clearing All...</span>
                   </>
                 ) : (
                   <span>Yes, Delete All</span>

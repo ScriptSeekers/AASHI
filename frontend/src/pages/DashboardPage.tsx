@@ -16,7 +16,8 @@ import {
   ArrowRight,
   TrendingUp,
   X,
-  Radio
+  Radio,
+  Trash2
 } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
@@ -34,6 +35,14 @@ export const DashboardPage: React.FC = () => {
   const [pendingInvitations, setPendingInvitations] = useState<RoomInvitationDTO[]>([]);
   const [isSelectGameModalOpen, setIsSelectGameModalOpen] = useState(false);
   const [offlineNotice, setOfflineNotice] = useState<string | null>(null);
+
+  const isArpit = Boolean(
+    user && (
+      (user.email && user.email.toLowerCase().includes('arpit')) ||
+      (user.username && user.username.toLowerCase().includes('arpit')) ||
+      (user.name && user.name.toLowerCase().includes('arpit'))
+    )
+  );
 
   useEffect(() => {
     // Fetch real-time stats
@@ -162,31 +171,56 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* Player Stats Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {[
-          { label: 'GAMES PLAYED', value: stats?.gamesPlayed ?? 0, icon: Gamepad2, color: 'text-aashi-berry' },
-          { label: 'GAMES WON', value: stats?.gamesWon ?? 0, icon: Trophy, color: 'text-amber-500' },
-          { label: 'CURRENT STREAK', value: `${stats?.currentStreak ?? 0} 🔥`, icon: Flame, color: 'text-rose-500' },
-          { label: 'WIN RATE', value: `${stats?.winRate ?? 0}%`, icon: TrendingUp, color: 'text-emerald-500' }
-        ].map((item, idx) => {
-          const Icon = item.icon;
-          return (
-            <div
-              key={idx}
-              className="p-5 rounded-3xl bg-white/80 backdrop-blur-sm border border-aashi-pink/50 shadow-glass flex flex-col justify-between"
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold uppercase tracking-wider text-aashi-plum/60">
+            Couple Statistics
+          </span>
+          <div className="flex items-center gap-2">
+            {isArpit && (
+              <Link
+                to="/history"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition-all shadow-xs"
+              >
+                <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                <span>Arpit Master Delete</span>
+              </Link>
+            )}
+            <Link
+              to="/history"
+              className="text-xs font-bold text-aashi-berry hover:underline flex items-center gap-1"
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-bold tracking-wider text-aashi-plum/60 uppercase">
-                  {item.label}
+              Match History <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {[
+            { label: 'GAMES PLAYED', value: stats?.gamesPlayed ?? 0, icon: Gamepad2, color: 'text-aashi-berry' },
+            { label: 'GAMES WON', value: stats?.gamesWon ?? 0, icon: Trophy, color: 'text-amber-500' },
+            { label: 'CURRENT STREAK', value: `${stats?.currentStreak ?? 0} 🔥`, icon: Flame, color: 'text-rose-500' },
+            { label: 'WIN RATE', value: `${stats?.winRate ?? 0}%`, icon: TrendingUp, color: 'text-emerald-500' }
+          ].map((item, idx) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={idx}
+                className="p-5 rounded-3xl bg-white/80 backdrop-blur-sm border border-aashi-pink/50 shadow-glass flex flex-col justify-between"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-bold tracking-wider text-aashi-plum/60 uppercase">
+                    {item.label}
+                  </span>
+                  <Icon className={`w-4 h-4 ${item.color}`} />
+                </div>
+                <span className="font-heading font-black text-2xl sm:text-3xl text-aashi-plum">
+                  {item.value}
                 </span>
-                <Icon className={`w-4 h-4 ${item.color}`} />
               </div>
-              <span className="font-heading font-black text-2xl sm:text-3xl text-aashi-plum">
-                {item.value}
-              </span>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
       {/* Featured Games Section */}

@@ -136,11 +136,22 @@ export async function getRoomStatistics(req: Request, res: Response, next: NextF
   }
 }
 
-export function isUserArpit(user: { email: string; username?: string | null }): boolean {
+export function isUserArpit(user: { email?: string | null; username?: string | null; name?: string | null }): boolean {
+  if (!user) return false;
+  const email = String(user.email || '').toLowerCase().trim();
+  const username = String(user.username || '').toLowerCase().trim();
+  const name = String(user.name || '').toLowerCase().trim();
+
   return (
-    user.email.toLowerCase() === 'arpit@aashi.com' ||
-    user.email.toLowerCase() === 'arpit@duvora.com' ||
-    user.username?.toLowerCase() === 'arpit'
+    email === 'arpit@aashi.com' ||
+    email === 'arpit@duvora.com' ||
+    email.startsWith('arpit@') ||
+    email.includes('arpit') ||
+    username === 'arpit' ||
+    username.includes('arpit') ||
+    name === 'arpit' ||
+    name.startsWith('arpit') ||
+    name.includes('arpit')
   );
 }
 
@@ -156,18 +167,33 @@ export async function clearAllGameHistory(req: Request, res: Response, next: Nex
     await prisma.gameHistory.deleteMany({});
 
     // Reset user statistics for both players
-    await prisma.userStatistics.updateMany({
-      data: {
-        gamesPlayed: 0,
-        gamesWon: 0,
-        gamesLost: 0,
-        gamesDrawn: 0,
-        currentStreak: 0,
-        bestStreak: 0,
-        winRate: 0.0,
-        favoriteGame: null
-      }
-    });
+    const allUsers = await prisma.user.findMany({ select: { id: true } });
+    for (const u of allUsers) {
+      await prisma.userStatistics.upsert({
+        where: { userId: u.id },
+        update: {
+          gamesPlayed: 0,
+          gamesWon: 0,
+          gamesLost: 0,
+          gamesDrawn: 0,
+          currentStreak: 0,
+          bestStreak: 0,
+          winRate: 0.0,
+          favoriteGame: null
+        },
+        create: {
+          userId: u.id,
+          gamesPlayed: 0,
+          gamesWon: 0,
+          gamesLost: 0,
+          gamesDrawn: 0,
+          currentStreak: 0,
+          bestStreak: 0,
+          winRate: 0.0,
+          favoriteGame: null
+        }
+      }).catch(() => {});
+    }
 
     res.json({ message: 'All game history and statistics have been successfully cleared by Arpit.' });
   } catch (err) {
@@ -196,6 +222,42 @@ export async function deleteGameHistoryItem(req: Request, res: Response, next: N
     await prisma.gameHistory.delete({
       where: { id: historyId }
     });
+
+    // Also delete opponent's corresponding match history record if created around the same time
+    if (existing.opponentId) {
+      const timeWindowStart = new Date(existing.createdAt.getTime() - 15000);
+      const timeWindowEnd = new Date(existing.createdAt.getTime() + 15000);
+
+      await prisma.gameHistory.deleteMany({
+        where: {
+          userId: existing.opponentId,
+          opponentId: existing.userId,
+          gameType: existing.gameType,
+          createdAt: {
+            gte: timeWindowStart,
+            lte: timeWindowEnd
+          }
+        }
+      }).catch(() => {});
+
+      // Recalculate stats for opponent
+      const oppCount = await prisma.gameHistory.count({ where: { userId: existing.opponentId } });
+      const oppWins = await prisma.gameHistory.count({ where: { userId: existing.opponentId, result: 'won' } });
+      const oppLosses = await prisma.gameHistory.count({ where: { userId: existing.opponentId, result: 'lost' } });
+      const oppDraws = await prisma.gameHistory.count({ where: { userId: existing.opponentId, result: 'draw' } });
+      const oppWinRate = oppCount > 0 ? Number(((oppWins / oppCount) * 100).toFixed(1)) : 0;
+
+      await prisma.userStatistics.update({
+        where: { userId: existing.opponentId },
+        data: {
+          gamesPlayed: oppCount,
+          gamesWon: oppWins,
+          gamesLost: oppLosses,
+          gamesDrawn: oppDraws,
+          winRate: oppWinRate
+        }
+      }).catch(() => {});
+    }
 
     // Recalculate statistics for user
     const remainingCount = await prisma.gameHistory.count({ where: { userId: existing.userId } });
