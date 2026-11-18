@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { soundManager } from '../../utils/sound.js';
-import { RefreshCw, Trophy } from 'lucide-react';
+import { RefreshCw, Trophy, Crown } from 'lucide-react';
 
 interface BoardGameViewProps {
   gameType: string;
@@ -18,6 +18,8 @@ export const BoardGameView: React.FC<BoardGameViewProps> = ({
   onAction,
   onRematch
 }) => {
+  const [selectedPieceId, setSelectedPieceId] = useState<string | null>(null);
+
   const isGameOver = state.status === 'completed';
   const isWinner = state.winnerUserId === userId;
 
@@ -145,43 +147,133 @@ export const BoardGameView: React.FC<BoardGameViewProps> = ({
 
   // 3. CHECKERS
   if (gameType === 'checkers') {
-    const isMyTurn = state.players[state.currentTurnIndex]?.userId === userId;
+    const myPlayerIndex = state.players.findIndex((p: any) => p.userId === userId);
+    const isMyTurn = state.currentTurnIndex === myPlayerIndex;
+    const selectedPiece = state.pieces?.find((p: any) => p.id === selectedPieceId);
+
+    // Compute legal move squares for selected piece
+    const legalTargets: { row: number; col: number; isJump: boolean }[] = [];
+    if (selectedPiece && isMyTurn && !isGameOver) {
+      const directions = selectedPiece.isKing
+        ? [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+        : selectedPiece.playerIndex === 0
+        ? [[1, -1], [1, 1]]
+        : [[-1, -1], [-1, 1]];
+
+      for (const [dr, dc] of directions) {
+        // 1-step move
+        const r1 = selectedPiece.row + dr;
+        const c1 = selectedPiece.col + dc;
+        if (r1 >= 0 && r1 < 8 && c1 >= 0 && c1 < 8 && (r1 + c1) % 2 === 1) {
+          const occ1 = state.pieces?.find((p: any) => p.row === r1 && p.col === c1);
+          if (!occ1) legalTargets.push({ row: r1, col: c1, isJump: false });
+        }
+
+        // 2-step jump
+        const r2 = selectedPiece.row + dr * 2;
+        const c2 = selectedPiece.col + dc * 2;
+        if (r2 >= 0 && r2 < 8 && c2 >= 0 && c2 < 8 && (r2 + c2) % 2 === 1) {
+          const occ2 = state.pieces?.find((p: any) => p.row === r2 && p.col === c2);
+          const jumped = state.pieces?.find((p: any) => p.row === selectedPiece.row + dr && p.col === selectedPiece.col + dc);
+          if (!occ2 && jumped && jumped.playerIndex !== selectedPiece.playerIndex) {
+            legalTargets.push({ row: r2, col: c2, isJump: true });
+          }
+        }
+      }
+    }
+
+    const handleSquareClick = (r: number, c: number) => {
+      if (!isMyTurn || isGameOver) return;
+
+      const piece = state.pieces?.find((p: any) => p.row === r && p.col === c);
+
+      // If clicked own piece: select it
+      if (piece && piece.playerIndex === myPlayerIndex) {
+        soundManager.playCardFlip();
+        setSelectedPieceId(selectedPieceId === piece.id ? null : piece.id);
+        return;
+      }
+
+      // If piece is selected and clicked empty target square
+      if (selectedPieceId && !piece) {
+        const isLegal = legalTargets.some(t => t.row === r && t.col === c);
+        if (isLegal) {
+          soundManager.playPop();
+          onAction('move', { pieceId: selectedPieceId, toRow: r, toCol: c });
+          setSelectedPieceId(null);
+        }
+      }
+    };
 
     return (
       <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-4 p-4 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass">
         <div className="w-full flex items-center justify-between pb-2 border-b border-duvora-pink/40">
           <span className="font-semibold text-sm text-duvora-plum">
-            {isGameOver ? 'Checkers Match Over' : isMyTurn ? '✨ Your Turn!' : 'Waiting for partner...'}
+            {isGameOver
+              ? isWinner
+                ? '🎉 Victory! All opponent checkers captured!'
+                : 'Match Concluded!'
+              : isMyTurn
+              ? selectedPieceId
+                ? 'Select a highlighted square to move or jump!'
+                : '✨ Your Turn! Select one of your checkers.'
+              : `Waiting for ${state.players[state.currentTurnIndex]?.name}...`}
           </span>
+          <div className="flex items-center gap-3 text-xs font-bold">
+            <span className="text-rose-500">
+              {state.players[0]?.name}: {state.pieces?.filter((p: any) => p.playerIndex === 0).length}
+            </span>
+            <span className="text-duvora-plum/40">vs</span>
+            <span className="text-duvora-berry">
+              {state.players[1]?.name}: {state.pieces?.filter((p: any) => p.playerIndex === 1).length}
+            </span>
+          </div>
         </div>
 
         {/* 8x8 Board */}
-        <div className="grid grid-cols-8 grid-rows-8 w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] p-2 bg-duvora-plum rounded-2xl shadow-glow border-4 border-white">
+        <div className="grid grid-cols-8 grid-rows-8 w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] p-2 bg-duvora-plum rounded-2xl shadow-glow border-4 border-white select-none">
           {Array(8).fill(null).map((_, r) =>
             Array(8).fill(null).map((_, c) => {
               const isDark = (r + c) % 2 === 1;
               const piece = state.pieces?.find((p: any) => p.row === r && p.col === c);
+              const isSelected = selectedPiece?.row === r && selectedPiece?.col === c;
+              const isLegalTarget = legalTargets.some(t => t.row === r && t.col === c);
+              const isJumpTarget = legalTargets.some(t => t.row === r && t.col === c && t.isJump);
 
               return (
-                <div
+                <button
                   key={`${r}-${c}`}
-                  className={`flex items-center justify-center ${
-                    isDark ? 'bg-duvora-plum/80' : 'bg-duvora-lilac/60'
-                  }`}
+                  onClick={() => handleSquareClick(r, c)}
+                  disabled={!isMyTurn || isGameOver || (!isDark && !piece)}
+                  className={`relative flex items-center justify-center transition-all ${
+                    isDark ? 'bg-duvora-plum/85 hover:bg-duvora-plum' : 'bg-duvora-lilac/60'
+                  } ${isSelected ? 'ring-4 ring-duvora-berry z-10' : ''}`}
                 >
+                  {/* Checker Piece */}
                   {piece && (
                     <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-md border-2 border-white ${
+                      whileHover={isMyTurn && piece.playerIndex === myPlayerIndex ? { scale: 1.15 } : {}}
+                      className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-md border-2 ${
                         piece.playerIndex === 0
-                          ? 'bg-rose-500 text-white'
-                          : 'bg-duvora-lavender text-duvora-plum'
-                      }`}
+                          ? 'bg-rose-500 text-white border-rose-300'
+                          : 'bg-gradient-to-tr from-duvora-berry to-duvora-lavender text-white border-white'
+                      } ${isSelected ? 'ring-4 ring-white animate-bounce' : ''}`}
                     >
                       {piece.isKing ? '👑' : ''}
                     </motion.div>
                   )}
-                </div>
+
+                  {/* Legal Destination Highlight */}
+                  {isLegalTarget && (
+                    <div
+                      className={`w-4 h-4 rounded-full ${
+                        isJumpTarget
+                          ? 'bg-rose-500 ring-4 ring-rose-300 animate-pulse'
+                          : 'bg-emerald-400 ring-2 ring-emerald-200'
+                      }`}
+                    />
+                  )}
+                </button>
               );
             })
           )}

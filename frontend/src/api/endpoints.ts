@@ -70,12 +70,27 @@ export const roomApi = {
 export const invitationApi = {
   getPending: () =>
     apiRequest<{ invitations: RoomInvitationDTO[] }>('/invitations/pending'),
+  getPartnerStatus: () =>
+    apiRequest<{
+      hasPartner: boolean;
+      partner?: { id: string; name: string; username: string; avatar?: string | null; isOnline: boolean };
+      pendingInvitation?: RoomInvitationDTO | null;
+    }>('/invitations/partner-status'),
+  invitePartnerDirect: (gameType?: string) =>
+    apiRequest<{ message: string; invitation: RoomInvitationDTO }>('/invitations/invite-partner', {
+      method: 'POST',
+      body: JSON.stringify({ gameType })
+    }),
   accept: (id: string) =>
-    apiRequest<{ message: string; room: CoupleRoomDTO }>(`/invitations/${id}/accept`, {
+    apiRequest<{ message: string; room: CoupleRoomDTO; gameType?: string; sessionId?: string }>(`/invitations/${id}/accept`, {
       method: 'POST'
     }),
   decline: (id: string) =>
     apiRequest<{ message: string }>(`/invitations/${id}/decline`, {
+      method: 'POST'
+    }),
+  cancel: (id: string) =>
+    apiRequest<{ message: string }>(`/invitations/${id}/cancel`, {
       method: 'POST'
     })
 };

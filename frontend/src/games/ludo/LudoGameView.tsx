@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LudoGameState, LudoColor } from '@duvora/shared';
 import { soundManager } from '../../utils/sound.js';
-import { Dices, RefreshCw, Trophy, Star } from 'lucide-react';
+import { Dices, RefreshCw, Trophy, Star, ArrowRight, ShieldCheck } from 'lucide-react';
 
 interface LudoGameViewProps {
   state: LudoGameState;
@@ -11,11 +11,11 @@ interface LudoGameViewProps {
   onRematch?: () => void;
 }
 
-const COLOR_CLASSES: Record<LudoColor, { bg: string; border: string; text: string; token: string }> = {
-  red: { bg: 'bg-rose-500', border: 'border-rose-400', text: 'text-rose-600', token: 'bg-rose-500 ring-rose-300' },
-  green: { bg: 'bg-emerald-500', border: 'border-emerald-400', text: 'text-emerald-600', token: 'bg-emerald-500 ring-emerald-300' },
-  yellow: { bg: 'bg-amber-400', border: 'border-amber-300', text: 'text-amber-600', token: 'bg-amber-400 ring-amber-200' },
-  blue: { bg: 'bg-sky-500', border: 'border-sky-400', text: 'text-sky-600', token: 'bg-sky-500 ring-sky-300' }
+const COLOR_CLASSES: Record<LudoColor, { bg: string; border: string; text: string; token: string; lightBg: string }> = {
+  red: { bg: 'bg-rose-500', border: 'border-rose-400', text: 'text-rose-600', token: 'bg-rose-500 ring-rose-300', lightBg: 'bg-rose-50' },
+  green: { bg: 'bg-emerald-500', border: 'border-emerald-400', text: 'text-emerald-600', token: 'bg-emerald-500 ring-emerald-300', lightBg: 'bg-emerald-50' },
+  yellow: { bg: 'bg-amber-400', border: 'border-amber-300', text: 'text-amber-600', token: 'bg-amber-400 ring-amber-200', lightBg: 'bg-amber-50' },
+  blue: { bg: 'bg-sky-500', border: 'border-sky-400', text: 'text-sky-600', token: 'bg-sky-500 ring-sky-300', lightBg: 'bg-sky-50' }
 };
 
 export const LudoGameView: React.FC<LudoGameViewProps> = ({ state, userId, onAction, onRematch }) => {
@@ -45,7 +45,7 @@ export const LudoGameView: React.FC<LudoGameViewProps> = ({ state, userId, onAct
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-4 p-4 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass">
+    <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-5 p-4 sm:p-6 bg-duvora-cloud/90 backdrop-blur-md rounded-3xl border border-duvora-pink shadow-glass">
       {/* Header Turn Tracker */}
       <div className="w-full flex items-center justify-between pb-3 border-b border-duvora-pink/40">
         <div className="flex items-center gap-2">
@@ -56,10 +56,14 @@ export const LudoGameView: React.FC<LudoGameViewProps> = ({ state, userId, onAct
           />
           <span className="font-semibold text-sm text-duvora-plum">
             {isGameOver
-              ? 'Match Finished'
+              ? amIWinner
+                ? '🏆 Victory! All your tokens are Home!'
+                : `${state.players.find(p => p.userId === state.winnerUserId)?.name || 'Partner'} Won the Game!`
               : isMyTurn
               ? state.hasRolled
-                ? 'Select a highlighted token to move!'
+                ? state.canMoveTokens.length > 0
+                  ? `Rolled ${state.diceValue}! Select which token to move:`
+                  : `Rolled ${state.diceValue}! No legal moves available.`
                 : 'Your Turn! Roll the dice.'
               : `${currentPlayer?.name}'s Turn...`}
           </span>
@@ -67,176 +71,132 @@ export const LudoGameView: React.FC<LudoGameViewProps> = ({ state, userId, onAct
 
         <div className="flex items-center gap-3">
           {state.players.map(p => (
-            <div key={p.userId} className="flex items-center gap-1 text-xs font-semibold">
-              <span className={`w-2.5 h-2.5 rounded-full ${COLOR_CLASSES[p.color].bg}`} />
-              <span className="text-duvora-plum">{p.name.split(' ')[0]}</span>
+            <div key={p.userId} className="flex items-center gap-1.5 text-xs font-semibold">
+              <span className={`w-3 h-3 rounded-full ${COLOR_CLASSES[p.color].bg} shadow-xs`} />
+              <span className="text-duvora-plum font-bold">{p.name.split(' ')[0]}</span>
+              <span className="text-[10px] text-duvora-plum/60">
+                ({p.tokens.filter(t => t.isHome).length}/4 🏁)
+              </span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Ludo Board (Responsive Square) */}
-      <div className="relative w-[340px] h-[340px] sm:w-[420px] sm:h-[420px] bg-white rounded-2xl border-4 border-duvora-plum shadow-glow grid grid-cols-3 grid-rows-3 overflow-hidden select-none">
-        {/* Top-Left: RED YARD */}
-        <div className="p-3 bg-rose-100 border-r-2 border-b-2 border-duvora-plum flex flex-col items-center justify-center relative">
-          <span className="absolute top-2 left-2 text-[10px] font-bold text-rose-700">RED BASE</span>
-          <div className="grid grid-cols-2 gap-3 p-3 bg-white/80 rounded-xl shadow-inner">
-            {state.players.find(p => p.color === 'red')?.tokens.map(t => (
-              <div
-                key={t.id}
-                onClick={() => isMyTurn && myPlayer?.color === 'red' && state.canMoveTokens.includes(t.id) && handleSelectToken(t.id)}
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white shadow-md transition-all ${
-                  t.isAtBase ? 'bg-rose-500' : 'bg-rose-200 opacity-40'
-                } ${
-                  isMyTurn && myPlayer?.color === 'red' && state.canMoveTokens.includes(t.id)
-                    ? 'ring-4 ring-rose-400 animate-bounce cursor-pointer'
-                    : ''
-                }`}
-              >
-                {t.id + 1}
+      {/* Ludo Arena Visual Representation */}
+      <div className="w-full grid grid-cols-2 gap-4">
+        {state.players.map(p => {
+          const isPlayerTurn = p.color === state.currentTurnColor;
+          const isMe = p.userId === userId;
+
+          return (
+            <div
+              key={p.userId}
+              className={`p-3.5 rounded-2xl border-2 transition-all ${
+                isPlayerTurn
+                  ? 'border-duvora-berry bg-white shadow-neon'
+                  : 'border-duvora-pink/40 bg-white/70'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className={`w-3 h-3 rounded-full ${COLOR_CLASSES[p.color].bg}`} />
+                  <span className="font-heading font-bold text-xs text-duvora-plum">
+                    {p.name} {isMe ? '(You)' : ''}
+                  </span>
+                </div>
+                <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full ${COLOR_CLASSES[p.color].lightBg} ${COLOR_CLASSES[p.color].text}`}>
+                  {p.color}
+                </span>
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Top-Center: Green Path */}
-        <div className="border-r-2 border-b-2 border-duvora-plum bg-emerald-50 flex flex-col items-center justify-around p-1">
-          <Star className="w-4 h-4 text-emerald-500 fill-emerald-500" />
-          <span className="text-[10px] font-bold text-emerald-600">PATH</span>
-        </div>
+              {/* Tokens Grid */}
+              <div className="grid grid-cols-2 gap-2">
+                {p.tokens.map(t => {
+                  const isMovable = isMe && isMyTurn && state.hasRolled && state.canMoveTokens.includes(t.id);
 
-        {/* Top-Right: GREEN YARD */}
-        <div className="p-3 bg-emerald-100 border-b-2 border-duvora-plum flex flex-col items-center justify-center relative">
-          <span className="absolute top-2 right-2 text-[10px] font-bold text-emerald-700">GREEN BASE</span>
-          <div className="grid grid-cols-2 gap-3 p-3 bg-white/80 rounded-xl shadow-inner">
-            {state.players.find(p => p.color === 'green')?.tokens.map(t => (
-              <div
-                key={t.id}
-                onClick={() => isMyTurn && myPlayer?.color === 'green' && state.canMoveTokens.includes(t.id) && handleSelectToken(t.id)}
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white shadow-md transition-all ${
-                  t.isAtBase ? 'bg-emerald-500' : 'bg-emerald-200 opacity-40'
-                } ${
-                  isMyTurn && myPlayer?.color === 'green' && state.canMoveTokens.includes(t.id)
-                    ? 'ring-4 ring-emerald-400 animate-bounce cursor-pointer'
-                    : ''
-                }`}
-              >
-                {t.id + 1}
+                  let statusText = 'In Base';
+                  if (t.isHome) statusText = 'Home 🏁';
+                  else if (!t.isAtBase) statusText = `Step ${t.step}/56`;
+
+                  return (
+                    <motion.button
+                      key={t.id}
+                      whileHover={isMovable ? { scale: 1.05 } : {}}
+                      whileTap={isMovable ? { scale: 0.95 } : {}}
+                      onClick={() => isMovable && handleSelectToken(t.id)}
+                      disabled={!isMovable}
+                      className={`p-2 rounded-xl border flex flex-col items-center justify-center text-center transition-all ${
+                        isMovable
+                          ? 'border-duvora-berry bg-duvora-pink/40 shadow-neon cursor-pointer ring-2 ring-duvora-berry animate-pulse'
+                          : t.isHome
+                          ? 'border-emerald-300 bg-emerald-50 text-emerald-800'
+                          : 'border-duvora-pink/30 bg-duvora-cloud/60 text-duvora-plum/80'
+                      }`}
+                    >
+                      <div className="flex items-center gap-1">
+                        <span className={`w-4 h-4 rounded-full text-white text-[9px] font-black flex items-center justify-center ${COLOR_CLASSES[p.color].bg}`}>
+                          {t.id + 1}
+                        </span>
+                        <span className="text-[10px] font-bold">{statusText}</span>
+                      </div>
+                      {isMovable && state.diceValue !== null && (
+                        <span className="text-[9px] font-black text-duvora-berry mt-0.5">
+                          {t.isAtBase ? 'Deploy! (6)' : `Move +${state.diceValue}`}
+                        </span>
+                      )}
+                    </motion.button>
+                  );
+                })}
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Middle-Left: Red Path */}
-        <div className="border-r-2 border-b-2 border-duvora-plum bg-rose-50 flex items-center justify-around p-1">
-          <Star className="w-4 h-4 text-rose-500 fill-rose-500" />
-        </div>
-
-        {/* Center: HOME FINISH TRIANGLES */}
-        <div className="relative border-r-2 border-b-2 border-duvora-plum bg-gradient-to-tr from-rose-200 via-amber-100 to-emerald-200 flex flex-col items-center justify-center p-2">
-          <Trophy className="w-8 h-8 text-amber-500 fill-amber-400" />
-          <span className="text-[9px] font-extrabold text-duvora-plum mt-1">HOME</span>
-        </div>
-
-        {/* Middle-Right: Yellow Path */}
-        <div className="border-b-2 border-duvora-plum bg-amber-50 flex items-center justify-around p-1">
-          <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-        </div>
-
-        {/* Bottom-Left: BLUE YARD */}
-        <div className="p-3 bg-sky-100 border-r-2 border-duvora-plum flex flex-col items-center justify-center relative">
-          <span className="absolute bottom-2 left-2 text-[10px] font-bold text-sky-700">BLUE BASE</span>
-          <div className="grid grid-cols-2 gap-3 p-3 bg-white/80 rounded-xl shadow-inner">
-            {state.players.find(p => p.color === 'blue')?.tokens.map(t => (
-              <div
-                key={t.id}
-                onClick={() => isMyTurn && myPlayer?.color === 'blue' && state.canMoveTokens.includes(t.id) && handleSelectToken(t.id)}
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white shadow-md transition-all ${
-                  t.isAtBase ? 'bg-sky-500' : 'bg-sky-200 opacity-40'
-                } ${
-                  isMyTurn && myPlayer?.color === 'blue' && state.canMoveTokens.includes(t.id)
-                    ? 'ring-4 ring-sky-400 animate-bounce cursor-pointer'
-                    : ''
-                }`}
-              >
-                {t.id + 1}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom-Center: Blue Path */}
-        <div className="border-r-2 border-duvora-plum bg-sky-50 flex flex-col items-center justify-around p-1">
-          <Star className="w-4 h-4 text-sky-500 fill-sky-500" />
-        </div>
-
-        {/* Bottom-Right: YELLOW YARD */}
-        <div className="p-3 bg-amber-100 flex flex-col items-center justify-center relative">
-          <span className="absolute bottom-2 right-2 text-[10px] font-bold text-amber-700">YELLOW BASE</span>
-          <div className="grid grid-cols-2 gap-3 p-3 bg-white/80 rounded-xl shadow-inner">
-            {state.players.find(p => p.color === 'yellow')?.tokens.map(t => (
-              <div
-                key={t.id}
-                onClick={() => isMyTurn && myPlayer?.color === 'yellow' && state.canMoveTokens.includes(t.id) && handleSelectToken(t.id)}
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white shadow-md transition-all ${
-                  t.isAtBase ? 'bg-amber-500' : 'bg-amber-200 opacity-40'
-                } ${
-                  isMyTurn && myPlayer?.color === 'yellow' && state.canMoveTokens.includes(t.id)
-                    ? 'ring-4 ring-amber-400 animate-bounce cursor-pointer'
-                    : ''
-                }`}
-              >
-                {t.id + 1}
-              </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Log ticker */}
       {state.lastLog && (
-        <div className="w-full text-center py-1.5 px-4 bg-duvora-lilac/50 rounded-xl text-xs font-medium text-duvora-plum">
+        <div className="w-full text-center py-2 px-4 bg-duvora-lilac/40 rounded-xl text-xs font-semibold text-duvora-plum shadow-xs">
           {state.lastLog}
         </div>
       )}
 
       {/* Controls & Dice Roller */}
-      <div className="w-full flex items-center justify-between px-4 py-2 bg-white/70 rounded-2xl border border-duvora-pink/40 shadow-sm">
-        <div className="flex items-center gap-3">
-          {/* Active Player Tokens Status */}
-          <div className="text-xs font-semibold text-duvora-plum">
-            <span>Your Color: </span>
-            <span className={`uppercase font-bold ${COLOR_CLASSES[myPlayer?.color || 'red'].text}`}>
-              {myPlayer?.color}
+      <div className="w-full flex items-center justify-between px-5 py-3 bg-white/80 rounded-2xl border border-duvora-pink/40 shadow-sm">
+        <div className="text-xs text-duvora-plum font-medium">
+          <span className="font-bold">Turn: </span>
+          <span className={`font-black uppercase ${COLOR_CLASSES[state.currentTurnColor]?.text}`}>
+            {state.currentTurnColor}
+          </span>
+          {isMyTurn && (
+            <span className="ml-2 font-bold text-duvora-berry">
+              {state.hasRolled ? '👉 Select token above' : '🎲 Tap dice to roll'}
             </span>
-          </div>
+          )}
         </div>
 
-        {/* Dice Roller Component */}
-        <div className="flex items-center gap-4">
-          <motion.button
-            whileHover={isMyTurn && !state.hasRolled ? { scale: 1.08 } : {}}
-            whileTap={isMyTurn && !state.hasRolled ? { scale: 0.95 } : {}}
-            onClick={handleRollDice}
-            disabled={!isMyTurn || state.hasRolled || isGameOver}
-            className={`w-14 h-14 rounded-2xl bg-duvora-plum border-2 border-white shadow-neon flex items-center justify-center text-white text-2xl font-black transition-all ${
-              isRollingAnimation ? 'animate-spin' : ''
-            } ${
-              isMyTurn && !state.hasRolled
-                ? 'cursor-pointer hover:border-duvora-pink ring-4 ring-duvora-berry/40'
-                : 'opacity-70 cursor-not-allowed'
-            }`}
-          >
-            {state.diceValue ? state.diceValue : <Dices className="w-7 h-7" />}
-          </motion.button>
-        </div>
+        {/* Dice Button */}
+        <motion.button
+          whileHover={isMyTurn && !state.hasRolled ? { scale: 1.08 } : {}}
+          whileTap={isMyTurn && !state.hasRolled ? { scale: 0.95 } : {}}
+          onClick={handleRollDice}
+          disabled={!isMyTurn || state.hasRolled || isGameOver}
+          className={`w-14 h-14 rounded-2xl bg-duvora-plum border-2 border-white shadow-neon flex items-center justify-center text-white text-2xl font-black transition-all ${
+            isRollingAnimation ? 'animate-spin' : ''
+          } ${
+            isMyTurn && !state.hasRolled
+              ? 'cursor-pointer hover:border-duvora-pink ring-4 ring-duvora-berry/40'
+              : 'opacity-70 cursor-not-allowed'
+          }`}
+        >
+          {state.diceValue ? state.diceValue : <Dices className="w-7 h-7" />}
+        </motion.button>
       </div>
 
       {/* Rematch on Game Over */}
       {isGameOver && onRematch && (
         <button
           onClick={onRematch}
-          className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-bold text-sm shadow-neon hover:opacity-95 transition-all"
+          className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-bold text-sm shadow-neon hover:scale-105 active:scale-95 transition-all mt-2"
         >
           <RefreshCw className="w-4 h-4" />
           <span>PLAY REMATCH</span>

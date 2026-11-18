@@ -63,6 +63,7 @@ export class SocketManager {
       }
 
       // Track online presence
+      const isFirstSocket = !this.onlineUsers.has(user.id) || this.onlineUsers.get(user.id)!.size === 0;
       if (!this.onlineUsers.has(user.id)) {
         this.onlineUsers.set(user.id, new Set());
       }
@@ -76,6 +77,20 @@ export class SocketManager {
         userId: user.id,
         name: user.name
       });
+
+      // If user has a partner, notify partner that user is online, and inform user of partner's status
+      if (user.partnerId) {
+        if (isFirstSocket) {
+          this.io.to(`user:${user.partnerId}`).emit(SOCKET_EVENTS.PARTNER_STATUS, {
+            partnerId: user.id,
+            isOnline: true
+          });
+        }
+        socket.emit(SOCKET_EVENTS.PARTNER_STATUS, {
+          partnerId: user.partnerId,
+          isOnline: this.isUserOnline(user.partnerId)
+        });
+      }
 
       // 1. JOIN ROOM
       socket.on(SOCKET_EVENTS.ROOM_JOIN, async ({ roomId }) => {
@@ -255,6 +270,13 @@ export class SocketManager {
           userSockets.delete(socket.id);
           if (userSockets.size === 0) {
             this.onlineUsers.delete(user.id);
+            // Notify partner that user went offline
+            if (user.partnerId) {
+              this.io.to(`user:${user.partnerId}`).emit(SOCKET_EVENTS.PARTNER_STATUS, {
+                partnerId: user.id,
+                isOnline: false
+              });
+            }
           }
         }
 
@@ -273,17 +295,29 @@ export class SocketManager {
     return new Set(this.onlineUsers.keys());
   }
 
+  public isUserOnline(userId: string): boolean {
+    return this.onlineUsers.has(userId) && (this.onlineUsers.get(userId)?.size ?? 0) > 0;
+  }
+
   public sendPartnerInvitation(invitation: RoomInvitationDTO): void {
     // Send directly to recipient's private user room!
     this.io.to(`user:${invitation.recipientId}`).emit(SOCKET_EVENTS.PARTNER_INVITATION_RECEIVED, invitation);
   }
 
-  public notifyInvitationAccepted(senderId: string, data: { invitationId: string; recipientId: string; recipientName: string; roomId: string; roomCode: string }): void {
+  public notifyInvitationAccepted(senderId: string, data: { invitationId: string; recipientId: string; recipientName: string; roomId: string; roomCode?: string; gameType?: string | null; sessionId?: string | null }): void {
     this.io.to(`user:${senderId}`).emit(SOCKET_EVENTS.PARTNER_ACCEPTED, data);
   }
 
   public notifyInvitationDeclined(senderId: string, data: { invitationId: string; recipientId: string; recipientName: string }): void {
     this.io.to(`user:${senderId}`).emit(SOCKET_EVENTS.PARTNER_DECLINED, data);
+  }
+
+  public notifyInvitationCancelled(recipientId: string, data: { invitationId: string; senderName: string }): void {
+    this.io.to(`user:${recipientId}`).emit(SOCKET_EVENTS.PARTNER_INVITATION_CANCELLED, data);
+  }
+
+  public notifyInvitationExpired(targetUserId: string, data: { invitationId: string }): void {
+    this.io.to(`user:${targetUserId}`).emit(SOCKET_EVENTS.PARTNER_INVITATION_EXPIRED, data);
   }
 
   public broadcastToRoom(roomId: string, event: string, data: any): void {

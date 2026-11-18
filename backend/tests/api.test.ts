@@ -5,7 +5,7 @@ import { UnoGameEngine } from '../src/games/uno/index.js';
 import { ChessGameEngine } from '../src/games/chess/index.js';
 import { LudoGameEngine } from '../src/games/ludo/index.js';
 import { QuickGamesEngine } from '../src/games/quick/index.js';
-import { TicTacToeEngine } from '../src/games/board/index.js';
+import { TicTacToeEngine, ConnectFourEngine, CheckersEngine } from '../src/games/board/index.js';
 
 describe('DUVORA Full-Stack Test Suite (Exclusive Arpit & Shree Realm)', () => {
   let user1Token: string;
@@ -281,6 +281,170 @@ describe('DUVORA Full-Stack Test Suite (Exclusive Arpit & Shree Realm)', () => {
 
       QuickGamesEngine.handleAction(rps, 'p2', 'choose', { choice: 'scissors' });
       expect(rps.scores['p1']).toBe(1);
+    });
+  });
+
+  describe('7. Direct Partner Gaming Flow (Zero Party Codes)', () => {
+    let directInviteId: string;
+
+    it('should fetch partner status for Arpit showing Shree as registered partner', async () => {
+      const res = await request(app)
+        .get('/api/invitations/partner-status')
+        .set('Authorization', `Bearer ${user1Token}`)
+        .expect(200);
+
+      expect(res.body.hasPartner).toBe(true);
+      expect(res.body.partner).toBeDefined();
+      expect(res.body.partner.name).toBe('Shree');
+    });
+
+    it('should allow Arpit to directly invite Shree without party codes', async () => {
+      const res = await request(app)
+        .post('/api/invitations/invite-partner')
+        .set('Authorization', `Bearer ${user1Token}`)
+        .send({ gameType: 'ludo' })
+        .expect(201);
+
+      expect(res.body.invitation).toBeDefined();
+      expect(res.body.invitation.recipientName).toBe('Shree');
+      expect(res.body.invitation.gameType).toBe('ludo');
+      directInviteId = res.body.invitation.id;
+    });
+
+    it('should show pending invitation in Shree partner-status', async () => {
+      const res = await request(app)
+        .get('/api/invitations/partner-status')
+        .set('Authorization', `Bearer ${user2Token}`)
+        .expect(200);
+
+      expect(res.body.pendingInvitation).toBeDefined();
+      expect(res.body.pendingInvitation.senderName).toBe('Arpit');
+      expect(res.body.pendingInvitation.gameType).toBe('ludo');
+    });
+
+    it('should allow Arpit to cancel the direct invitation', async () => {
+      await request(app)
+        .post(`/api/invitations/${directInviteId}/cancel`)
+        .set('Authorization', `Bearer ${user1Token}`)
+        .expect(200);
+
+      // Verify no pending invitation now
+      const res = await request(app)
+        .get('/api/invitations/partner-status')
+        .set('Authorization', `Bearer ${user2Token}`)
+        .expect(200);
+
+      expect(res.body.pendingInvitation).toBeNull();
+    });
+
+    it('should invite and accept direct game invitation to create a live session', async () => {
+      const inviteRes = await request(app)
+        .post('/api/invitations/invite-partner')
+        .set('Authorization', `Bearer ${user1Token}`)
+        .send({ gameType: 'chess' })
+        .expect(201);
+
+      const invId = inviteRes.body.invitation.id;
+
+      const acceptRes = await request(app)
+        .post(`/api/invitations/${invId}/accept`)
+        .set('Authorization', `Bearer ${user2Token}`)
+        .expect(200);
+
+      expect(acceptRes.body.room).toBeDefined();
+      expect(acceptRes.body.sessionId).toBeDefined();
+    });
+  });
+
+  describe('8. Checkers & Connect-4 Board Engines', () => {
+    it('should initialize Checkers with 12 pieces per player and alternating dark squares', () => {
+      const checkers = CheckersEngine.init([
+        { userId: 'p1', name: 'Arpit' },
+        { userId: 'p2', name: 'Shree' }
+      ]);
+
+      const p0Pieces = checkers.pieces.filter(p => p.playerIndex === 0);
+      const p1Pieces = checkers.pieces.filter(p => p.playerIndex === 1);
+      expect(p0Pieces.length).toBe(12);
+      expect(p1Pieces.length).toBe(12);
+      expect(checkers.status).toBe('playing');
+    });
+
+    it('should initialize Connect 4 with empty 6x7 grid', () => {
+      const c4 = ConnectFourEngine.init([
+        { userId: 'p1', name: 'Arpit' },
+        { userId: 'p2', name: 'Shree' }
+      ]);
+
+      expect(c4.grid.length).toBe(6);
+      expect(c4.grid[0].length).toBe(7);
+      expect(c4.status).toBe('playing');
+
+      const actionRes = ConnectFourEngine.handleAction(c4, 'p1', 'drop', { col: 3 });
+      expect(actionRes.error).toBeUndefined();
+      expect(actionRes.state.grid[5][3]).toBe('pink');
+      expect(actionRes.state.currentTurnUserId).toBe('p2');
+    });
+  });
+
+  describe('9. Complete Quick Games Suite Validation', () => {
+    it('should sanitize Memory Match cards until flipped', () => {
+      const mem = QuickGamesEngine.init('memory_match', [
+        { userId: 'p1', name: 'Arpit' },
+        { userId: 'p2', name: 'Shree' }
+      ]);
+
+      const sanitized = QuickGamesEngine.sanitizeForPlayer(mem, 'p1');
+      expect(sanitized.data.cards[0].sym).toBe('?');
+
+      const firstCardId = mem.data.cards[0].id;
+      QuickGamesEngine.handleAction(mem, 'p1', 'flip_card', { cardId: firstCardId });
+      expect(mem.data.flippedIds).toContain(firstCardId);
+    });
+
+    it('should provide higher/lower feedback in Guess Number', () => {
+      const gn = QuickGamesEngine.init('guess_number', [
+        { userId: 'p1', name: 'Arpit' },
+        { userId: 'p2', name: 'Shree' }
+      ]);
+
+      const secret = gn.data.secretNumber;
+      const guess = secret > 50 ? secret - 5 : secret + 5;
+      QuickGamesEngine.handleAction(gn, 'p1', 'guess', { guess });
+      expect(gn.data.guesses.length).toBe(1);
+      expect(gn.data.guesses[0].hint).toBe(guess < secret ? 'HIGHER' : 'LOWER');
+    });
+
+    it('should handle Word Chain with first/last letter rules', () => {
+      const wc = QuickGamesEngine.init('word_chain', [
+        { userId: 'p1', name: 'Arpit' },
+        { userId: 'p2', name: 'Shree' }
+      ]);
+
+      const res1 = QuickGamesEngine.handleAction(wc, 'p1', 'submit_word', { word: 'elephant' });
+      expect(res1.error).toBeUndefined();
+      expect(wc.data.words).toContain('elephant');
+      expect(wc.data.lastLetter).toBe('t');
+
+      const res2 = QuickGamesEngine.handleAction(wc, 'p2', 'submit_word', { word: 'tiger' });
+      expect(res2.error).toBeUndefined();
+      expect(wc.data.words).toContain('tiger');
+      expect(wc.data.lastLetter).toBe('r');
+    });
+
+    it('should mask Hangman word and reveal guessed letters', () => {
+      const hm = QuickGamesEngine.init('hangman', [
+        { userId: 'p1', name: 'Arpit' },
+        { userId: 'p2', name: 'Shree' }
+      ]);
+
+      const secretWord = hm.data.word;
+      const sanitized = QuickGamesEngine.sanitizeForPlayer(hm, 'p1');
+      expect(sanitized.data.word).toBeUndefined();
+
+      const letter = secretWord[0].toLowerCase();
+      QuickGamesEngine.handleAction(hm, 'p1', 'guess_letter', { letter });
+      expect(hm.data.guessedLetters).toContain(letter.toUpperCase());
     });
   });
 });

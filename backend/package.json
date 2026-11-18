@@ -10,7 +10,8 @@
     "db:push": "prisma db push",
     "db:seed": "tsx src/database/seed.ts",
     "db:studio": "prisma studio",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "tsx tests/verify_flow.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@types/supertest": "^6.0.2",
+    "socket.io-client": "^4.8.4",
     "supertest": "^7.0.0",
     "vitest": "^3.0.7"
   }

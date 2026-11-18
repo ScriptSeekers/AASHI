@@ -18,7 +18,7 @@ import {
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
-  const { isConnected } = useSocket();
+  const { isConnected, partnerOnline } = useSocket();
   const navigate = useNavigate();
   const location = useLocation();
   const [soundOn, setSoundOn] = React.useState(soundManager.isEnabled());
@@ -96,9 +96,9 @@ export const Navbar: React.FC = () => {
             <div className="flex items-center gap-3">
               {/* Partner Status Pill */}
               <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-duvora-lilac/50 border border-duvora-pink/40 text-xs font-medium text-duvora-plum">
-                <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'}`} />
+                <span className={`w-2 h-2 rounded-full ${partnerOnline ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`} />
                 <span>
-                  {user.partnerName ? `Coupled with ${user.partnerName}` : 'Solo Mode (Invite Partner)'}
+                  {user.partnerName ? `${user.partnerName} (${partnerOnline ? 'Online' : 'Offline'})` : 'Solo Mode'}
                 </span>
               </div>
 

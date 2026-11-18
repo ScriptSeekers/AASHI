@@ -121,9 +121,10 @@ async function ensureDbSeeded() {
 }
 
 // Start server
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
   ensureDbSeeded().finally(() => {
-    server.listen(PORT, '0.0.0.0', () => {
+    if (!server.listening) {
+      server.listen(PORT, '0.0.0.0', () => {
       console.log(`
       💗 DUVORA SERVER ONLINE
       ═════════════════════════════════════════════════
@@ -132,7 +133,8 @@ if (process.env.NODE_ENV !== 'test') {
       💕 Brand Tagline:     Love hard. Play harder.
       ═════════════════════════════════════════════════
       `);
-    });
+      });
+    }
   });
 }
 

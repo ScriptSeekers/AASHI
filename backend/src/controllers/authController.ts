@@ -11,7 +11,10 @@ import {
 import { ConflictError, UnauthorizedError } from '../utils/errors.js';
 import { AuthenticatedRequest } from '../middleware/auth.js';
 
-export function formatUserDTO(user: any, partnerName?: string | null): UserDTO {
+export function formatUserDTO(user: any, partner?: { name?: string | null; avatar?: string | null } | string | null): UserDTO {
+  const partnerName = typeof partner === 'string' ? partner : partner?.name || null;
+  const partnerAvatar = typeof partner === 'object' && partner ? partner.avatar || null : null;
+
   return {
     id: user.id,
     email: user.email,
@@ -22,7 +25,8 @@ export function formatUserDTO(user: any, partnerName?: string | null): UserDTO {
     soundEnabled: user.soundEnabled,
     themePreference: user.themePreference,
     partnerId: user.partnerId,
-    partnerName: partnerName || null,
+    partnerName,
+    partnerAvatar,
     createdAt: user.createdAt.toISOString()
   };
 }
@@ -65,14 +69,13 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
       }
     });
 
-    // Find partner name if partnerId exists
-    let partnerName: string | null = null;
+    // Find partner info if partnerId exists
+    let partnerInfo: { name: string; avatar: string | null } | null = null;
     if (user.partnerId) {
-      const partner = await prisma.user.findUnique({
+      partnerInfo = await prisma.user.findUnique({
         where: { id: user.partnerId },
-        select: { name: true }
+        select: { name: true, avatar: true }
       });
-      partnerName = partner?.name || null;
     }
 
     const isProd = process.env.NODE_ENV === 'production';
@@ -86,7 +89,7 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
     res.status(200).json({
       message: 'Logged in successfully!',
       token,
-      user: formatUserDTO(user, partnerName)
+      user: formatUserDTO(user, partnerInfo)
     });
   } catch (err) {
     next(err);
@@ -119,17 +122,16 @@ export async function getMe(req: Request, res: Response, next: NextFunction): Pr
     const authReq = req as AuthenticatedRequest;
     const user = authReq.user;
 
-    let partnerName: string | null = null;
+    let partnerInfo: { name: string; avatar: string | null } | null = null;
     if (user.partnerId) {
-      const partner = await prisma.user.findUnique({
+      partnerInfo = await prisma.user.findUnique({
         where: { id: user.partnerId },
-        select: { name: true }
+        select: { name: true, avatar: true }
       });
-      partnerName = partner?.name || null;
     }
 
     res.status(200).json({
-      user: formatUserDTO(user, partnerName)
+      user: formatUserDTO(user, partnerInfo)
     });
   } catch (err) {
     next(err);

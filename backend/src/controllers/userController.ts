@@ -7,16 +7,15 @@ import { formatUserDTO } from './authController.js';
 export async function getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const authReq = req as AuthenticatedRequest;
-    let partnerName: string | null = null;
+    let partnerInfo: { name: string; avatar: string | null } | null = null;
     if (authReq.user.partnerId) {
-      const partner = await prisma.user.findUnique({
+      partnerInfo = await prisma.user.findUnique({
         where: { id: authReq.user.partnerId },
-        select: { name: true }
+        select: { name: true, avatar: true }
       });
-      partnerName = partner?.name || null;
     }
 
-    res.json({ user: formatUserDTO(authReq.user, partnerName) });
+    res.json({ user: formatUserDTO(authReq.user, partnerInfo) });
   } catch (err) {
     next(err);
   }

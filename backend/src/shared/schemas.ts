@@ -42,11 +42,18 @@ export const JoinRoomSchema = z.object({
 export type JoinRoomInput = z.infer<typeof JoinRoomSchema>;
 
 export const InvitePartnerSchema = z.object({
-  recipientIdentifier: z.string().trim().min(2, 'Please enter username or email'),
-  roomId: z.string().min(1)
+  recipientIdentifier: z.string().trim().min(2, 'Please enter username or email').optional(),
+  roomId: z.string().min(1).optional(),
+  gameType: z.string().optional()
 });
 
 export type InvitePartnerInput = z.infer<typeof InvitePartnerSchema>;
+
+export const DirectInviteSchema = z.object({
+  gameType: z.string().optional()
+});
+
+export type DirectInviteInput = z.infer<typeof DirectInviteSchema>;
 
 export const InvitationActionSchema = z.object({
   invitationId: z.string().min(1)

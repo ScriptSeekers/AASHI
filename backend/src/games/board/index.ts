@@ -256,6 +256,40 @@ export class CheckersEngine {
     };
   }
 
+  static getLegalMovesForPiece(state: CheckersState, piece: CheckerPiece): { row: number; col: number; isJump: boolean }[] {
+    const legal: { row: number; col: number; isJump: boolean }[] = [];
+    const directions = piece.isKing
+      ? [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+      : piece.playerIndex === 0
+      ? [[1, -1], [1, 1]]
+      : [[-1, -1], [-1, 1]];
+
+    for (const [dr, dc] of directions) {
+      // 1-step move
+      const r1 = piece.row + dr;
+      const c1 = piece.col + dc;
+      if (r1 >= 0 && r1 < 8 && c1 >= 0 && c1 < 8 && (r1 + c1) % 2 === 1) {
+        const occ1 = state.pieces.find(p => p.row === r1 && p.col === c1);
+        if (!occ1) {
+          legal.push({ row: r1, col: c1, isJump: false });
+        }
+      }
+
+      // 2-step jump
+      const r2 = piece.row + dr * 2;
+      const c2 = piece.col + dc * 2;
+      if (r2 >= 0 && r2 < 8 && c2 >= 0 && c2 < 8 && (r2 + c2) % 2 === 1) {
+        const occ2 = state.pieces.find(p => p.row === r2 && p.col === c2);
+        const jumpedOcc = state.pieces.find(p => p.row === piece.row + dr && p.col === piece.col + dc);
+        if (!occ2 && jumpedOcc && jumpedOcc.playerIndex !== piece.playerIndex) {
+          legal.push({ row: r2, col: c2, isJump: true });
+        }
+      }
+    }
+
+    return legal;
+  }
+
   static handleAction(state: CheckersState, userId: string, action: string, payload: any): { state: CheckersState; error?: string } {
     if (state.status === 'completed') {
       return { state, error: 'Game is already completed.' };

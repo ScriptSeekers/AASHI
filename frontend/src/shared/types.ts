@@ -9,6 +9,7 @@ export interface UserDTO {
   themePreference: string;
   partnerId?: string | null;
   partnerName?: string | null;
+  partnerAvatar?: string | null;
   createdAt: string;
 }
 
@@ -36,12 +37,12 @@ export interface CoupleRoomDTO {
   createdAt: string;
 }
 
-export type InvitationStatus = 'pending' | 'accepted' | 'declined' | 'expired';
+export type InvitationStatus = 'pending' | 'accepted' | 'declined' | 'expired' | 'cancelled';
 
 export interface RoomInvitationDTO {
   id: string;
   roomId: string;
-  roomCode: string;
+  roomCode?: string;
   roomName: string;
   senderId: string;
   senderName: string;
@@ -49,6 +50,8 @@ export interface RoomInvitationDTO {
   senderAvatar?: string | null;
   recipientId: string;
   recipientName: string;
+  gameType?: string | null;
+  gameTitle?: string | null;
   status: InvitationStatus;
   createdAt: string;
   expiresAt: string;

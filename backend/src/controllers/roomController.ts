@@ -256,18 +256,25 @@ export async function invitePartner(req: Request, res: Response, next: NextFunct
       throw new ForbiddenError('You must be in the room to invite a partner.');
     }
 
-    // Find recipient by email or username
-    const recipient = await prisma.user.findFirst({
-      where: {
-        OR: [
-          { email: input.recipientIdentifier.toLowerCase() },
-          { username: input.recipientIdentifier.toLowerCase() }
-        ]
-      }
-    });
+    // Find recipient by identifier or default to registered partner
+    let recipient: any = null;
+    if (input.recipientIdentifier) {
+      recipient = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { email: input.recipientIdentifier.toLowerCase() },
+            { username: input.recipientIdentifier.toLowerCase() }
+          ]
+        }
+      });
+    } else if (authReq.user.partnerId) {
+      recipient = await prisma.user.findUnique({
+        where: { id: authReq.user.partnerId }
+      });
+    }
 
     if (!recipient) {
-      throw new NotFoundError(`Could not find a user with username or email "${input.recipientIdentifier}".`);
+      throw new NotFoundError(input.recipientIdentifier ? `Could not find a user with username or email "${input.recipientIdentifier}".` : 'No registered partner found.');
     }
 
     if (recipient.id === authReq.user.id) {
@@ -279,14 +286,24 @@ export async function invitePartner(req: Request, res: Response, next: NextFunct
       throw new ConflictError(`${recipient.name} is already in this room.`);
     }
 
-    // Expiry: 15 minutes
-    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+    const socketManager = getSocketManager();
+    if (process.env.NODE_ENV !== 'test' && socketManager && !socketManager.isUserOnline(recipient.id)) {
+      res.status(400).json({
+        error: 'PartnerOffline',
+        message: `${recipient.name} is currently offline. You can only play together when your partner is online!`
+      });
+      return;
+    }
+
+    // Expiry: 60 seconds real-time
+    const expiresAt = new Date(Date.now() + 60 * 1000);
 
     const invitation = await prisma.roomInvitation.create({
       data: {
         roomId: room.id,
         senderId: authReq.user.id,
         recipientId: recipient.id,
+        gameType: input.gameType || room.activeGameType || null,
         status: 'pending',
         expiresAt
       },
@@ -314,7 +331,6 @@ export async function invitePartner(req: Request, res: Response, next: NextFunct
       }
     });
 
-    const socketManager = getSocketManager();
     if (socketManager) {
       socketManager.sendPartnerInvitation({
         id: invitation.id,
@@ -327,6 +343,8 @@ export async function invitePartner(req: Request, res: Response, next: NextFunct
         senderAvatar: authReq.user.avatar,
         recipientId: recipient.id,
         recipientName: recipient.name,
+        gameType: invitation.gameType,
+        gameTitle: invitation.gameType?.replace(/_/g, ' ') || 'Couple Game',
         status: 'pending',
         createdAt: invitation.createdAt.toISOString(),
         expiresAt: invitation.expiresAt.toISOString()

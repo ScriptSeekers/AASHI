@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
 import { useSocket } from '../context/SocketContext.js';
-import { roomApi, gameApi } from '../api/endpoints.js';
+import { roomApi } from '../api/endpoints.js';
 import { CoupleRoomDTO, SOCKET_EVENTS, GAME_CATALOG } from '@duvora/shared';
 import { soundManager } from '../utils/sound.js';
 
@@ -17,16 +17,14 @@ import { QuickGameView } from '../games/quick/QuickGameView.js';
 
 import {
   Users,
-  Copy,
-  Check,
   Send,
   MessageCircle,
   Gamepad2,
   LogOut,
-  Sparkles,
   Heart,
   X,
-  Play
+  Play,
+  Sparkles
 } from 'lucide-react';
 
 export const GameRoomPage: React.FC = () => {
@@ -34,13 +32,10 @@ export const GameRoomPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { socket } = useSocket();
+  const { socket, partnerOnline, partnerInfo, invitePartner } = useSocket();
 
   const [room, setRoom] = useState<CoupleRoomDTO | null>(null);
-  const [copiedCode, setCopiedCode] = useState(false);
-  const [inviteModalOpen, setInviteModalOpen] = useState(false);
-  const [inviteIdentifier, setInviteIdentifier] = useState('');
-  const [inviteStatus, setInviteStatus] = useState<string | null>(null);
+  const [roomNotice, setRoomNotice] = useState<string | null>(null);
 
   // In-room Chat
   const [chatOpen, setChatOpen] = useState(false);
@@ -75,10 +70,13 @@ export const GameRoomPage: React.FC = () => {
 
     socket.on(SOCKET_EVENTS.ROOM_UPDATE, (updatedRoom: CoupleRoomDTO) => {
       setRoom(updatedRoom);
+      if (updatedRoom.activeSessionId && updatedRoom.activeGameType) {
+        setActiveSessionId(updatedRoom.activeSessionId);
+        setActiveGameType(updatedRoom.activeGameType);
+      }
     });
 
-    socket.on(SOCKET_EVENTS.ROOM_PLAYER_STATUS, (data: any) => {
-      // Re-fetch room to update member presence
+    socket.on(SOCKET_EVENTS.ROOM_PLAYER_STATUS, () => {
       roomApi.get(roomId).then(r => setRoom(r.room)).catch(() => {});
     });
 
@@ -87,7 +85,7 @@ export const GameRoomPage: React.FC = () => {
       soundManager.playPop();
     });
 
-    socket.on(SOCKET_EVENTS.ROOM_REACTION, (rx: any) => {
+    socket.on(SOCKET_EVENTS.ROOM_REACTION, () => {
       soundManager.playPop();
     });
 
@@ -98,7 +96,7 @@ export const GameRoomPage: React.FC = () => {
     });
 
     socket.on(SOCKET_EVENTS.GAME_REMATCH_OFFER, (data: { offeredByName: string }) => {
-      alert(`${data.offeredByName} has offered a rematch!`);
+      setRoomNotice(`${data.offeredByName} offered a rematch!`);
     });
 
     // Auto-start game if URL has ?start=<gameId>
@@ -120,28 +118,25 @@ export const GameRoomPage: React.FC = () => {
     };
   }, [socket, roomId]);
 
-  const handleCopyCode = () => {
-    if (!room) return;
-    navigator.clipboard.writeText(room.code);
-    setCopiedCode(true);
+  const handleInvitePartnerClick = async () => {
     soundManager.playPop();
-    setTimeout(() => setCopiedCode(false), 2000);
-  };
+    const partnerName = user?.partnerName || partnerInfo?.name || 'Your partner';
 
-  const handleSendInvite = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inviteIdentifier.trim() || !room) return;
-    setInviteStatus(null);
-    try {
-      soundManager.playPop();
-      await roomApi.invite({
-        roomId: room.id,
-        recipientIdentifier: inviteIdentifier.trim()
-      });
-      setInviteStatus(`💗 Invitation dispatched in real-time to "${inviteIdentifier}"!`);
-      setInviteIdentifier('');
-    } catch (err: any) {
-      setInviteStatus(`⚠️ ${err.message || 'Failed to send invitation.'}`);
+    // Check if partner is already in room
+    const isPartnerInRoom = room?.members.some(m => m.userId !== user?.id);
+    if (isPartnerInRoom) {
+      setRoomNotice(`${partnerName} is already connected in this room! Choose a game to play.`);
+      return;
+    }
+
+    if (!partnerOnline) {
+      setRoomNotice(`${partnerName} is currently offline. You can play together as soon as they log into DUVORA!`);
+      return;
+    }
+
+    const ok = await invitePartner(activeGameType || undefined);
+    if (ok) {
+      setRoomNotice(`💗 Instant invitation dispatched to ${partnerName}!`);
     }
   };
 
@@ -204,6 +199,8 @@ export const GameRoomPage: React.FC = () => {
     );
   }
 
+  const otherMember = room.members.find(m => m.userId !== user?.id);
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-24 md:pb-12">
       {/* Room Header Banner */}
@@ -216,34 +213,47 @@ export const GameRoomPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <h1 className="font-heading font-black text-xl sm:text-2xl text-duvora-plum">{room.name}</h1>
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-duvora-lilac text-duvora-plum">
-                {room.members.length}/{room.maxPlayers} PLAYERS
+                {room.members.length} / {room.maxPlayers} CONNECTED
               </span>
             </div>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs font-semibold text-duvora-plum/60">Invite Code:</span>
-              <button
-                onClick={handleCopyCode}
-                className="flex items-center gap-1 text-xs font-bold font-heading px-2 py-0.5 rounded-lg bg-duvora-lilac/50 hover:bg-duvora-pink text-duvora-plum transition-all"
-              >
-                <span>{room.code}</span>
-                {copiedCode ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-              </button>
+
+            {/* Partner Connection Status */}
+            <div className="flex items-center gap-2 mt-1 text-xs">
+              <span className="font-semibold text-duvora-plum/60">Partner:</span>
+              <span className="font-bold text-duvora-plum flex items-center gap-1.5">
+                {user?.partnerName || 'Shree'}
+                {otherMember ? (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.2 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    In Room
+                  </span>
+                ) : partnerOnline ? (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-sky-600 bg-sky-50 px-2 py-0.2 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
+                    Online
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-gray-500 bg-gray-100 px-2 py-0.2 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+                    Offline
+                  </span>
+                )}
+              </span>
             </div>
           </div>
         </div>
 
         {/* Room Action Controls */}
         <div className="flex items-center gap-2 flex-wrap">
-          <button
-            onClick={() => {
-              soundManager.playPop();
-              setInviteModalOpen(true);
-            }}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-duvora-pink/60 hover:bg-duvora-pink text-duvora-plum font-bold text-xs shadow-sm transition-all"
-          >
-            <Send className="w-3.5 h-3.5 text-duvora-berry" />
-            <span>Invite Partner</span>
-          </button>
+          {!otherMember && (
+            <button
+              onClick={handleInvitePartnerClick}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-duvora-pink/60 hover:bg-duvora-pink text-duvora-plum font-bold text-xs shadow-sm transition-all"
+            >
+              <Send className="w-3.5 h-3.5 text-duvora-berry" />
+              <span>Invite Partner</span>
+            </button>
+          )}
 
           <button
             onClick={() => {
@@ -274,6 +284,16 @@ export const GameRoomPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Room Notice Banner if present */}
+      {roomNotice && (
+        <div className="p-3.5 px-4 rounded-2xl bg-duvora-lilac/50 border border-duvora-pink flex items-center justify-between text-xs font-semibold text-duvora-plum">
+          <span>{roomNotice}</span>
+          <button onClick={() => setRoomNotice(null)} className="p-1 text-duvora-plum/60 hover:text-duvora-plum">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* Floating Emoji Reactions Bar */}
       <div className="flex items-center justify-between p-2.5 px-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-duvora-pink/40 shadow-xs">
         <span className="text-xs font-bold text-duvora-plum/70">Send Reaction:</span>
@@ -291,10 +311,11 @@ export const GameRoomPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Playing Arena */}
+      {/* Main Playing Arena: All 26 Games Mapped */}
       <div className="w-full">
         {gameState && activeGameType ? (
           <div>
+            {/* 1. UNO */}
             {activeGameType === 'uno' && (
               <UnoGameView
                 state={gameState}
@@ -303,6 +324,8 @@ export const GameRoomPage: React.FC = () => {
                 onRematch={handleRematch}
               />
             )}
+
+            {/* 2. CHESS */}
             {activeGameType === 'chess' && (
               <ChessGameView
                 state={gameState}
@@ -311,6 +334,8 @@ export const GameRoomPage: React.FC = () => {
                 onRematch={handleRematch}
               />
             )}
+
+            {/* 3. LUDO */}
             {activeGameType === 'ludo' && (
               <LudoGameView
                 state={gameState}
@@ -319,6 +344,8 @@ export const GameRoomPage: React.FC = () => {
                 onRematch={handleRematch}
               />
             )}
+
+            {/* 4. BOARD GAMES: Tic Tac Toe, Connect Four, Checkers */}
             {['tic_tac_toe', 'connect_four', 'checkers'].includes(activeGameType) && (
               <BoardGameView
                 gameType={activeGameType}
@@ -328,6 +355,8 @@ export const GameRoomPage: React.FC = () => {
                 onRematch={handleRematch}
               />
             )}
+
+            {/* 5. COUPLE GAMES: Would You Rather, Never Have I Ever, Truth or Dare, Who Knows Who Better, Dare Roulette, Love Quiz */}
             {['never_have_i_ever', 'truth_or_dare', 'would_you_rather', 'who_knows_who_better', 'dare_roulette', 'love_quiz'].includes(activeGameType) && (
               <CoupleGameView
                 gameType={activeGameType}
@@ -337,7 +366,24 @@ export const GameRoomPage: React.FC = () => {
                 onRematch={handleRematch}
               />
             )}
-            {['rock_paper_scissors', 'coin_flip', 'dice_duel', 'memory_match', 'reaction_race', 'guess_number', 'word_chain', 'fast_tap', 'hangman', 'higher_lower'].includes(activeGameType) && (
+
+            {/* 6. QUICK GAMES (All 14): RPS, Coin Flip, Dice Duel, Memory Match, Reaction Race, Guess Number, Fast Tap, Hangman, Word Chain, Higher Lower, Emoji Guess, Quick Quiz, Spin Wheel, Guess My Answer */}
+            {[
+              'rock_paper_scissors',
+              'coin_flip',
+              'dice_duel',
+              'memory_match',
+              'reaction_race',
+              'guess_number',
+              'fast_tap',
+              'hangman',
+              'word_chain',
+              'higher_lower',
+              'emoji_guess',
+              'quick_quiz',
+              'spin_wheel',
+              'guess_my_answer'
+            ].includes(activeGameType) && (
               <QuickGameView
                 gameType={activeGameType}
                 state={gameState}
@@ -357,7 +403,7 @@ export const GameRoomPage: React.FC = () => {
               The Arena is Waiting!
             </h2>
             <p className="max-w-md text-sm text-duvora-plum/70 font-medium mb-6">
-              Pick from our collection of 26 games above or invite your partner to join you.
+              Pick from our collection of 26 games below to start playing together.
             </p>
             <button
               onClick={() => {
@@ -406,44 +452,6 @@ export const GameRoomPage: React.FC = () => {
               <Send className="w-3.5 h-3.5" />
             </button>
           </form>
-        </div>
-      )}
-
-      {/* INVITE PARTNER MODAL */}
-      {inviteModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-duvora-plum/60 backdrop-blur-sm">
-          <div className="w-full max-w-md p-6 rounded-3xl bg-white border border-duvora-pink shadow-glow">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-heading font-bold text-xl text-duvora-plum">Invite Your Partner</h3>
-              <button onClick={() => setInviteModalOpen(false)}>
-                <X className="w-5 h-5 text-duvora-plum/50" />
-              </button>
-            </div>
-            <p className="text-xs text-duvora-plum/70 font-medium mb-4">
-              Enter your partner's username or email address. A real-time popup will immediately ring on their screen!
-            </p>
-            {inviteStatus && (
-              <p className="text-xs font-bold text-duvora-berry bg-duvora-lilac/50 p-2.5 rounded-xl mb-3">
-                {inviteStatus}
-              </p>
-            )}
-            <form onSubmit={handleSendInvite} className="space-y-4">
-              <input
-                type="text"
-                required
-                value={inviteIdentifier}
-                onChange={e => setInviteIdentifier(e.target.value)}
-                placeholder="Partner's username or email..."
-                className="w-full px-4 py-2.5 rounded-2xl border border-duvora-pink bg-white text-sm outline-none focus:ring-2 focus:ring-duvora-berry"
-              />
-              <button
-                type="submit"
-                className="w-full py-3 rounded-2xl bg-gradient-to-r from-duvora-berry to-duvora-lavender text-white font-heading font-bold text-sm shadow-neon"
-              >
-                SEND REAL-TIME INVITATION 💌
-              </button>
-            </form>
-          </div>
         </div>
       )}
 

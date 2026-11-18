@@ -316,6 +316,8 @@ export const SOCKET_EVENTS = {
   PARTNER_DECLINE: 'partner:decline',
   PARTNER_DECLINED: 'partner:declined',
   PARTNER_INVITATION_EXPIRED: 'partner:invitation_expired',
+  PARTNER_INVITATION_CANCELLED: 'partner:invitation_cancelled',
+  PARTNER_STATUS: 'partner:status',
 
   // Room
   ROOM_JOIN: 'room:join',

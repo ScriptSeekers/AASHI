@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GAME_CATALOG, GameCategory } from '@duvora/shared';
-import { roomApi } from '../api/endpoints.js';
+import { GAME_CATALOG } from '@duvora/shared';
 import { soundManager } from '../utils/sound.js';
+import { useSocket } from '../context/SocketContext.js';
+import { useAuth } from '../context/AuthContext.js';
 import {
   Gamepad2,
   Heart,
@@ -12,13 +13,17 @@ import {
   Search,
   Clock,
   Users,
-  Play
+  Play,
+  X
 } from 'lucide-react';
 
 export const GameLibraryPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [isStarting, setIsStarting] = useState(false);
+  const [offlineNotice, setOfflineNotice] = useState<string | null>(null);
+
+  const { partnerOnline, partnerInfo, invitePartner } = useSocket();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const categories = [
@@ -38,22 +43,15 @@ export const GameLibraryPage: React.FC = () => {
   });
 
   const handleStartGame = async (gameId: string) => {
-    if (isStarting) return;
-    setIsStarting(true);
-    try {
-      soundManager.playPop();
-      // Create quick private room and navigate to it with chosen game
-      const res = await roomApi.create({
-        name: `Match: ${gameId.toUpperCase()}`,
-        isPrivate: true,
-        maxPlayers: gameId === 'ludo' || gameId === 'uno' ? 4 : 2
-      });
-      navigate(`/room/${res.room.id}?start=${gameId}`);
-    } catch (err: any) {
-      alert(err.message || 'Failed to start game room');
-    } finally {
-      setIsStarting(false);
+    soundManager.playPop();
+    const partnerName = user?.partnerName || partnerInfo?.name || 'Your partner';
+
+    if (!partnerOnline) {
+      setOfflineNotice(`${partnerName} is currently offline. You can play together as soon as they log into DUVORA!`);
+      return;
     }
+
+    await invitePartner(gameId);
   };
 
   return (
@@ -64,9 +62,19 @@ export const GameLibraryPage: React.FC = () => {
           Game Library
         </h1>
         <p className="text-sm sm:text-base text-duvora-plum/70 font-medium">
-          Choose from 26 fully playable multiplayer games. Every match is synchronized in real time with server-authoritative rules.
+          Choose from 26 fully playable multiplayer games. Click "Play Together" to invite your partner instantly.
         </p>
       </div>
+
+      {/* Offline Notice Alert if triggered */}
+      {offlineNotice && (
+        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-between text-amber-900 text-xs sm:text-sm font-semibold shadow-xs">
+          <span>⚠️ {offlineNotice}</span>
+          <button onClick={() => setOfflineNotice(null)} className="p-1 text-amber-700 hover:text-amber-900">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* Category Tabs & Search Bar */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -137,11 +145,10 @@ export const GameLibraryPage: React.FC = () => {
 
               <button
                 onClick={() => handleStartGame(game.id)}
-                disabled={isStarting}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-duvora-plum hover:bg-duvora-berry text-white font-bold text-xs shadow-sm hover:scale-105 active:scale-95 transition-all"
               >
                 <Play className="w-3.5 h-3.5 fill-white" />
-                <span>PLAY</span>
+                <span>Play Together</span>
               </button>
             </div>
           </div>

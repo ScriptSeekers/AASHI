@@ -89,7 +89,8 @@ model RoomInvitation {
   sender      User       @relation("SentInvitations", fields: [senderId], references: [id], onDelete: Cascade)
   recipientId String
   recipient   User       @relation("ReceivedInvitations", fields: [recipientId], references: [id], onDelete: Cascade)
-  status      String     @default("pending") // pending, accepted, declined, expired
+  gameType    String?
+  status      String     @default("pending") // pending, accepted, declined, expired, cancelled
   createdAt   DateTime   @default(now())
   expiresAt   DateTime
 

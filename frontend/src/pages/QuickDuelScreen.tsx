@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
-import { roomApi } from '../api/endpoints.js';
+import { useSocket } from '../context/SocketContext.js';
 import { soundManager } from '../utils/sound.js';
-import { Zap, Play, Sparkles, ChevronDown, CheckCircle2, Heart } from 'lucide-react';
+import { Zap, Play, Sparkles, ChevronDown, Heart } from 'lucide-react';
 
 export const QuickDuelScreen: React.FC = () => {
   const { user } = useAuth();
+  const { partnerOnline, partnerInfo, invitePartner } = useSocket();
   const navigate = useNavigate();
   const [isStarting, setIsStarting] = useState(false);
   const [topicIndex, setTopicIndex] = useState(0);
@@ -24,18 +25,19 @@ export const QuickDuelScreen: React.FC = () => {
     setIsStarting(true);
     soundManager.playPop();
 
-    try {
-      // Create quick private duel room and navigate into couple game
-      const res = await roomApi.create({
-        name: `Quick Duel: ${topics[topicIndex]}`,
-        isPrivate: true,
-        maxPlayers: 2
-      });
+    const partnerName = user?.partnerName || partnerInfo?.name || 'Your partner';
 
-      soundManager.playVictory();
-      navigate(`/room/${res.room.id}?start=would_you_rather`);
+    if (!partnerOnline) {
+      alert(`${partnerName} is currently offline. Both partners must be online to play!`);
+      setIsStarting(false);
+      return;
+    }
+
+    try {
+      await invitePartner('would_you_rather');
     } catch (err: any) {
       alert(err.message || 'Failed to start duel');
+    } finally {
       setIsStarting(false);
     }
   };
@@ -96,15 +98,15 @@ export const QuickDuelScreen: React.FC = () => {
           <span>💖 Real-time sync</span>
         </div>
 
-        {/* Primary Action Button (Height 52px, Thumb-friendly 44px+) */}
+        {/* Primary Action Button */}
         <div className="w-full space-y-3">
           <button
             onClick={handleStartDuel}
             disabled={isStarting}
-            className="w-full h-[52px] rounded-full bg-[#D979AE] hover:bg-[#c9699e] text-white font-heading font-bold text-[17px] flex items-center justify-center gap-2 shadow-[0_8px_24px_-4px_rgba(217,121,174,0.4)] active:scale-[0.98] transition-all cursor-pointer"
+            className="w-full h-[52px] rounded-full bg-[#D979AE] hover:bg-[#c9699e] text-white font-heading font-bold text-[17px] flex items-center justify-center gap-2 shadow-[0_8px_24px_-4px_rgba(217,121,174,0.4)] active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
           >
             {isStarting ? (
-              <span>Connecting Arpit & Shree...</span>
+              <span>Inviting Partner...</span>
             ) : (
               <>
                 <Play className="w-5 h-5 fill-white" />
@@ -113,7 +115,7 @@ export const QuickDuelScreen: React.FC = () => {
             )}
           </button>
 
-          {/* Secondary Sub-Action: Topic Switcher (min 48px height) */}
+          {/* Secondary Sub-Action: Topic Switcher */}
           <button
             onClick={handleCycleTopic}
             disabled={isStarting}
@@ -127,10 +129,10 @@ export const QuickDuelScreen: React.FC = () => {
           </button>
         </div>
 
-        {/* Gentle Live Status Ticker */}
+        {/* Live Partner Status */}
         <div className="flex items-center justify-center gap-2 mt-8 text-xs text-[#524249]/70 font-medium">
-          <span className="w-2 h-2 rounded-full bg-[#D979AE] animate-ping" />
-          <span>Private sync active for Arpit & Shree</span>
+          <span className={`w-2 h-2 rounded-full ${partnerOnline ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'}`} />
+          <span>Partner status: {partnerOnline ? 'Online' : 'Offline'}</span>
         </div>
       </div>
     </div>
