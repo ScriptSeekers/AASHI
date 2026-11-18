@@ -3,7 +3,6 @@ import { io, Socket } from 'socket.io-client';
 import { useAuth } from './AuthContext.js';
 import { RoomInvitationDTO, SOCKET_EVENTS, CoupleRoomDTO } from '@duvora/shared';
 import { invitationApi } from '../api/endpoints.js';
-import { BACKEND_URL } from '../api/client.js';
 import { soundManager } from '../utils/sound.js';
 import { useNavigate } from 'react-router-dom';
 
@@ -55,7 +54,10 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     // Connect to WebSocket with token from localStorage
     const token = localStorage.getItem('duvora_token');
-    const newSocket = io(BACKEND_URL, {
+    const backendOrigin = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+    const socketTarget = backendOrigin || '/';
+
+    const newSocket = io(socketTarget, {
       auth: { token },
       withCredentials: true,
       transports: ['websocket', 'polling']

@@ -21,7 +21,8 @@ import notificationRoutes from './routes/notificationRoutes.js';
 
 import { errorHandler } from './middleware/errorHandler.js';
 import { initSocketManager } from './sockets/socketManager.js';
-import { ensureDatabaseReady } from './database/init.js';
+import { prisma } from './database/db.js';
+import { seedDatabase } from './database/seed.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,7 +30,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const server = http.createServer(app);
 
-const PORT = process.env.PORT || 3001;
+const PORT = Number(process.env.PORT) || 3001;
 const allowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
@@ -42,10 +43,17 @@ app.use(cors({
   origin: (origin, callback) => {
     // allow requests with no origin (like mobile apps, curl, postman)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin) || origin.startsWith('http://localhost:')) {
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.startsWith('http://localhost:') ||
+      origin.startsWith('http://127.0.0.1:') ||
+      origin.endsWith('.vercel.app') ||
+      origin.includes('vercel.app') ||
+      (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL)
+    ) {
       return callback(null, true);
     }
-    return callback(null, true); // Dev permissive
+    return callback(null, true); // Permissive for custom/preview domains
   },
   credentials: true
 }));
@@ -100,19 +108,31 @@ const io = new SocketIOServer(server, {
 
 initSocketManager(io);
 
+async function ensureDbSeeded() {
+  try {
+    const userCount = await prisma.user.count();
+    if (userCount === 0) {
+      console.log('⚡ Empty database detected. Auto-seeding Arpit & Shree...');
+      await seedDatabase();
+    }
+  } catch (err: any) {
+    console.warn('⚡ DB init notice:', err.message);
+  }
+}
+
 // Start server
 if (process.env.NODE_ENV !== 'test') {
-  ensureDatabaseReady().catch(console.error);
-
-  server.listen(PORT, () => {
-    console.log(`
-    💗 DUVORA SERVER ONLINE
-    ═════════════════════════════════════════════════
-    📡 API Running at:    http://localhost:${PORT}/api
-    ⚡ Socket.IO Ready:   ws://localhost:${PORT}
-    💕 Brand Tagline:     Love hard. Play harder.
-    ═════════════════════════════════════════════════
-    `);
+  ensureDbSeeded().finally(() => {
+    server.listen(PORT, '0.0.0.0', () => {
+      console.log(`
+      💗 DUVORA SERVER ONLINE
+      ═════════════════════════════════════════════════
+      📡 API Running at:    http://0.0.0.0:${PORT}/api
+      ⚡ Socket.IO Ready:   ws://0.0.0.0:${PORT}
+      💕 Brand Tagline:     Love hard. Play harder.
+      ═════════════════════════════════════════════════
+      `);
+    });
   });
 }
 

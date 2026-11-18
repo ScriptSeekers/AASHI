@@ -1,5 +1,5 @@
-export const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || 'https://aashi-8uri.onrender.com').replace(/\/$/, '');
-const BASE_URL = `${BACKEND_URL}/api`;
+const RAW_BACKEND = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+const BASE_URL = RAW_BACKEND ? `${RAW_BACKEND}/api` : '/api';
 
 export class ApiError extends Error {
   public statusCode: number;
@@ -28,8 +28,10 @@ export async function apiRequest<T = any>(
     headers.set('Authorization', `Bearer ${token}`);
   }
 
-  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-  const url = endpoint.startsWith('http') ? endpoint : `${BASE_URL}${normalizedEndpoint}`;
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = endpoint.startsWith('http://') || endpoint.startsWith('https://')
+    ? endpoint
+    : `${BASE_URL}${cleanEndpoint}`;
 
   const res = await fetch(url, {
     ...options,

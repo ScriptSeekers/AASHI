@@ -70,7 +70,7 @@ export const ChessGameView: React.FC<ChessGameViewProps> = ({ state, userId, onA
     if (piece && piece.color === myColor) {
       setSelectedSquare(square);
       const moves = chess.moves({ square, verbose: true });
-      setLegalMoves(moves.map((m: any) => m.to));
+      setLegalMoves(moves.map(m => m.to));
       soundManager.playCardFlip();
     } else {
       setSelectedSquare(null);

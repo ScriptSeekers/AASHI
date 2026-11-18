@@ -173,9 +173,8 @@ export async function seedDatabase() {
   console.log('Duvora database seeded successfully! 💖');
 }
 
-// If executed directly via CLI
-const isDirectRun = process.argv[1]?.includes('seed');
-if (isDirectRun) {
+// Auto-run if executed directly via CLI
+if (process.argv[1] && process.argv[1].includes('seed')) {
   seedDatabase()
     .catch((e) => {
       console.error(e);
